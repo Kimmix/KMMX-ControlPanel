@@ -305,13 +305,14 @@ footer hr {
 
 .footer-info p {
   font-size: 12px;
-  font-weight: 200;
   color: var(--white-color);
 }
 
 .footer-info p.sub {
-  font-size: 12px;
   font-weight: 200;
-  color: var(--white2-color);
+  color: var(--black4-color);
   opacity: 0.3;
+}
+.footer-info img {
+  width: 8px;
 }
