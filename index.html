@@ -27,72 +27,85 @@
   <link defer rel="stylesheet" href="style.css" />
 </head>
 
-<body>
-  <div class="status-header">
-    <img class="status-pill" src="asset/svg/pill.svg" alt="Status pill">
+<!-- Start page Splash -->
+<div class="splash" id="splash">
+  <div class="splash-image">
+    <span class="loader"></span>
   </div>
-  <section id="pairingMode" class="control-panel">
-    <div class="header">
-      <img class="glow-icon" src="asset/svg/control-icon.svg" alt="Icon">
-      <div class="header-title">
-        <h2>KMMX</h2>
-        <h3>Control panel</h3>
-      </div>
+  <div class="splash-text">
+    <h2 class="fade">KMMX<br>Control Panel</h2>
+  </div>
+</div>
+
+<body>
+  <div class="main-content" id="mainContent">
+    <!-- Main control page -->
+    <div class="status-header">
+      <img class="status-pill" src="asset/svg/pill.svg" alt="Status pill">
     </div>
-    <!-- EXPRESSION -->
-    <div class="expression">
-      <div class="expression-title">
-        <h2>Expression</h2>
-        <img class="dotted-array" src="asset/svg/dot-array.svg" alt="dotted array">
+    <section id="pairingMode" class="control-panel">
+      <div class="header">
+        <img class="glow-icon" src="asset/svg/control-icon.svg" alt="Icon">
+        <div class="header-title">
+          <h2>KMMX</h2>
+          <h3>Control panel</h3>
+        </div>
       </div>
-      <div class="expression-container">
-        <button id="button1" class="toggle-button" onclick="toggleButton('button1')">
-          <img src="https://placehold.co/70x70" alt="" srcset="">
-          <div class="vl"></div>
-          <div class="btn-desc">
-            <h2>Default</h2>
-            <h3>Blink enabled</h3>
-            <h3>Eye moment</h3>
-          </div>
-        </button>
-        <button id="button2" class="toggle-button" onclick="toggleButton('button2')">Button 2</button>
-        <button id="button3" class="toggle-button" onclick="toggleButton('button3')">Button 3</button>
-        <div class="sub-button">
-          <button id="button4" class="toggle-button" onclick="toggleButton('button4')">
+      <!-- EXPRESSION -->
+      <div class="expression">
+        <div class="expression-title">
+          <h2>Expression</h2>
+          <img class="dotted-array" src="asset/svg/dot-array.svg" alt="dotted array">
+        </div>
+        <div class="expression-container">
+          <button id="button1" class="toggle-button" onclick="toggleButton('button1')">
             <img src="https://placehold.co/70x70" alt="" srcset="">
+            <div class="vl"></div>
+            <div class="btn-desc">
+              <h2>Default</h2>
+              <h3>Blink enabled</h3>
+              <h3>Eye moment</h3>
+            </div>
           </button>
-          <button id="button5" class="toggle-button" onclick="toggleButton('button5')">5</button>
-          <button id="button6" class="toggle-button" onclick="toggleButton('button6')">6</button>
-          <button id="button7" class="toggle-button" onclick="toggleButton('button7')">7</button>
-          <button id="button8" class="toggle-button" onclick="toggleButton('button8')">8</button>
-          <button id="button9" class="toggle-button" onclick="toggleButton('button9')">9</button>
-          <button id="button10" class="toggle-button" onclick="toggleButton('button10')">10</button>
+          <button id="button2" class="toggle-button" onclick="toggleButton('button2')">Button 2</button>
+          <button id="button3" class="toggle-button" onclick="toggleButton('button3')">Button 3</button>
+          <div class="sub-button">
+            <button id="button4" class="toggle-button" onclick="toggleButton('button4')">
+              <img src="https://placehold.co/70x70" alt="" srcset="">
+            </button>
+            <button id="button5" class="toggle-button" onclick="toggleButton('button5')">5</button>
+            <button id="button6" class="toggle-button" onclick="toggleButton('button6')">6</button>
+            <button id="button7" class="toggle-button" onclick="toggleButton('button7')">7</button>
+            <button id="button8" class="toggle-button" onclick="toggleButton('button8')">8</button>
+            <button id="button9" class="toggle-button" onclick="toggleButton('button9')">9</button>
+            <button id="button10" class="toggle-button" onclick="toggleButton('button10')">10</button>
+          </div>
         </div>
+        <hr>
       </div>
+      <!-- VISEME -->
+      <div></div>
+    </section>
+    <footer>
       <hr>
-    </div>
-    <!-- VISEME -->
-    <div></div>
-  </section>
-  <footer>
-    <hr>
-    <div class="footer-container">
-      <div class="connection-stat">
-        <span id="status">Disconnected</span>
-        <p>&nbsp;·&nbsp;</p>
-        <span id="timer" class="timer">0:00</span>
-      </div>
-      <div class="footer-info">
-        <div class="footer-info-l">
-          <p>Kimmix ©2023</p>
-          <p class="sub">Authorized use only</p>
+      <div class="footer-container">
+        <div class="connection-stat">
+          <span id="status">Disconnected</span>
+          <p>&nbsp;·&nbsp;</p>
+          <span id="timer" class="timer">0:00</span>
         </div>
-        <div class="footer-info-r">
-          <p class="sub">V1.0</p>
+        <div class="footer-info">
+          <div class="footer-info-l">
+            <p>Kimmix ©2023</p>
+            <p class="sub">Authorized use only</p>
+          </div>
+          <div class="footer-info-r">
+            <p class="sub">V1.0</p>
+          </div>
         </div>
       </div>
-    </div>
-  </footer>
+    </footer>
+  </div>
   <script defer src="app.js"></script>
   <script defer src="control.js"></script>
 </body>

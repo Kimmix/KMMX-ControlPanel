@@ -1,9 +1,109 @@
-body {
+/* body {
   display: flex;
   justify-content: center;
   margin: 0 15px;
   width: auto;
   overflow: hidden;
+} */
+
+.splash {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--black-color);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.splash-image {
+  max-width: 60%;
+  height: auto;
+}
+
+.splash-text {
+  position: absolute;
+  /* Position the text absolutely */
+  bottom: 10%;
+  /* Adjust as needed */
+}
+
+.loader {
+  width: 10em;
+  height: 10em;
+  display: inline-block;
+  position: relative;
+}
+
+.loader::after,
+.loader::before {
+  content: '';
+  box-sizing: border-box;
+  width: 10em;
+  height: 10em;
+  border: 0.8rem solid #FFF;
+  position: absolute;
+  left: 0;
+  top: 0;
+  animation: rotation 2.75s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 0 var(--acc2-color));
+}
+
+.loader::after {
+  border-color: var(--acc2-color);
+  animation-direction: alternate-reverse;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+    filter: drop-shadow(0 0 0.1rem var(--acc2-color));
+  }
+
+  20% {
+    filter: drop-shadow(0 0 2rem var(--acc2-color));
+  }
+
+  50% {
+    filter: drop-shadow(0 0 7rem #ffffffb6);
+  }
+
+  80% {
+    filter: drop-shadow(0 0 2rem var(--acc2-color));
+  }
+
+  100% {
+    transform: rotate(360deg);
+    filter: drop-shadow(0 0 0.1rem var(--acc2-color));
+  }
+}
+
+.main-content {
+  display: none;
+  opacity: 0;
+  /* Start with 0 opacity */
+  animation: fadeIn 1s forwards;
+  /* Apply fade-in animation */
+  /* display: flex; */
+  justify-content: center;
+  margin: 0 15px;
+  width: auto;
+  overflow: hidden;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 section.control-panel {
@@ -16,7 +116,7 @@ section.control-panel {
   position: fixed;
   top: 0;
   right: 0;
-  z-index: 9999;
+  z-index: 9;
 }
 
 .status-pill {
