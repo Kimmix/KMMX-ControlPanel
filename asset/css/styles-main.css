@@ -1,0 +1,321 @@
+/* Gobal */
+
+:root {
+  --acc1-color: #f9826c;
+  --acc2-color: #ff446c;
+  --acc2b-color: #cb2040;
+  --white-color: #ffffff;
+  --white2-color: #c6c6c6;
+  --black-color: #090711;
+  --black2-color: #101014;
+  --black3-color: #16161a;
+  --card-color: #0e0b16;
+}
+
+::selection {
+  color: var(--acc2-color);
+  background-color: var(--white-color);
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  background-color: transparent;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+*::-webkit-input-placeholder {
+  color: var(--white2-color);
+  opacity: 0.65;
+}
+
+*::-ms-input-placeholder {
+  /* Microsoft Edge */
+  color: var(--white2-color);
+  opacity: 0.65;
+}
+
+*::placeholder {
+  /* modern browser */
+  color: var(--white2-color);
+  opacity: 0.65;
+}
+
+html,
+body {
+  overflow-anchor: none;
+  touch-action: manipulation;
+  scroll-behavior: smooth;
+  width: 100%;
+  /* height: 100vh; */
+  /* height: fill-available;
+  height: -webkit-fill-available; */
+  overflow-x: hidden;
+  scrollbar-width: none;
+  background-color: var(--black2-color);
+  color: var(--white-color);
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  -webkit-tap-highlight-color: #00000000;
+}
+
+h1 {
+  font-size: clamp(2.8rem, 10vw, 6.5em);
+}
+
+h2 {
+  font-size: clamp(2.2rem, 6vw, 4.5em);
+}
+
+section {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  position: relative;
+  /* perspective: 8px;
+  perspective-origin: 0%; */
+}
+
+.bold {
+  font-weight: 600 !important;
+}
+
+.fade {
+  color: var(--white2-color) !important;
+  opacity: 0.4;
+}
+
+.outline {
+  font-family: 'Open Sans', sans-serif !important;
+  font-weight: 600 !important;
+  color: var(--black2-color) !important;
+  -webkit-text-stroke: 1.5px var(--white-color) !important;
+}
+
+.acc1 {
+  color: var(--acc1-color);
+}
+
+.acc2 {
+  color: var(--acc2-color);
+}
+
+.underline-hover {
+  transition: color 0.3s ease-in;
+}
+
+.underline-hover:hover {
+  color: var(--acc2-color);
+  text-decoration: underline;
+}
+
+.block-hover {
+  width: fit-content;
+  transition: color 0.3s ease-in;
+}
+
+.block-hover:hover {
+  background-color: var(--acc2-color);
+  color: var(--white1-color);
+}
+
+img {
+  width: 100%;
+  height: auto;
+}
+
+.diagonal-stripes {
+  background: repeating-linear-gradient(135deg,
+      var(--black2-color),
+      var(--black2-color) 10px,
+      var(--acc2b-color) 10px,
+      var(--acc2b-color) 20px);
+}
+
+.diagonal-stripes-thin {
+  background: repeating-linear-gradient(135deg,
+      var(--white2-color),
+      var(--white2-color) 1px,
+      var(--black2-color) 2px,
+      var(--black2-color) 10px);
+}
+
+.diagonal-stripes-dot {
+  background: repeating-linear-gradient(135deg,
+      var(--white2-color),
+      var(--white2-color) 1px,
+      var(--black2-color) 2px,
+      var(--black2-color) 5px);
+}
+
+.diagonal-stripes-w {
+  background: repeating-linear-gradient(135deg,
+      var(--black2-color),
+      var(--black2-color) 10px,
+      var(--white-color) 10px,
+      var(--white-color) 20px);
+}
+
+/* Intro animation */
+
+div.intro {
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  background-color: var(--black2-color);
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  animation: delete-out-container 1s linear forwards 5.5s;
+}
+
+.text-wrapper {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+}
+
+.text {
+  margin: auto;
+  font-size: clamp(1.7rem, -0.875rem + 8.333vw, 5rem);
+  color: var(--white-color);
+}
+
+.text-0 {
+  font-size: clamp(1rem, 100px, 3.5rem);
+  animation: slide-out 1.5s linear 3.5s;
+  opacity: 0;
+}
+
+.text-1 {
+  animation: blink 0.8s linear 0.9s, blink 0.5s linear 2s;
+  opacity: 0;
+}
+
+.text-2 {
+  animation: blink 0.8s linear 0.8s, blink 0.6s linear 2s;
+  opacity: 0;
+}
+
+.text-3 {
+  animation: blink 0.8s linear 0.7s, blink 0.65s linear 2s;
+  opacity: 0;
+}
+
+.text-4 {
+  animation: blink 0.8s linear 0.9s, blink 0.7s linear 2s;
+  opacity: 0;
+}
+
+.text-5 {
+  animation: blink 0.8s linear 0.7s, blink 0.75s linear 2s;
+  opacity: 0;
+}
+
+.text-6 {
+  animation: blink 0.8s linear 0.8s, blink 0.75s linear 2s;
+  opacity: 0;
+}
+
+.text-7 {
+  animation: blink 0.8s linear 0.9s, blink 0.7s linear 2s;
+  opacity: 0;
+}
+
+.text-8 {
+  animation: blink 0.8s linear 0.7s, blink 0.65s linear 2s;
+  opacity: 0;
+}
+
+.text-9 {
+  animation: blink 0.8s linear 0.6s, blink 0.6s linear 2s;
+  opacity: 0;
+}
+
+.text-10 {
+  animation: blink 0.8s linear 0.8s, blink 0.5s linear 2s;
+  opacity: 0;
+}
+
+.text-error {
+  font-size: clamp(4rem, 400px, 20rem);
+  color: red;
+  overflow: hidden;
+  text-overflow: clip;
+  width: 100%;
+  height: 100vh;
+  animation: blink 0.8s linear 2.8s;
+  opacity: 0;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0;
+  }
+
+  1% {
+    opacity: 100%;
+  }
+
+  99% {
+    opacity: 100%;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes slide-out {
+  0% {
+    opacity: 0;
+  }
+
+  1% {
+    opacity: 100%;
+  }
+
+  19% {
+    opacity: 100%;
+  }
+
+  20% {
+    opacity: 0;
+  }
+
+  69% {
+    opacity: 100%;
+  }
+
+  70% {
+    opacity: 100%;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes delete-out-container {
+  99% {
+    height: initial;
+  }
+
+  100% {
+    opacity: 0;
+    height: 0;
+    display: none;
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "name": "KMMX Control Panel",
+  "short_name": "KMMX-Control",
+  "start_url": "index.html",
+  "display": "minimal-ui",
+  "background_color": "#141414",
+  "theme_color": "#f9826c",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "type": "image/png",
+      "sizes": "250x250"
+    },
+    {
+      "src": "asset/splash.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "asset/maskable_icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KMMX Control</title>
+  <meta name="description" content="KMMX BLE Control Panel" />
+
+  <meta name="theme-color" content="#141414" />
+  <meta name="apple-mobile-web-app-status-bar" content="#141414" />
+  <link rel="manifest" href="../manifest.json" />
+  <link rel="icon" type="image/png" href="../favicon.png" />
+  <link rel="apple-touch-icon" type="image/png" href="../favicon.png" />
+  <link rel="mask-icon" href="../asset/maskable_icon.png" color="#f9826c">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap"
+    as="style" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Open+Sans:wght@600&display=swap" />
+
+  <link defer rel="stylesheet" href="asset/css/normalize.css" />
+  <link defer rel="stylesheet" href="asset/css/styles-main.css" />
+  <link defer rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="status-header">
+    <img class="status-pill" src="asset/svg/pill.svg" alt="Status pill">
+  </div>
+  <section id="pairingMode" class="control-panel">
+    <div class="header">
+      <img class="glow-icon" src="asset/svg/control-icon.svg" alt="Icon">
+      <div class="header-title">
+        <h2>KMMX</h2>
+        <h3>Control panel</h3>
+      </div>
+    </div>
+    <!-- EXPRESSION -->
+    <div class="expression">
+      <div class="expression-title">
+        <h2>Expression</h2>
+        <img class="dotted-array" src="asset/svg/dot-array.svg" alt="dotted array">
+      </div>
+      <div class="expression-container">
+        <button id="button1" class="toggle-button" onclick="toggleButton('button1')">
+          <img src="https://placehold.co/70x70" alt="" srcset="">
+          <div class="vl"></div>
+          <div class="btn-desc">
+            <h2>Default</h2>
+            <h3>Blink enabled</h3>
+            <h3>Eye moment</h3>
+          </div>
+        </button>
+        <button id="button2" class="toggle-button" onclick="toggleButton('button2')">Button 2</button>
+        <button id="button3" class="toggle-button" onclick="toggleButton('button3')">Button 3</button>
+        <div class="sub-button">
+          <button id="button4" class="toggle-button" onclick="toggleButton('button4')">
+            <img src="https://placehold.co/70x70" alt="" srcset="">
+          </button>
+          <button id="button5" class="toggle-button" onclick="toggleButton('button5')">5</button>
+          <button id="button6" class="toggle-button" onclick="toggleButton('button6')">6</button>
+          <button id="button7" class="toggle-button" onclick="toggleButton('button7')">7</button>
+          <button id="button8" class="toggle-button" onclick="toggleButton('button8')">8</button>
+          <button id="button9" class="toggle-button" onclick="toggleButton('button9')">9</button>
+          <button id="button10" class="toggle-button" onclick="toggleButton('button10')">10</button>
+        </div>
+      </div>
+      <hr>
+    </div>
+    <!-- VISEME -->
+    <div></div>
+  </section>
+  <footer>
+    <hr>
+    <div class="footer-container">
+      <div class="connection-stat">
+        <span id="status">Disconnected</span>
+        <p>&nbsp;·&nbsp;</p>
+        <span id="timer" class="timer">0:00</span>
+      </div>
+      <div class="footer-info">
+        <div class="footer-info-l">
+          <p>Kimmix ©2023</p>
+          <p class="sub">Authorized use only</p>
+        </div>
+        <div class="footer-info-r">
+          <p class="sub">V1.0</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script defer src="app.js"></script>
+  <script defer src="control.js"></script>
+</body>
+
+</html>
