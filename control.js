@@ -29,6 +29,10 @@ function startBLE() {
     .then(_ => {
       console.log('Device connected');
       statusElement.textContent = "Connected";
+      timerInterval = setInterval(() => {
+        timerValue++;
+        updateStatusAndTimer();
+      }, 1000);
     })
     .catch(error => { console.error(error); });
 }
@@ -37,6 +41,7 @@ function onDisconnected(event) {
   const device = event.target;
   console.log(`Device ${device.name} is disconnected.`);
   statusElement.textContent = "Disconnected";
+  clearInterval(timerInterval);
 }
 
 function onWriteButtonClick(value) {

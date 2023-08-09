@@ -86,10 +86,7 @@
 .main-content {
   display: none;
   opacity: 0;
-  /* Start with 0 opacity */
   animation: fadeIn 1s forwards;
-  /* Apply fade-in animation */
-  /* display: flex; */
   justify-content: center;
   margin: 0 15px;
   width: auto;

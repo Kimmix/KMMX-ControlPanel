@@ -25,11 +25,6 @@ function updateStatusAndTimer() {
     timerElement.textContent = formattedTimer;
 }
 
-timerInterval = setInterval(() => {
-    timerValue++;
-    updateStatusAndTimer();
-}, 1000);
-
 // Show main page
 document.addEventListener('DOMContentLoaded', function () {
     const splash = document.getElementById('splash');
@@ -38,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
     splash.addEventListener('click', function () {
         splash.style.display = 'none';
         mainContent.style.display = 'flex';
+        startBLE();
     });
 });
 
