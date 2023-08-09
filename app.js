@@ -16,8 +16,8 @@ document.addEventListener("visibilitychange", () => {
 let isConnected = true;
 let timerValue = 0;
 let timerInterval;
+const timerElement = document.getElementById("timer");
 function updateStatusAndTimer() {
-    const timerElement = document.getElementById("timer");
     const minutes = Math.floor(timerValue / 60);
     const seconds = timerValue % 60;
     const formattedTimer = `${minutes}:${seconds.toString().padStart(2, '0')}`;
@@ -42,7 +42,7 @@ function toggleButton(buttonId) {
     if (activeButton !== button) {
         button.classList.add('active');
         activeButton = button;
-        onWriteButtonClick(buttonId);
+        onExpressionButtonClick(buttonId);
     } else {
         activeButton = null;
     }
@@ -54,6 +54,7 @@ function showControlPanel() {
     mainContent.style.display = 'flex';
 }
 
+const statusElement = document.getElementById("status");
 function isStatusConnected(bool) {
     if (bool) {
         timerInterval = setInterval(() => {

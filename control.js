@@ -6,35 +6,28 @@ const bleUUID = {
 };
 
 let eyeStateCharacteristic;
-// const brightness = document.getElementById("brightness").value;
-const statusElement = document.getElementById("status");
 
 function startBLE() {
   navigator.bluetooth.requestDevice({
-    // acceptAllDevices: true,
-    // optionalServices: ['d0e21a4b-d38e-460f-90f7-8c8082284aee']
     filters: [
       { name: "KMMX-BLE" },
       { services: [bleUUID.service] },
     ]
   })
     .then(device => {
-      // Human-readable name of the device.
       console.log(device.name);
-      // Set up event listener for when device gets disconnected.
       device.addEventListener('gattserverdisconnected', onDisconnected);
-      // Attempts to connect to remote GATT Server.
       return device.gatt.connect();
     })
     .then(server => server.getPrimaryService(bleUUID.service))
     .then(service => service.getCharacteristic(bleUUID.eyeStateCharacteristic))
     .then(characteristic => {
       eyeStateCharacteristic = characteristic
-      brightness = characteristic.properties.read
-      console.log(brightness)
+      return characteristic.readValue();
     })
-    .then(_ => {
+    .then(value => {
       console.log('Device connected');
+      console.log(`Eye state is ${value.getUint8(0)}`);
       isStatusConnected(true);
     })
     .catch(error => { console.error(error); });
@@ -46,7 +39,7 @@ function onDisconnected(event) {
   isStatusConnected(false);
 }
 
-function onWriteButtonClick(buttonId) {
+function onExpressionButtonClick(buttonId) {
   if (!eyeStateCharacteristic) {
     return;
   }
