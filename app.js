@@ -16,7 +16,6 @@ document.addEventListener("visibilitychange", () => {
 let isConnected = true;
 let timerValue = 0;
 let timerInterval;
-
 function updateStatusAndTimer() {
     const timerElement = document.getElementById("timer");
     const minutes = Math.floor(timerValue / 60);
@@ -28,11 +27,7 @@ function updateStatusAndTimer() {
 // Show main page
 document.addEventListener('DOMContentLoaded', function () {
     const splash = document.getElementById('splash');
-    const mainContent = document.getElementById('mainContent');
-
     splash.addEventListener('click', function () {
-        splash.style.display = 'none';
-        mainContent.style.display = 'flex';
         startBLE();
     });
 });
@@ -41,15 +36,36 @@ document.addEventListener('DOMContentLoaded', function () {
 let activeButton = null;
 function toggleButton(buttonId) {
     const button = document.getElementById(buttonId);
-
     if (activeButton !== null) {
         activeButton.classList.remove('active');
     }
-
     if (activeButton !== button) {
         button.classList.add('active');
         activeButton = button;
+        onWriteButtonClick(buttonId);
     } else {
         activeButton = null;
+    }
+}
+
+
+function showControlPanel() {
+    splash.style.display = 'none';
+    mainContent.style.display = 'flex';
+}
+
+function isStatusConnected(bool) {
+    if (bool) {
+        timerInterval = setInterval(() => {
+            timerValue++;
+            updateStatusAndTimer();
+        }, 1000);
+        showControlPanel();
+        statusElement.textContent = "Connected";
+    } else {
+        clearInterval(timerInterval);
+        statusElement.textContent = "Disconnected";
+        document.getElementById("timer").textContent = "0:00";
+        timerValue = 0;
     }
 }

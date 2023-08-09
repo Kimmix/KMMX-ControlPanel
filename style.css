@@ -50,7 +50,7 @@
   position: absolute;
   left: 0;
   top: 0;
-  animation: rotation 2.75s ease-in-out infinite alternate;
+  animation: rotation 3.2s ease-in-out infinite alternate;
   filter: drop-shadow(0 0 0 var(--acc2-color));
 }
 
@@ -226,7 +226,6 @@ button {
   margin: 5px;
   height: 100px;
   max-width: 70%;
-  transform: translateZ(0);
   transition: max-width 1s ease,
     background-color 1s ease,
     color 1s ease;
@@ -313,6 +312,7 @@ footer hr {
   color: var(--black4-color);
   opacity: 0.3;
 }
+
 .footer-info img {
   width: 8px;
 }
