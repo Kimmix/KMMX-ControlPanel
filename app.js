@@ -42,14 +42,14 @@ var xRotation = 0;
 var yRotation = 0;
 
 // Request permission to access device orientation
-if (typeof DeviceOrientationEvent.requestPermission === "function") {
-    DeviceOrientationEvent.requestPermission()
-        .then(permissionState => {
-            if (permissionState === "granted") {
-                window.addEventListener("deviceorientation", handleOrientation);
-            }
-        })
-        .catch(console.error);
+try {
+    DeviceOrientationEvent.requestPermission().then(permissionState => {
+        if (permissionState === "granted") {
+            window.addEventListener("deviceorientation", handleOrientation);
+        }
+    })
+} catch (error) {
+    console.error
 }
 
 // Function to handle device orientation changes
