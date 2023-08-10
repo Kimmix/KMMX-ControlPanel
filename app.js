@@ -103,9 +103,6 @@ if (typeof DeviceOrientationEvent.requestPermission === "function") {
             }
         })
         .catch(console.error);
-} else {
-    // Fallback for devices without requestPermission support
-    window.addEventListener("deviceorientation", handleOrientation);
 }
 
 // Function to handle device orientation changes
