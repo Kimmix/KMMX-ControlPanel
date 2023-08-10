@@ -28,7 +28,8 @@ function updateStatusAndTimer() {
 document.addEventListener('DOMContentLoaded', function () {
     const splash = document.getElementById('splash');
     splash.addEventListener('click', function () {
-        startBLE();
+        // startBLE();
+        showControlPanel();
     });
 });
 
@@ -50,6 +51,7 @@ function toggleButton(buttonId) {
 
 
 function showControlPanel() {
+    // document.documentElement.requestFullscreen();
     splash.style.display = 'none';
     mainContent.style.display = 'flex';
 }
@@ -70,3 +72,9 @@ function isStatusConnected(bool) {
         timerValue = 0;
     }
 }
+
+// Viseme
+const toggleViseme = document.getElementById('toggleViseme');
+toggleViseme.addEventListener('click', () => {
+    toggleViseme.classList.toggle('active');
+});

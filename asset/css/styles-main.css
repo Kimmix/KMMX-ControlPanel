@@ -61,6 +61,8 @@ body {
   font-family: "Montserrat", sans-serif;
   font-weight: 600;
   -webkit-tap-highlight-color: #00000000;
+  user-select: none;
+  overscroll-behavior-y: contain;
 }
 
 h1 {
@@ -94,6 +96,11 @@ section {
   font-weight: 600 !important;
   color: var(--black2-color) !important;
   -webkit-text-stroke: 1.5px var(--white-color) !important;
+}
+
+.superscript {
+  vertical-align: super;
+  font-size: smaller;
 }
 
 img {

@@ -10,14 +10,15 @@
 
   <meta name="theme-color" content="#141414" />
   <meta name="apple-mobile-web-app-status-bar" content="#141414" />
-  <link rel="manifest" href="../manifest.json" />
-  <link rel="icon" type="image/png" href="../favicon.png" />
-  <link rel="apple-touch-icon" type="image/png" href="../favicon.png" />
-  <link rel="mask-icon" href="../asset/maskable_icon.png" color="#f9826c">
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="apple-touch-icon" type="image/png" href="favicon.png" />
+  <link rel="mask-icon" href="asset/maskable_icon.png" color="#f9826c">
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Open+Sans:wght@600&display=swap"
+  <link rel="preload"
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Open+Sans:wght@600&display=swap"
     as="style" />
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Open+Sans:wght@600&display=swap" />
@@ -41,7 +42,10 @@
   <div class="main-content" id="mainContent">
     <!-- Main control page -->
     <div class="status-header">
-      <img class="status-pill" src="asset/svg/pill.svg" alt="Status pill">
+      <!-- <img class="status-pill" src="asset/svg/pill.svg" alt="Status pill"> -->
+      <svg class="status-pill inactive" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 97 31">
+        <rect width="97" height="31" rx="14.82" ry="14.82"/>
+      </svg>
     </div>
     <section id="pairingMode" class="control-panel">
       <div class="header">
@@ -58,8 +62,8 @@
           <img class="dotted-array" src="asset/svg/dot-array.svg" alt="dotted array">
         </div>
         <div class="expression-container">
-          <button id="button1" class="toggle-button" onclick="toggleButton('button1')">
-            <img src="https://placehold.co/70x70" alt="" srcset="">
+          <button id="button1" class="exp-btn" onclick="toggleButton('button1')">
+            <img src="https://placehold.co/70x70" alt="">
             <div class="vl"></div>
             <div class="btn-desc">
               <h2>Default</h2>
@@ -67,24 +71,41 @@
               <h3>Eye moment</h3>
             </div>
           </button>
-          <button id="button2" class="toggle-button" onclick="toggleButton('button2')">Button 2</button>
-          <button id="button3" class="toggle-button" onclick="toggleButton('button3')">Button 3</button>
+          <button id="button2" class="exp-btn" onclick="toggleButton('button2')">Button 2</button>
+          <button id="button3" class="exp-btn" onclick="toggleButton('button3')">Button 3</button>
           <div class="sub-button">
-            <button id="button4" class="toggle-button" onclick="toggleButton('button4')">
-              <img src="https://placehold.co/70x70" alt="" srcset="">
+            <button id="button4" class="exp-btn" onclick="toggleButton('button4')">
+              <img src="https://placehold.co/70x70" alt="">
             </button>
-            <button id="button5" class="toggle-button" onclick="toggleButton('button5')">5</button>
-            <button id="button6" class="toggle-button" onclick="toggleButton('button6')">6</button>
-            <button id="button7" class="toggle-button" onclick="toggleButton('button7')">7</button>
-            <button id="button8" class="toggle-button" onclick="toggleButton('button8')">8</button>
-            <button id="button9" class="toggle-button" onclick="toggleButton('button9')">9</button>
-            <button id="button10" class="toggle-button" onclick="toggleButton('button10')">10</button>
+            <button id="button5" class="exp-btn" onclick="toggleButton('button5')">5</button>
+            <button id="button6" class="exp-btn" onclick="toggleButton('button6')">6</button>
+            <button id="button7" class="exp-btn" onclick="toggleButton('button7')">7</button>
+            <button id="button8" class="exp-btn" onclick="toggleButton('button8')">8</button>
+            <button id="button9" class="exp-btn" onclick="toggleButton('button9')">9</button>
+            <button id="button10" class="exp-btn" onclick="toggleButton('button10')">10</button>
           </div>
         </div>
-        <hr>
       </div>
+      <hr>
       <!-- VISEME -->
-      <div></div>
+      <div class="viseme">
+        <button id="toggleViseme" class="viseme-btn">
+          <div class="bitrate">
+            <p>I<span class="superscript">2</span>S 16bit / 8KHz<br><span class="fade">256 sample</span></p>
+          </div>
+          <img src="asset/svg/viseme-wave.svg" alt="Viseme wave">
+          <div class="viseme-title">
+            <div class="viseme-title-container">
+              <img class="inline-icn" src="asset/svg/wave-icon.svg" alt="Wave icon">
+              <h2>Viseme</h2>
+            </div>
+          </div>
+        </button>
+      </div>
+      <!-- Matrix -->
+      <div>
+        <h1>Matrix brightness</h1>
+      </div>
     </section>
     <footer>
       <hr>
