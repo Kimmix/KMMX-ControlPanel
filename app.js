@@ -85,3 +85,34 @@ const toggleViseme = document.getElementById('toggleViseme');
 toggleViseme.addEventListener('click', () => {
     toggleViseme.classList.toggle('active');
 });
+
+// ------- Gyroscope ---------
+// Get the moving element
+var element = document.getElementById("movingElement");
+
+// Initialize variables to store gyroscope data
+var xRotation = 0;
+var yRotation = 0;
+
+// Request permission to access device orientation
+if (typeof DeviceOrientationEvent.requestPermission === "function") {
+    DeviceOrientationEvent.requestPermission()
+        .then(permissionState => {
+            if (permissionState === "granted") {
+                window.addEventListener("deviceorientation", handleOrientation);
+            }
+        })
+        .catch(console.error);
+} else {
+    // Fallback for devices without requestPermission support
+    window.addEventListener("deviceorientation", handleOrientation);
+}
+
+// Function to handle device orientation changes
+function handleOrientation(event) {
+    xRotation = event.beta; // x-axis rotation (tilt forward/backward)
+    yRotation = event.gamma; // y-axis rotation (tilt left/right)
+
+    // Update element's position using CSS translate
+    element.style.transform = "translate(" + yRotation + "px, " + xRotation + "px)";
+}
