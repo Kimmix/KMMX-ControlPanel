@@ -33,6 +33,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+// Count Expression button
+var expBtnCount = document.getElementsByClassName("exp-btn").length;
+document.getElementById("expBtnCount").textContent = expBtnCount;
+
 // Toggle button state
 let activeButton = null;
 function toggleButton(buttonId) {
@@ -57,6 +61,7 @@ function showControlPanel() {
 }
 
 const statusElement = document.getElementById("status");
+const pill = document.getElementById("s-pill");
 function isStatusConnected(bool) {
     if (bool) {
         timerInterval = setInterval(() => {
@@ -65,10 +70,12 @@ function isStatusConnected(bool) {
         }, 1000);
         showControlPanel();
         statusElement.textContent = "Connected";
+        pill.classList.remove('inactive')
     } else {
         clearInterval(timerInterval);
         statusElement.textContent = "Disconnected";
         document.getElementById("timer").textContent = "0:00";
+        pill.classList.add('inactive')
         timerValue = 0;
     }
 }

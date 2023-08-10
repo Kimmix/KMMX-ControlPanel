@@ -171,7 +171,7 @@ button {
   cursor: pointer;
   border-radius: 12px;
   padding: 10px;
-  height: 100px;
+  height: 90px;
 }
 
 .header-title {
@@ -182,7 +182,7 @@ button {
 }
 
 .glow-icon {
-  margin: 0 10px;
+  margin: 0 6px;
   height: 50px;
   width: auto;
 }
@@ -194,17 +194,26 @@ button {
   height: 50px;
 } */
 
-.expression hr {
-  border: none;
-  border-top: 2px solid var(--white2-color);
-  margin: 0 10%;
+hr.cenhr {
+  margin: 0 auto;
+  width: 70%;
 }
 
 .expression-title {
   display: flex;
   justify-content: space-between;
+  height: 27px;
   width: 100%;
   align-items: end;
+}
+
+span#expBtnCount {
+  display: inline-block;
+  background-color: var(--acc2-color);
+  border-radius: 16px;
+  padding: 1px 7px;
+  font-size: 0.5rem;
+  text-align: center;
 }
 
 .expression-title h2 {
@@ -213,20 +222,21 @@ button {
 
 .dotted-array {
   max-width: 270px;
-  width: 40%;
+  width: 44%;
   margin-right: calc(10% - 30px);
 }
 
 .expression-container {
   display: flex;
   flex-direction: column;
-  margin-top: 7px;
+  margin-top: 10px;
   gap: 10px;
 }
 
 .expression-container img {
+  align-self: center;
   width: 70px;
-  padding: 0 10px;
+  margin: 0 10px;
 }
 
 .expression-container h3 {
@@ -270,7 +280,7 @@ button.exp-btn {
 button.exp-btn.active {
   background-color: var(--white-color);
   color: var(--black-color);
-  max-width: 100% !important;
+  max-width: 80% !important;
 }
 
 /* Viseme */
@@ -319,6 +329,7 @@ img.inline-icn {
   display: flex;
   flex-direction: row;
   align-items: flex-end;
+  gap: 6px;
 }
 
 .viseme-title-container h2 {

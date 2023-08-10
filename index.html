@@ -43,7 +43,7 @@
     <!-- Main control page -->
     <div class="status-header">
       <!-- <img class="status-pill" src="asset/svg/pill.svg" alt="Status pill"> -->
-      <svg class="status-pill inactive" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 97 31">
+      <svg id="s-pill" class="status-pill inactive" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 97 31">
         <rect width="97" height="31" rx="14.82" ry="14.82"/>
       </svg>
     </div>
@@ -58,7 +58,7 @@
       <!-- EXPRESSION -->
       <div class="expression">
         <div class="expression-title">
-          <h2>Expression</h2>
+          <h2>Expression <span id="expBtnCount">0</span></h2>
           <img class="dotted-array" src="asset/svg/dot-array.svg" alt="dotted array">
         </div>
         <div class="expression-container">
@@ -82,11 +82,10 @@
             <button id="button7" class="exp-btn" onclick="toggleButton('button7')">7</button>
             <button id="button8" class="exp-btn" onclick="toggleButton('button8')">8</button>
             <button id="button9" class="exp-btn" onclick="toggleButton('button9')">9</button>
-            <button id="button10" class="exp-btn" onclick="toggleButton('button10')">10</button>
           </div>
         </div>
       </div>
-      <hr>
+      <hr class="fade cenhr">
       <!-- VISEME -->
       <div class="viseme">
         <button id="toggleViseme" class="viseme-btn">
