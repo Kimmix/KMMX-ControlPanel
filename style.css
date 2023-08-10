@@ -224,6 +224,7 @@ span#expBtnCount {
   max-width: 270px;
   width: 44%;
   margin-right: calc(10% - 30px);
+  transition: transform 500ms ease;
 }
 
 .expression-container {
