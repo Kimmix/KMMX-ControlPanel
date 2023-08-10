@@ -116,3 +116,7 @@ function handleOrientation(event) {
     // Update element's position using CSS translate
     element.style.transform = "translate(" + yRotation + "px, " + xRotation + "px)";
 }
+
+function clamp(value, min, max) {
+    return Math.min(Math.max(value, min), max);
+}
