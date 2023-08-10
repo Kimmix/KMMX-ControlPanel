@@ -110,8 +110,8 @@ if (typeof DeviceOrientationEvent.requestPermission === "function") {
 
 // Function to handle device orientation changes
 function handleOrientation(event) {
-    xRotation = event.beta * 0.1; // x-axis rotation (tilt forward/backward)
-    yRotation = event.gamma * 0.7; // y-axis rotation (tilt left/right)
+    xRotation = clamp(event.beta, -70, 30); // x-axis rotation (tilt forward/backward)
+    yRotation = clamp(event.gamma, -100, 30); // y-axis rotation (tilt left/right)
 
     // Update element's position using CSS translate
     element.style.transform = "translate(" + yRotation + "px, " + xRotation + "px)";
