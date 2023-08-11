@@ -236,16 +236,18 @@ span#expBtnCount {
   gap: 10px;
 }
 
-.expression-container img {
-  align-self: center;
-  width: 70px;
-  margin: 0 10px;
+.expression-current {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  border-radius: 10px;
+  height: 200px;
 }
 
-.expression-container h3 {
-  font-size: 0.8rem;
-  color: unset;
-  padding-left: 16px;
+.expression-current img {
+  height: 80%;
+  width: auto;
 }
 
 .sub-button {
