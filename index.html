@@ -72,7 +72,7 @@
             </div>
           </button>
           <button id="button2" class="exp-btn" onclick="toggleButton('button2')">Button 2</button>
-          <button id="button3" class="exp-btn" onclick="toggleButton('button3')">Button 3</button>
+          <!-- <button id="button3" class="exp-btn" onclick="toggleButton('button3')">Button 3</button> -->
           <div class="sub-button">
             <button id="button4" class="exp-btn" onclick="toggleButton('button4')">
               <img src="https://placehold.co/70x70" alt="">
@@ -88,7 +88,7 @@
       <hr class="fade cenhr">
       <!-- VISEME -->
       <div class="viseme">
-        <button id="toggleViseme" class="viseme-btn">
+        <button id="toggleViseme" class="viseme-btn active">
           <div class="bitrate">
             <p>I<span class="superscript">2</span>S 16bit / 8KHz<br><span class="fade">256 sample</span></p>
           </div>
@@ -113,9 +113,42 @@
         </div>
       </div>
       <!-- Matrix -->
-      <div>
-        <h1>Matrix brightness</h1>
+      <div class="matrix">
+        <div class="matrix-container">
+          <div class="blub-icon">
+            <img src="asset/svg/bulb.svg" alt="Light bulb" style="width: 30px;">
+          </div>
+          <div class="matrix-bncontrol">
+            <div class="matrix-silder-header">
+              <h3>Matrix brightness</h3>
+              <div class="value-display">
+                <span id="sliderValue">0</span>
+                <span class="fade" style="font-size: 1.2rem;margin-left: -6px;">%</span>
+              </div>
+            </div>
+            <div class="dots-container">
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+        </div>
+        <input class="bn-slider" type="range" min="0" max="100" value="50" id="dotValue">
       </div>
+
     </section>
     <footer>
       <hr>

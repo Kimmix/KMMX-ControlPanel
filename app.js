@@ -41,19 +41,7 @@ var element = document.getElementById("movingElement");
 var xRotation = 0;
 var yRotation = 0;
 
-// Request permission to access device orientation
-if (typeof DeviceOrientationEvent.requestPermission === "function") {
-    DeviceOrientationEvent.requestPermission()
-        .then(permissionState => {
-            if (permissionState === "granted") {
-                window.addEventListener("deviceorientation", handleOrientation);
-            }
-        })
-        .catch(console.error);
-} else {
-    // Fallback for devices without requestPermission support
-    window.addEventListener("deviceorientation", handleOrientation);
-}
+window.addEventListener("deviceorientation", handleOrientation);
 
 // Function to handle device orientation changes
 function handleOrientation(event) {
@@ -175,3 +163,31 @@ function sendApiUpdate(value) {
     console.log('Sending API update:', value);
     // Replace this with your actual API call
 }
+
+const dots = document.querySelectorAll('.dot');
+const dotValueInput = document.getElementById('dotValue');
+
+dotValueInput.addEventListener('input', () => {
+    updateDots(dotValueInput.value);
+});
+
+function updateDots(value) {
+    const numOfWhiteDots = Math.ceil((value / 100) * 16);
+    dots.forEach((dot, index) => {
+        if (index < numOfWhiteDots) {
+            dot.classList.add('white-dot');
+        } else {
+            dot.classList.remove('white-dot');
+        }
+    });
+    const sliderValueElement = document.getElementById('sliderValue');
+    sliderValueElement.textContent = value;
+}
+
+dotValueInput.addEventListener('input', () => {
+    const value = dotValueInput.value;
+    updateDots(value);
+});
+
+// Update dots initially on page load
+updateDots(dotValueInput.value);

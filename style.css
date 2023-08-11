@@ -149,6 +149,7 @@ section.control-panel {
 .header {
   display: flex;
   flex-direction: row;
+  align-items: flex-end;
   margin-top: 55px;
 }
 
@@ -316,7 +317,8 @@ button.viseme-btn.active {
   opacity: 1;
   filter: grayscale(0%);
 }
-button.viseme-btn.active .bitrate{
+
+button.viseme-btn.active .bitrate {
   opacity: 1;
 }
 
@@ -381,13 +383,92 @@ img.inline-icn {
 
 .viseme-value-container h1 {
   font-size: 2.2rem;
-  font-weight: 400;
+  font-weight: 500;
 }
 
 .viseme-value-container h2 {
   line-height: 17px;
   font-size: 1.3em;
   font-weight: 400;
+}
+
+/* Matrix */
+.matrix {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 80px;
+}
+
+.matrix-container {
+  display: flex;
+  flex-direction: row;
+  margin: 0 12px;
+}
+
+.matrix .blub-icon {
+  display: flex;
+  width: 45px;
+  height: 45px;
+  background-color: var(--black3-color);
+  padding: 8px;
+  border-radius: 12px;
+  text-align: center;
+  justify-content: center;
+  margin-right: 10px;
+  margin-top: 7px;
+}
+
+.matrix .matrix-bncontrol {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.matrix-silder-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.matrix-silder-header h3 {
+  align-self: flex-end;
+  margin-bottom: 2px;
+}
+
+.value-display {
+  font-size: 2rem;
+  text-align: right;
+}
+
+input.bn-slider {
+  position: absolute;
+  right: 15px;
+  bottom: 0;
+  height: 50px;
+  width: calc(100% - 90px);
+  opacity: 0;
+}
+
+.dots-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.dot {
+  --dot-size: 12px;
+  width: var(--dot-size);
+  height: var(--dot-size);
+  background-color: var(--black3-color);
+  border-radius: 50%;
+  box-shadow: 0 0 0px #ffffffcc;
+  transition: background-color 300ms ease-out,
+    box-shadow 250ms ease-out 100ms;
+}
+
+.white-dot {
+  background-color: white;
+  box-shadow: 0 0 5px #ffffffcc;
 }
 
 /* FOOTER */
