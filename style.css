@@ -189,11 +189,11 @@ button {
 }
 
 /* EXPRESSION */
-/* .expression {
+.expression {
   display: flex;
   flex-direction: column;
-  height: 50px;
-} */
+  height: 100%;
+}
 
 hr.cenhr {
   margin: 0 auto;
@@ -278,6 +278,8 @@ button.exp-btn {
 .sub-button button {
   justify-content: center;
   min-width: 100px;
+  font-size: 2rem;
+  align-items: center;
 }
 
 button.exp-btn.active {

@@ -75,11 +75,9 @@ h2 {
 
 section {
   width: 100%;
-  min-height: 100vh;
+  /* min-height: 100vh; */
   display: flex;
   position: relative;
-  /* perspective: 8px;
-  perspective-origin: 0%; */
 }
 
 .bold {
