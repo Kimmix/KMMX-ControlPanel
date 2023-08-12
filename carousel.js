@@ -59,12 +59,12 @@ function pointerUp() {
     // console.log(movedBy)
 
     // if moved enough negative then snap to next slide if there is one
-    if (movedBy < -5 && currentIndex < slides.length - 1) {
+    if (movedBy < -100 && currentIndex < slides.length - 1) {
         currentIndex += 1
     }
 
     // if moved enough positive then snap to previous slide if there is one
-    if (movedBy > 5 && currentIndex > 0) {
+    if (movedBy > 100 && currentIndex > 0) {
         currentIndex -= 1
     }
 
