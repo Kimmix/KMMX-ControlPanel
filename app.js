@@ -104,10 +104,10 @@ function isStatusConnected(bool) {
 }
 
 // Viseme
-// const toggleViseme = document.getElementById('toggleViseme');
-// toggleViseme.addEventListener('click', () => {
-//     toggleViseme.classList.toggle('active');
-// });
+const toggleViseme = document.getElementById('toggleViseme');
+toggleViseme.addEventListener('click', () => {
+    toggleViseme.classList.toggle('active');
+});
 
 const dots = document.querySelectorAll('.dot');
 const dotValueInput = document.getElementById('dotValue');

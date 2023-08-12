@@ -101,7 +101,10 @@
   }
 }
 
-section.control-panel {
+.control-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
   width: 100%;
 }
 
@@ -146,16 +149,18 @@ section.control-panel {
   display: flex;
   flex-direction: row;
   align-items: flex-end;
-  margin-top: 55px;
+  height: 20%;
+  max-height: 140px;
+  min-height: 80px;
 }
 
 h2 {
-  font-size: 1.5em;
+  font-size: 1.6em;
   font-weight: 500;
 }
 
 h3 {
-  font-size: 1.2em;
+  font-size: 1.3em;
   font-weight: 300;
   color: var(--white2-color);
 }
@@ -166,21 +171,21 @@ button {
   color: var(--white-color);
   border: none;
   cursor: pointer;
-  border-radius: 12px;
+  border-radius: 10%;
   padding: 10px;
-  height: 90px;
+  height: 120px;
 }
 
 .header-title {
   display: flex;
   flex-direction: column;
-  margin-top: auto;
-  line-height: 0.85;
+  margin-bottom: 4px;
+  line-height: 0.95;
 }
 
 .glow-icon {
   margin: 0 6px;
-  height: 50px;
+  height: 64px;
   width: auto;
 }
 
@@ -188,17 +193,18 @@ button {
 .expression {
   display: flex;
   flex-direction: column;
+  height: 80%;
 }
 
 hr.cenhr {
-  margin: 0 auto;
+  margin: 20px auto;
   width: 70%;
 }
 
 .expression-title {
   display: flex;
   justify-content: space-between;
-  height: 27px;
+  height: 60px;
   width: 100%;
   align-items: end;
 }
@@ -213,7 +219,7 @@ span#expBtnCount {
 }
 
 .expression-title h2 {
-  font-size: 1.3rem;
+  font-size: 1.6rem;
 }
 
 .dotted-array {
@@ -227,8 +233,9 @@ span#expBtnCount {
 .expression-container {
   display: flex;
   flex-direction: column;
-  margin-top: 10px;
+  margin-top: 20px;
   gap: 10px;
+  height: 100%;
 }
 
 .expression-current {
@@ -237,7 +244,8 @@ span#expBtnCount {
   align-items: center;
   background-color: white;
   border-radius: 10px;
-  height: 200px;
+  height: 100%;
+  margin: 10px 0;
 }
 
 .expression-current img {
@@ -248,8 +256,10 @@ span#expBtnCount {
 .sub-button {
   display: flex;
   overflow-x: auto;
-  white-space: nowrap;
   gap: 10px;
+  height: 100%;
+  max-height: 100px;
+  align-items: center;
 }
 
 button.exp-btn {
@@ -274,9 +284,10 @@ button.exp-btn {
 
 .sub-button button {
   justify-content: center;
-  min-width: 100px;
+  min-width: 120px;
   font-size: 2rem;
   align-items: center;
+  height: 100%;
 }
 
 button.exp-btn.active {
@@ -287,14 +298,7 @@ button.exp-btn.active {
 
 /* Viseme */
 .viseme {
-  flex-direction: row;
-  display: inline-flex;
-  overflow: hidden;
-  scrollbar-width: none;
-  transform: translateX(0);
-  will-change: transform;
-  transition: transform 0.3s ease-out;
-  cursor: grab;
+  /* height: 50%; */
 }
 
 .slider-container {
@@ -332,12 +336,16 @@ button.exp-btn.active {
 }
 
 button.viseme-btn {
+  background-image: url(asset/svg/viseme-wave.svg);
+  background-repeat: no-repeat;
+  background-position: -20px 10px;
   position: relative;
   flex-direction: column;
   justify-content: flex-end;
   gap: 8px;
   height: 175px;
   width: 100%;
+  border-radius: 10px;
   opacity: 0.5;
   filter: grayscale(100%);
   transition: opacity 0.4s ease,
@@ -379,6 +387,15 @@ img.inline-icn {
 
 .viseme-title {
   display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: flex-end;
+}
+
+.viseme-toggle {
+  font-size: 0.8rem;
+  font-weight: 400;
+
 }
 
 .viseme-title-container {
@@ -441,13 +458,13 @@ img.inline-icn {
   position: relative;
   display: flex;
   flex-direction: column;
+  margin-top: 10px;
   margin-bottom: 80px;
 }
 
 .matrix-container {
   display: flex;
   flex-direction: row;
-  margin: 0 12px;
 }
 
 .matrix .blub-icon {

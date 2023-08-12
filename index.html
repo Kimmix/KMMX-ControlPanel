@@ -47,7 +47,7 @@
         <rect width="97" height="31" rx="14.82" ry="14.82" />
       </svg>
     </div>
-    <section id="pairingMode" class="control-panel">
+    <div id="pairingMode" class="control-panel">
       <div class="header">
         <img class="glow-icon" src="asset/svg/control-icon.svg" alt="Icon">
         <div class="header-title">
@@ -78,50 +78,48 @@
       </div>
       <hr class="fade cenhr">
       <!-- VISEME -->
-      <div class="slider-container">
-        <div class="slide" style="background-color: aliceblue;">
-          <img src="asset/maskable_icon.png" alt="" srcset="">
-        </div>
-        <div class="slide" style="background-color:blue;">
-          <img src="asset/maskable_icon.png" alt="" srcset="">
-        </div>
-        <div class="slide" style="background-color:blueviolet;">
-          <img src="asset/maskable_icon.png" alt="" srcset="">
-        </div>
-        <!-- <div class="slide">
-          <button id="toggleViseme" class="viseme-btn active">
-            <div class="bitrate">
-              <p>I<span class="superscript">2</span>S 16bit / 8KHz<br><span class="fade">256 sample</span></p>
+      <!-- <div class="viseme">
+        <div class="slider-container">
+          <div class="slide" style="background-color: aliceblue;">
+            <img src="asset/maskable_icon.png" alt="" srcset="">
+          </div>
+          <div class="slide" style="background-color:blue;">
+            <img src="asset/maskable_icon.png" alt="" srcset="">
+          </div>
+          <div class="slide" style="background-color:blueviolet;">
+            <img src="asset/maskable_icon.png" alt="" srcset="">
+          </div>
+      </div> -->
+      <div class="viseme">
+        <button id="toggleViseme" class="viseme-btn active">
+          <div class="bitrate">
+            <p>I<span class="superscript">2</span>S 16bit / 8KHz<br><span class="fade">256 sample</span></p>
+          </div>
+          <!-- <img src="asset/svg/viseme-wave.svg" alt="Viseme wave"> -->
+          <div class="viseme-title">
+            <div class="viseme-title-container">
+              <img class="inline-icn" src="asset/svg/wave-icon.svg" alt="Wave icon">
+              <h2>Viseme</h2>
             </div>
-            <img src="asset/svg/viseme-wave.svg" alt="Viseme wave">
-            <div class="viseme-title">
-              <div class="viseme-title-container">
-                <img class="inline-icn" src="asset/svg/wave-icon.svg" alt="Wave icon">
-                <h2>Viseme</h2>
-              </div>
-            </div>
-          </button>
-        </div>
-        <div class="slide">
-          <div class="viseme-value-slider">
-            <h3>Noise threshold</h3>
-            <div class="number-slider">
-              <span>1</span>
-              <span>2</span>
-              <span>3</span>
-              <span>4</span>
-              <span>5</span>
-              <span>6</span>
-              <span>7</span>
-              <span>8</span>
-              <span>9</span>
+            <div class="viseme-toggle">
+              <span>on</span>&nbsp;|&nbsp;<span class="fade">off</span>
             </div>
           </div>
+        </button>
+        <!-- <div class="viseme-value-slider">
+          <h3>Noise threshold</h3>
+          <div class="number-slider">
+            <span>1</span>
+            <span>2</span>
+            <span>3</span>
+            <span>4</span>
+            <span>5</span>
+            <span>6</span>
+            <span>7</span>
+            <span>8</span>
+            <span>9</span>
+          </div>
         </div> -->
-      </div>
-      <div class="indicator">
-        <div class="indicator-dot white-dot"></div>
-        <div class="indicator-dot"></div>
       </div>
       <!-- Matrix -->
       <div class="matrix">
@@ -160,30 +158,31 @@
         <input class="bn-slider" type="range" min="0" max="100" value="50" id="dotValue">
       </div>
 
-    </section>
-    <footer>
-      <hr>
-      <div class="footer-container">
-        <div class="connection-stat">
-          <span id="status">Disconnected</span>
-          <p>&nbsp;·&nbsp;</p>
-          <span id="timer" class="timer">0:00</span>
+    </div>
+  </div>
+  <footer>
+    <hr>
+    <div class="footer-container">
+      <div class="connection-stat">
+        <span id="status">Disconnected</span>
+        <p>&nbsp;·&nbsp;</p>
+        <span id="timer" class="timer">0:00</span>
+      </div>
+      <div class="footer-info">
+        <div class="footer-info-l">
+          <p>Kimmix ©2023</p>
+          <p class="sub"><span><img src="asset/svg/lock.svg" alt="lock"></span> Authorized use only</p>
         </div>
-        <div class="footer-info">
-          <div class="footer-info-l">
-            <p>Kimmix ©2023</p>
-            <p class="sub"><span><img src="asset/svg/lock.svg" alt="lock"></span> Authorized use only</p>
-          </div>
-          <div class="footer-info-r">
-            <p class="sub">V1.0</p>
-          </div>
+        <div class="footer-info-r">
+          <p class="sub">V1.0</p>
         </div>
       </div>
-    </footer>
+    </div>
+  </footer>
   </div>
   <script defer src="app.js"></script>
   <script defer src="control.js"></script>
-  <script defer src="carousel.js"></script>
+  <!-- <script defer src="carousel.js"></script> -->
 </body>
 
 </html>

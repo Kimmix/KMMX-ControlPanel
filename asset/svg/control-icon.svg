@@ -1,1 +1,29 @@
-<svg data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 121.26 106.18"><defs><linearGradient id="a" x1="97.41" y1="106.18" x2="97.41" y2="41.19" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#f9826c"/><stop offset=".12" stop-color="#fa766c"/><stop offset=".47" stop-color="#fc5b6c"/><stop offset=".77" stop-color="#fe4a6c"/><stop offset="1" stop-color="#ff446c"/></linearGradient></defs><g data-name="Layer 1"><path style="fill:none;stroke-miterlimit:10;stroke-width:3px;stroke:#fff;filter: drop-shadow(0 0 7px #fff);" d="m5.46 98.79 62.8-93.85v93.85L49.52 69.3 5.46 98.79z"/><path style="stroke:url(#a);fill:none;stroke-miterlimit:10;stroke-width:3px;filter: drop-shadow(0 0 7px #f51b3f);" d="M115.55 100.94 75.07 45.77v54.33l18.39-12.65 22.09 13.49z"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" data-name="Layer 2" viewBox="0 0 152 137">
+  <defs>
+    <filter id="a" filterUnits="userSpaceOnUse">
+      <feOffset dy="1"/>
+      <feGaussianBlur result="blur" stdDeviation="5"/>
+      <feFlood flood-color="#fff" flood-opacity=".8"/>
+      <feComposite in2="blur" operator="in"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="b" filterUnits="userSpaceOnUse">
+      <feOffset dy="1"/>
+      <feGaussianBlur result="blur-2" stdDeviation="5"/>
+      <feFlood flood-color="#f05" flood-opacity=".8"/>
+      <feComposite in2="blur-2" operator="in"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <linearGradient id="c" x1="112.82" x2="112.82" y1="120.24" y2="55.26" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f9826c"/>
+      <stop offset=".12" stop-color="#fa766c"/>
+      <stop offset=".47" stop-color="#fc5b6c"/>
+      <stop offset=".77" stop-color="#fe4a6c"/>
+      <stop offset="1" stop-color="#ff446c"/>
+    </linearGradient>
+  </defs>
+  <g fill="none" stroke-miterlimit="10" stroke-width="3" data-name="Layer 1">
+    <path stroke="#fff" d="M20.87 112.85 83.67 19v93.85L64.93 83.36l-44.06 29.49z" filter="url(#a)"/>
+    <path stroke="url(#c)" d="M130.96 115 90.48 59.84v54.32l18.39-12.65L130.96 115z" filter="url(#b)"/>
+  </g>
+</svg>
