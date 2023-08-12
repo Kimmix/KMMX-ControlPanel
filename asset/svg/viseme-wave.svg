@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" data-name="Layer 2" viewBox="0 0 1006 106.62">
+<svg xmlns="http://www.w3.org/2000/svg" data-name="Layer 2" viewBox="0 0 1006 236.06">
   <defs>
-    <linearGradient id="a" x1="0" x2="1006" y1="53.31" y2="53.31" gradientUnits="userSpaceOnUse">
+    <linearGradient id="a" x1="0" x2="1006" y1="118.03" y2="118.03" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#f9826c"/>
       <stop offset=".12" stop-color="#fa766c"/>
       <stop offset=".47" stop-color="#fc5b6c"/>
@@ -8,5 +8,5 @@
       <stop offset="1" stop-color="#ff446c"/>
     </linearGradient>
   </defs>
-  <path fill="url(#a)" d="M0 54.06c224-.5 114 118.5 284.87 0 175.76-121.89 95.13.5 266.53 0 174.6-.51 68.6 74.5 169.6 2.68 156.32-111.15 67-4.18 285-2.98" data-name="Layer 1"/>
+  <path fill="url(#a)" d="M0 119.69c224-1.11 114 262.37 284.87 0 175.76-269.86 95.13 1.11 266.53 0C726 118.56 620 284.64 721 125.62c156.32-246.1 67-9.26 285-6.59" data-name="Layer 1"/>
 </svg>

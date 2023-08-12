@@ -104,65 +104,10 @@ function isStatusConnected(bool) {
 }
 
 // Viseme
-const toggleViseme = document.getElementById('toggleViseme');
-toggleViseme.addEventListener('click', () => {
-    toggleViseme.classList.toggle('active');
-});
-
-// Drag control
-const noiseThreshold = document.getElementById('noiseThreshold');
-let dragging = false;
-let currentValue = 100;
-
-noiseThreshold.textContent = formatNumber(currentValue);
-
-// Debounce function to delay the API call until a quiet period has passed
-function debounce(func, delay) {
-    let timeoutId;
-    return function (...args) {
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => {
-            func.apply(this, args);
-        }, delay);
-    };
-}
-
-const debouncedApiCall = debounce(sendApiUpdate, 500); // Wait for 500ms of quiet period
-
-
-noiseThreshold.addEventListener('mousedown', () => {
-    dragging = true;
-});
-
-document.addEventListener('mouseup', () => {
-    dragging = false;
-    debouncedApiCall(currentValue);
-});
-
-document.addEventListener('mousemove', (event) => {
-    if (dragging) {
-        const deltaY = event.movementY;
-        currentValue -= deltaY * 100;
-
-        // Ensure the value stays within the desired range
-        currentValue = Math.min(5000, Math.max(100, currentValue));
-
-        noiseThreshold.textContent = formatNumber(currentValue);
-    }
-});
-
-function formatNumber(value) {
-    if (value >= 1000) {
-        return (value / 1000).toFixed(1) + 'k';
-    }
-    return value.toString();
-}
-
-// Simulate sending API update
-function sendApiUpdate(value) {
-    console.log('Sending API update:', value);
-    // Replace this with your actual API call
-}
+// const toggleViseme = document.getElementById('toggleViseme');
+// toggleViseme.addEventListener('click', () => {
+//     toggleViseme.classList.toggle('active');
+// });
 
 const dots = document.querySelectorAll('.dot');
 const dotValueInput = document.getElementById('dotValue');

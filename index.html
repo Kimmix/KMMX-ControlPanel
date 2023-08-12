@@ -78,30 +78,50 @@
       </div>
       <hr class="fade cenhr">
       <!-- VISEME -->
-      <div class="viseme">
-        <button id="toggleViseme" class="viseme-btn active">
-          <div class="bitrate">
-            <p>I<span class="superscript">2</span>S 16bit / 8KHz<br><span class="fade">256 sample</span></p>
-          </div>
-          <img src="asset/svg/viseme-wave.svg" alt="Viseme wave">
-          <div class="viseme-title">
-            <div class="viseme-title-container">
-              <img class="inline-icn" src="asset/svg/wave-icon.svg" alt="Wave icon">
-              <h2>Viseme</h2>
+      <div class="slider-container">
+        <div class="slide" style="background-color: aliceblue;">
+          <img src="asset/maskable_icon.png" alt="" srcset="">
+        </div>
+        <div class="slide" style="background-color:blue;">
+          <img src="asset/maskable_icon.png" alt="" srcset="">
+        </div>
+        <div class="slide" style="background-color:blueviolet;">
+          <img src="asset/maskable_icon.png" alt="" srcset="">
+        </div>
+        <!-- <div class="slide">
+          <button id="toggleViseme" class="viseme-btn active">
+            <div class="bitrate">
+              <p>I<span class="superscript">2</span>S 16bit / 8KHz<br><span class="fade">256 sample</span></p>
+            </div>
+            <img src="asset/svg/viseme-wave.svg" alt="Viseme wave">
+            <div class="viseme-title">
+              <div class="viseme-title-container">
+                <img class="inline-icn" src="asset/svg/wave-icon.svg" alt="Wave icon">
+                <h2>Viseme</h2>
+              </div>
+            </div>
+          </button>
+        </div>
+        <div class="slide">
+          <div class="viseme-value-slider">
+            <h3>Noise threshold</h3>
+            <div class="number-slider">
+              <span>1</span>
+              <span>2</span>
+              <span>3</span>
+              <span>4</span>
+              <span>5</span>
+              <span>6</span>
+              <span>7</span>
+              <span>8</span>
+              <span>9</span>
             </div>
           </div>
-        </button>
-        <div class="viseme-value">
-          <div class="viseme-value-container">
-            <h1 id="noiseThreshold">400</h1>
-            <h2>Noise<br><span class="fade">threshold</span></h2>
-          </div>
-          <div class="viseme-vl"></div>
-          <div class="viseme-value-container">
-            <h1>0.2</h1>
-            <h2>Smooth<br><span class="fade">alpha</span></h2>
-          </div>
-        </div>
+        </div> -->
+      </div>
+      <div class="indicator">
+        <div class="indicator-dot white-dot"></div>
+        <div class="indicator-dot"></div>
       </div>
       <!-- Matrix -->
       <div class="matrix">
@@ -163,6 +183,7 @@
   </div>
   <script defer src="app.js"></script>
   <script defer src="control.js"></script>
+  <script defer src="carousel.js"></script>
 </body>
 
 </html>

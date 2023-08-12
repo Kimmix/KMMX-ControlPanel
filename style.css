@@ -87,9 +87,7 @@
   display: none;
   opacity: 0;
   animation: fadeIn 1s forwards;
-  justify-content: center;
   margin: 0 15px;
-  width: auto;
   overflow: hidden;
 }
 
@@ -104,9 +102,7 @@
 }
 
 section.control-panel {
-  /* max-width: 800px; */
-  flex-direction: column;
-  gap: 18px;
+  width: 100%;
 }
 
 .status-header {
@@ -192,7 +188,6 @@ button {
 .expression {
   display: flex;
   flex-direction: column;
-  height: 100%;
 }
 
 hr.cenhr {
@@ -247,7 +242,7 @@ span#expBtnCount {
 
 .expression-current img {
   height: 80%;
-  width: auto;
+  width: 70%;
 }
 
 .sub-button {
@@ -292,9 +287,41 @@ button.exp-btn.active {
 
 /* Viseme */
 .viseme {
+  flex-direction: row;
+  display: inline-flex;
+  overflow: hidden;
+  scrollbar-width: none;
+  transform: translateX(0);
+  will-change: transform;
+  transition: transform 0.3s ease-out;
+  cursor: grab;
+}
+
+.slider-container {
+  display: inline-flex;
+  overflow: hidden;
+  scrollbar-width: none;
+  transform: translateX(0);
+  will-change: transform;
+  transition: transform 0.3s ease-out;
+  cursor: grab;
+}
+
+.slide {
+  width: 100vw;
+  height: 300px;
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.grabbing {
+  cursor: grabbing;
+}
+
+.grabbing .slide img {
+  transform: scale(0.9);
+  box-shadow: 5px 5px 40px -1px var(--shadow);
 }
 
 .viseme-vl {
@@ -309,7 +336,7 @@ button.viseme-btn {
   flex-direction: column;
   justify-content: flex-end;
   gap: 8px;
-  height: 125px;
+  height: 175px;
   width: 100%;
   opacity: 0.5;
   filter: grayscale(100%);
@@ -341,7 +368,6 @@ button.viseme-btn.active img.inline-icn {
 }
 
 .viseme-btn img {
-  max-height: 50px;
   margin: 0 4px;
 }
 
@@ -366,34 +392,48 @@ img.inline-icn {
   font-size: 1.8em;
 }
 
-.viseme-value {
+.indicator {
   display: flex;
-  flex-direction: row;
-  width: 100%;
-  justify-content: space-around;
+  justify-content: center;
+  gap: 8px;
 }
 
-.viseme-value-container {
+.indicator-dot {
+  --dot-size: 8px;
+  width: var(--dot-size);
+  height: var(--dot-size);
+  background-color: var(--black3-color);
+  border-radius: 50%;
+  transition: background-color 300ms ease-out;
+}
+
+.viseme-value-slider {
   display: flex;
-  flex-direction: row;
-  width: 100%;
+  text-align: center;
+  flex-direction: column;
+}
+
+.viseme-value-slider h3 {
+  color: var(--white-color);
+}
+
+.number-slider {
+  display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 9px;
+  gap: 35px;
+  background-color: var(--black3-color);
+  border-radius: 8px;
+  height: 1.9rem;
+  width: 85%;
+  margin: 8px auto;
+  padding: 1px;
 }
 
-.viseme-value-container:nth-child(1) {
-  justify-content: flex-end;
-}
-
-.viseme-value-container h1 {
-  font-size: 2.2rem;
-  font-weight: 500;
-}
-
-.viseme-value-container h2 {
-  line-height: 17px;
-  font-size: 1.3em;
-  font-weight: 400;
+.number-slider span {
+  color: var(--black4-color);
+  font-size: 1rem;
+  font-weight: 600;
 }
 
 /* Matrix */
