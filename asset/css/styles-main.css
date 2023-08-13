@@ -70,12 +70,12 @@ h1 {
 }
 
 h2 {
-  font-size: clamp(1.7rem, 3.6vw, 4.5em);
+  font-size: clamp(1.7rem, 2.8vh, 4.5em);
   font-weight: 500;
 }
 
 h3 {
-  font-size: clamp(1.3rem, 2.8vw, 3.5em);
+  font-size: clamp(1.5rem, 1.5vh, 3.5em);
   font-weight: 300;
 }
 
