@@ -40,6 +40,7 @@ function onDisconnected(event) {
 }
 
 function onExpressionButtonClick(buttonId) {
+  setCurrentExpression(buttonId);
   if (!eyeStateCharacteristic) {
     return;
   }

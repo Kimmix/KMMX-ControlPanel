@@ -63,10 +63,10 @@
         </div>
         <div class="expression-container">
           <div class="expression-current">
-            <img src="asset/svg/expression/default.svg" alt="Expression">
+            <img id="current-exp" src="asset/svg/expression/default.svg" alt="Current Expression">
           </div>
-          <div class="sub-button">
-            <button id="button1" class="exp-btn" onclick="toggleButton('button1')">
+          <div id="exp-btn" class="sub-button">
+            <!-- <button id="button1" class="exp-btn" onclick="toggleButton('button1')">
               <img src="asset/svg/expression/default.svg" alt="Expression">
             </button>
             <button id="button2" class="exp-btn" onclick="toggleButton('button2')">
@@ -78,7 +78,7 @@
             <button id="button4" class="exp-btn" onclick="toggleButton('button4')">4</button>
             <button id="button5" class="exp-btn" onclick="toggleButton('button5')">5</button>
             <button id="button6" class="exp-btn" onclick="toggleButton('button6')">6</button>
-            <button id="button7" class="exp-btn" onclick="toggleButton('button7')">7</button>
+            <button id="button7" class="exp-btn" onclick="toggleButton('button7')">7</button> -->
           </div>
         </div>
       </div>
@@ -97,18 +97,17 @@
           </div>
       </div> -->
       <div class="viseme">
-        <button id="toggleViseme" class="viseme-btn active">
+        <button id="visemeBtn" onclick="toggleViseme()" class="viseme-btn active">
           <div class="bitrate">
             <p>I<span class="superscript">2</span>S 16bit / 8KHz<br><span class="fade">256 sample</span></p>
           </div>
-          <!-- <img src="asset/svg/viseme-wave.svg" alt="Viseme wave"> -->
           <div class="viseme-title">
             <div class="viseme-title-container">
               <img class="inline-icn" src="asset/svg/wave-icon.svg" alt="Wave icon">
               <h2>Viseme</h2>
             </div>
             <div class="viseme-toggle">
-              <span>on</span>&nbsp;|&nbsp;<span class="fade">off</span>
+              <span id="visemeOn" class="active">on</span>&nbsp;|&nbsp;<span id="visemeOff">off</span>
             </div>
           </div>
         </button>

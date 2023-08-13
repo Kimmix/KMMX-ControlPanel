@@ -262,6 +262,7 @@ span#expBtnCount {
 }
 
 .expression-current img {
+  max-height: 160px;
   height: 80%;
   width: 70%;
   filter: invert(0);
@@ -422,9 +423,19 @@ img.inline-icn {
 
 .viseme-toggle {
   font-size: 0.8rem;
-  font-weight: 400;
-
+  font-weight: 500;
 }
+
+.viseme-toggle span{
+  color: var(--white2-color);
+  transition: color 500ms ease-out;
+}
+
+.viseme-toggle span.active{
+  color: var(--white-color);
+  font-weight: 600;
+}
+
 
 .viseme-title-container {
   display: flex;
