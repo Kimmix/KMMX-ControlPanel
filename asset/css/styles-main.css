@@ -52,8 +52,8 @@ body {
   scroll-behavior: smooth;
   width: 100%;
   /* height: 100vh; */
-  /* height: fill-available;
-  height: -webkit-fill-available; */
+  height: fill-available;
+  height: -webkit-fill-available;
   overflow-x: hidden;
   scrollbar-width: none;
   background-color: var(--black2-color);
@@ -63,6 +63,17 @@ body {
   -webkit-tap-highlight-color: #00000000;
   user-select: none;
   overscroll-behavior-y: contain;
+}
+
+img {
+  width: 100%;
+  height: auto;
+  user-drag: none;
+  -webkit-user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 
 h1 {
@@ -98,9 +109,4 @@ h3 {
 .superscript {
   vertical-align: super;
   font-size: smaller;
-}
-
-img {
-  width: 100%;
-  height: auto;
 }

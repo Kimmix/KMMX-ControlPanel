@@ -79,10 +79,6 @@ function clamp(value, min, max) {
 }
 
 // ------- Expression ---------
-// Count Expression button
-var expBtnCount = document.getElementsByClassName("exp-btn").length;
-document.getElementById("expBtnCount").textContent = expBtnCount;
-
 // Toggle button state
 let activeButton = null;
 function toggleButton(buttonId) {
@@ -120,11 +116,12 @@ const expression = [
         buttonId: "button5",
         src: "asset/svg/expression/default.svg",
     },
-
 ]
 
-const container = document.getElementById('exp-btn');
+// Count Expression button
+document.getElementById("expBtnCount").textContent = expression.length;
 
+const container = document.getElementById('exp-btn');
 expression.forEach(exp => {
     const button = document.createElement('button');
     button.id = exp.buttonId;
@@ -163,8 +160,13 @@ dotValueInput.addEventListener('input', () => {
     updateDots(dotValueInput.value);
 });
 
+let prevNumOfWhiteDots = 0;
 function updateDots(value) {
     const numOfWhiteDots = Math.ceil((value / 100) * 16);
+    if (numOfWhiteDots !== prevNumOfWhiteDots) {
+        vibrateDevice();
+        prevNumOfWhiteDots = numOfWhiteDots;
+    }
     dots.forEach((dot, index) => {
         if (index < numOfWhiteDots) {
             dot.classList.add('white-dot');
