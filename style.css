@@ -106,6 +106,8 @@
   flex-direction: column;
   height: 100dvh;
   width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 .status-header {
@@ -426,12 +428,12 @@ img.inline-icn {
   font-weight: 500;
 }
 
-.viseme-toggle span{
+.viseme-toggle span {
   color: var(--white2-color);
   transition: color 500ms ease-out;
 }
 
-.viseme-toggle span.active{
+.viseme-toggle span.active {
   color: var(--white-color);
   font-weight: 600;
 }

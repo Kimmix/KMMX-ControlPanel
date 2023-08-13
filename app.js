@@ -121,7 +121,7 @@ const expression = [
 // Count Expression button
 document.getElementById("expBtnCount").textContent = expression.length;
 
-const container = document.getElementById('exp-btn');
+const expBtn = document.getElementById('exp-btn');
 expression.forEach(exp => {
     const button = document.createElement('button');
     button.id = exp.buttonId;
@@ -133,7 +133,7 @@ expression.forEach(exp => {
     img.alt = 'Expression';
 
     button.appendChild(img);
-    container.appendChild(button);
+    expBtn.appendChild(button);
 });
 
 let currentExp = 0;
@@ -154,16 +154,40 @@ function toggleViseme() {
     vibrateDevice();
 }
 
-const dots = document.querySelectorAll('.dot');
-const dotValueInput = document.getElementById('dotValue');
+function createDots(numDots) {
+    const dotsContainer = document.getElementById('dots-container');
+    for (let i = 0; i < numDots; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        dotsContainer.appendChild(dot);
+    }
+}
+
+function updateDots() {
+    const deviceWidth = window.innerWidth;
+    const numDots = Math.floor(deviceWidth / 30); // Adjust as needed
+    const dotsContainer = document.getElementById('dots-container');
+    dotsContainer.innerHTML = ''; // Clear previous dots
+    createDots(numDots);
+}
+updateDots(); // On page load
+
+// Update dots when the window is resized
+window.addEventListener('resize', () => {
+    updateDots();
+    renderDots(dotValueInput.value);
+});
+
+let dotValueInput = document.getElementById('dotValue');
 dotValueInput.addEventListener('input', () => {
-    updateDots(dotValueInput.value);
+    renderDots(dotValueInput.value);
 });
 
 let prevNumOfWhiteDots = 0;
-function updateDots(value) {
-    const numOfWhiteDots = Math.ceil((value / 100) * 16);
-    if (numOfWhiteDots !== prevNumOfWhiteDots) {
+function renderDots(value, firstTime) {
+    let dots = document.querySelectorAll('.dot');
+    const numOfWhiteDots = Math.ceil((value / 100) * dots.length);
+    if ((numOfWhiteDots !== prevNumOfWhiteDots) && !firstTime) {
         vibrateDevice();
         prevNumOfWhiteDots = numOfWhiteDots;
     }
@@ -177,15 +201,7 @@ function updateDots(value) {
     const sliderValueElement = document.getElementById('sliderValue');
     sliderValueElement.textContent = value;
 }
-
-dotValueInput.addEventListener('input', () => {
-    const value = dotValueInput.value;
-    updateDots(value);
-});
-
-// On page load
-updateDots(dotValueInput.value);
-
+renderDots(dotValueInput.value, true); // On page load
 
 function vibrateDevice() {
     if (navigator.vibrate) {
