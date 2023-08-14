@@ -19,18 +19,25 @@ function startBLE() {
       device.addEventListener('gattserverdisconnected', onDisconnected);
       return device.gatt.connect();
     })
-    .then(server => server.getPrimaryService(bleUUID.service))
+    .then(server => {
+      console.log('Connected to GATT Server');
+      return server.getPrimaryService(bleUUID.service);
+    })
     .then(service => service.getCharacteristic(bleUUID.eyeStateCharacteristic))
     .then(characteristic => {
-      eyeStateCharacteristic = characteristic
+      eyeStateCharacteristic = characteristic; // Store the characteristic for later use
       return characteristic.readValue();
     })
     .then(value => {
       console.log('Device connected');
       console.log(`Eye state is ${value.getUint8(0)}`);
+      setExpression(value.getUint8(0));
       isStatusConnected(true);
     })
-    .catch(error => { console.error(error); });
+    .catch(error => {
+      console.error('Error:', error);
+      alert(error);
+    });
 }
 
 function onDisconnected(event) {

@@ -88,6 +88,35 @@ function clamp(value, min, max) {
 }
 
 //* --------- Expression ---------
+const expression = [
+    {
+        id: 0,
+        buttonId: "button1",
+        src: "asset/svg/expression/default.svg",
+    },
+    {
+        id: 1,
+        buttonId: "button2",
+        src: "asset/svg/expression/googly.svg",
+    },
+    {
+        id: 2,
+        buttonId: "button3",
+        src: "asset/svg/expression/heart.svg",
+    },
+    {
+        id: 3,
+        buttonId: "button4",
+        src: "asset/svg/expression/googly.svg",
+    },
+    {
+        id: 4,
+        buttonId: "button5",
+        src: "asset/svg/expression/default.svg",
+    },
+]
+document.getElementById("expBtnCount").textContent = expression.length;
+
 // Toggle button state
 let activeButton = null;
 function toggleButton(buttonId) {
@@ -104,30 +133,15 @@ function toggleButton(buttonId) {
     }
 }
 
-const expression = [
-    {
-        buttonId: "button1",
-        src: "asset/svg/expression/default.svg",
-    },
-    {
-        buttonId: "button2",
-        src: "asset/svg/expression/heart.svg",
-    },
-    {
-        buttonId: "button3",
-        src: "asset/svg/expression/googly.svg",
-    },
-    {
-        buttonId: "button4",
-        src: "asset/svg/expression/heart.svg",
-    },
-    {
-        buttonId: "button5",
-        src: "asset/svg/expression/default.svg",
-    },
-]
-
-document.getElementById("expBtnCount").textContent = expression.length;
+function setExpression(i) {
+    console.log(i);
+    let button = expression.find(({ id }) => id === i);
+    if (!button) {
+        toggleButton(expression[0].buttonId)
+    } else {
+        toggleButton(button.buttonId)
+    }
+}
 
 const expBtn = document.getElementById('exp-btn');
 expression.forEach(exp => {
