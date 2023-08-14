@@ -1,18 +1,34 @@
-// Check BLE compatibility
+//! Show main page
+document.addEventListener('DOMContentLoaded', function () {
+    const splash = document.getElementById('splash');
+    splash.addEventListener('click', function () {
+        startBLE();
+        // showControlPanel();
+    });
+});
+
+//? Check BLE compatibility
 try {
     navigator.bluetooth.getAvailability()
 } catch (error) {
     console.error('This browser does not support BLE!');
 }
 
-// Fading FavIcon
+//? Fading FavIcon
 const favicon = document.querySelector('link[rel="icon"]')
 document.addEventListener("visibilitychange", () => {
     const hidden = document.hidden
     favicon.setAttribute("href", `/favicon${hidden ? "-hidden" : ""}.png`)
 })
 
-// Timer
+//? Device vibrate
+function vibrateDevice() {
+    if (navigator.vibrate) {
+        navigator.vibrate(10);
+    }
+}
+
+//? Timer
 let isConnected = true;
 let timerValue = 0;
 let timerInterval;
@@ -24,15 +40,7 @@ function updateStatusAndTimer() {
     timerElement.textContent = formattedTimer;
 }
 
-// Show main page
-document.addEventListener('DOMContentLoaded', function () {
-    const splash = document.getElementById('splash');
-    splash.addEventListener('click', function () {
-        // startBLE();
-        showControlPanel();
-    });
-});
-
+//? Connection status 
 const statusElement = document.getElementById("status");
 const pill = document.getElementById("s-pill");
 function isStatusConnected(bool) {
@@ -53,13 +61,14 @@ function isStatusConnected(bool) {
     }
 }
 
+//? Show control panel
 function showControlPanel() {
     // document.documentElement.requestFullscreen();
     splash.style.display = 'none';
     mainContent.style.display = 'flex';
 }
 
-// ------- Gyroscope ---------
+//* ------- Gyroscope ---------
 // Get the moving element
 var element = document.getElementById("movingElement");
 // Initialize variables to store gyroscope data
@@ -78,7 +87,7 @@ function clamp(value, min, max) {
     return Math.min(Math.max(value, min), max);
 }
 
-// ------- Expression ---------
+//* --------- Expression ---------
 // Toggle button state
 let activeButton = null;
 function toggleButton(buttonId) {
@@ -118,7 +127,6 @@ const expression = [
     },
 ]
 
-// Count Expression button
 document.getElementById("expBtnCount").textContent = expression.length;
 
 const expBtn = document.getElementById('exp-btn');
@@ -143,7 +151,7 @@ function setCurrentExpression(setId) {
     vibrateDevice();
 }
 
-// Viseme
+//* --------- Viseme ---------
 const visemeBtn = document.getElementById('visemeBtn');
 const visemeOn = document.getElementById('visemeOn');
 const visemeOff = document.getElementById('visemeOff');
@@ -203,8 +211,3 @@ function renderDots(value, firstTime) {
 }
 renderDots(dotValueInput.value, true); // On page load
 
-function vibrateDevice() {
-    if (navigator.vibrate) {
-        navigator.vibrate(10);
-    }
-}
