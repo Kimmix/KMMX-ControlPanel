@@ -6,6 +6,8 @@ const bleUUID = {
 };
 
 let eyeStateCharacteristic;
+let displayBrightnessCharacteristic;
+let visemeCharacteristic;
 
 function startBLE() {
   navigator.bluetooth.requestDevice({
@@ -23,16 +25,35 @@ function startBLE() {
       console.log('Connected to GATT Server');
       return server.getPrimaryService(bleUUID.service);
     })
-    .then(service => service.getCharacteristic(bleUUID.eyeStateCharacteristic))
-    .then(characteristic => {
-      eyeStateCharacteristic = characteristic; // Store the characteristic for later use
-      return characteristic.readValue();
+    .then(service => {
+      return Promise.all([
+        service.getCharacteristic(bleUUID.eyeStateCharacteristic),
+        service.getCharacteristic(bleUUID.displayBrightnessCharacteristic),
+        service.getCharacteristic(bleUUID.visemeCharacteristic)
+      ]);
     })
-    .then(value => {
+    .then(characteristics => {
+      [eyeStateCharacteristic, displayBrightnessCharacteristic, visemeCharacteristic] = characteristics;
+      return Promise.all([
+        eyeStateCharacteristic.readValue(),
+        displayBrightnessCharacteristic.readValue(),
+        visemeCharacteristic.readValue()
+      ]);
+    })
+    .then(values => {
+      const eyeStateValue = values[0].getUint8(0);
+      const displayBrightnessValue = values[1].getUint8(0);
+      const visemeValue = values[2].getUint8(0);
       console.log('Device connected');
-      console.log(`Eye state is ${value.getUint8(0)}`);
-      setExpression(value.getUint8(0));
+      console.log(`Eye state is ${eyeStateValue}`);
+      console.log(`Display brightness is ${displayBrightnessValue}`);
+      console.log(`Viseme value is ${visemeValue}`);
+
       isStatusConnected(true);
+
+      setExpression(eyeStateValue);
+      setBrightnessvalue(displayBrightnessValue);
+
     })
     .catch(error => {
       console.error('Error:', error);
@@ -46,31 +67,22 @@ function onDisconnected(event) {
   isStatusConnected(false);
 }
 
-function onExpressionButtonClick(buttonId) {
-  setCurrentExpression(buttonId);
-  if (!eyeStateCharacteristic) {
-    return;
-  }
-  let value = setFace(buttonId);
+async function setEyeStateCharacteristic(value) {
   eyeStateCharacteristic.writeValue(Uint8Array.of(value))
     .then(_ => {
-      console.log('> Characteristic User Description changed to: ' + Uint8Array.of(value));
+      console.log('> Characteristic eye state changed to: ' + Uint8Array.of(value));
     })
     .catch(error => {
       console.log('Argh! ' + error);
     });
 }
 
-
-function setFace(buttonId) {
-  switch (buttonId) {
-    case "button1":
-      return 0
-    case "button2":
-      return 1
-    case "button3":
-      return 2
-    default:
-      return 0
-  }
+async function setVisemeCharacteristic(value) {
+  visemeCharacteristic.writeValue(Uint8Array.of(value))
+    .then(_ => {
+      console.log('> Characteristic viseme changed to: ' + Uint8Array.of(value));
+    })
+    .catch(error => {
+      console.log('Argh! ' + error);
+    });
 }

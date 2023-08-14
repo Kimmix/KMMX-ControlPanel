@@ -119,15 +119,17 @@ document.getElementById("expBtnCount").textContent = expression.length;
 
 // Toggle button state
 let activeButton = null;
-function toggleButton(buttonId) {
-    const button = document.getElementById(buttonId);
+async function toggleButton(btnId) {
+    const button = document.getElementById(btnId);
     if (activeButton !== null) {
         activeButton.classList.remove('active');
     }
     if (activeButton !== button) {
         button.classList.add('active');
         activeButton = button;
-        onExpressionButtonClick(buttonId);
+        let selected = expression.find(({ buttonId }) => buttonId === btnId);
+        await setEyeStateCharacteristic(selected.id);
+        setCurrentExpression(selected);
     } else {
         activeButton = null;
     }
@@ -159,8 +161,7 @@ expression.forEach(exp => {
 });
 
 let currentExp = 0;
-function setCurrentExpression(setId) {
-    const btn = expression.find(({ buttonId }) => buttonId === setId);
+function setCurrentExpression(btn) {
     document.getElementById("current-exp").src = btn.src;
     vibrateDevice();
 }
@@ -185,28 +186,33 @@ function createDots(numDots) {
     }
 }
 
-function updateDots() {
+function renderTotalDots() {
     const deviceWidth = window.innerWidth;
     const numDots = Math.floor(deviceWidth / 30); // Adjust as needed
     const dotsContainer = document.getElementById('dots-container');
     dotsContainer.innerHTML = ''; // Clear previous dots
     createDots(numDots);
 }
-updateDots(); // On page load
-
-// Update dots when the window is resized
-window.addEventListener('resize', () => {
-    updateDots();
-    renderDots(dotValueInput.value);
-});
+renderTotalDots(); // On page load
 
 let dotValueInput = document.getElementById('dotValue');
+function setBrightnessvalue(i) {
+    console.log(i);
+    dotValueInput.value = i;
+    renderWhiteDots(dotValueInput.value);
+}
+// Update dots when the window is resized
+window.addEventListener('resize', () => {
+    renderTotalDots();
+    renderWhiteDots(dotValueInput.value);
+});
+
 dotValueInput.addEventListener('input', () => {
-    renderDots(dotValueInput.value);
+    renderWhiteDots(dotValueInput.value);
 });
 
 let prevNumOfWhiteDots = 0;
-function renderDots(value, firstTime) {
+function renderWhiteDots(value, firstTime) {
     let dots = document.querySelectorAll('.dot');
     const numOfWhiteDots = Math.ceil((value / 100) * dots.length);
     if ((numOfWhiteDots !== prevNumOfWhiteDots) && !firstTime) {
@@ -223,5 +229,3 @@ function renderDots(value, firstTime) {
     const sliderValueElement = document.getElementById('sliderValue');
     sliderValueElement.textContent = value;
 }
-renderDots(dotValueInput.value, true); // On page load
-
