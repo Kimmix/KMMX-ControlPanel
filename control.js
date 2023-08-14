@@ -56,7 +56,7 @@ async function toggleButton(btnId) {
         button.classList.add('active');
         activeButton = button;
         let selected = expression.find(({ buttonId }) => buttonId === btnId);
-        await setEyeStateCharacteristic(selected.id);
+        setEyeStateCharacteristic(selected.id);
         setCurrentExpression(selected);
     } else {
         activeButton = null;

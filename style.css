@@ -6,6 +6,59 @@
   overflow: hidden;
 } */
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes maxWidth {
+  from {
+    max-width: 0%;
+  }
+
+  to {
+    max-width: 100%;
+  }
+}
+
+@keyframes flickerAnimation {
+
+  0%,
+  19.999%,
+  22%,
+  62.999%,
+  64%,
+  64.999%,
+  70%,
+  100% {
+    opacity: 1;
+  }
+
+  20%,
+  21.999%,
+  63%,
+  63.999%,
+  65%,
+  69.999% {
+    opacity: 0.2;
+  }
+}
+
+@keyframes pulsate {
+  0% {
+    filter: drop-shadow(-2px 0 2px var(--pill-glow-color)) drop-shadow(2px 0 4px var(--pill-glow-color));
+  }
+
+  100% {
+    filter: drop-shadow(-5px 0 7px var(--pill-glow-color)) drop-shadow(5px 0 7px var(--pill-glow-color));
+  }
+}
+
 .splash {
   position: fixed;
   top: 0;
@@ -85,18 +138,27 @@
 
 .main-content {
   display: none;
-  opacity: 0;
-  animation: fadeIn 1s forwards;
+  animation: controlIn 1800ms linear;
   margin: 0 15px;
   overflow: hidden;
 }
 
-@keyframes fadeIn {
-  from {
+@keyframes controlIn {
+  0% {
     opacity: 0;
+    filter: blur(50px) grayscale(1) brightness(0.3);
   }
 
-  to {
+  30% {
+    filter: blur(20px) grayscale(0.7) brightness(0.4);
+  }
+
+  50% {
+    filter: blur(1px) grayscale(0.4) brightness(0.7);
+  }
+
+  100% {
+    filter: blur(0px) grayscale(0) brightness(1);
     opacity: 1;
   }
 }
@@ -135,16 +197,6 @@
 
 .status-pill rect {
   fill: var(--pill-color);
-}
-
-@keyframes pulsate {
-  0% {
-    filter: drop-shadow(-2px 0 2px var(--pill-glow-color)) drop-shadow(2px 0 4px var(--pill-glow-color));
-  }
-
-  100% {
-    filter: drop-shadow(-5px 0 7px var(--pill-glow-color)) drop-shadow(5px 0 7px var(--pill-glow-color));
-  }
 }
 
 .header {
@@ -214,6 +266,11 @@ button {
 hr.cenhr {
   margin: 20px auto;
   width: 70%;
+  max-width: 0%;
+
+  transition: max-width ease 100ms,
+    transform ease 100ms;
+  animation: maxWidth 1200ms linear 700ms forwards;
 }
 
 .expression-title {
@@ -241,8 +298,10 @@ span#expBtnCount {
   max-width: 270px;
   width: 44%;
   margin-right: calc(10% - 30px);
-  transition: transform 100ms ease;
-  z-index: -1;
+
+  transition: transform 100ms ease,
+    opacity ease 200ms;
+  animation: fadeIn 3000ms linear 500ms forwards;
 }
 
 .expression-container {
@@ -251,16 +310,54 @@ span#expBtnCount {
   margin-top: 20px;
   gap: 10px;
   height: 100%;
+  z-index: 1;
+}
+
+.expression-current-container {
+  height: 100%;
+  margin: 10px 0;
 }
 
 .expression-current {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: white;
   border-radius: 10px;
+  background-color: white;
+  width: 100%;
   height: 100%;
-  margin: 10px 0;
+  margin: 0 auto;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+
+  overflow: hidden;
+  transition: max-width ease 100ms,
+    transform ease 100ms,
+    clip-path 0.5s ease-in-out;
+  animation: expCurIn 1000ms ease;
+}
+
+.expression-current.active {
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+
+@keyframes expCurIn {
+  0% {
+    max-width: 0%;
+    transform: scaleY(0);
+  }
+
+  20% {
+    max-width: 0%;
+  }
+
+  60% {
+    transform: scaleY(0.4);
+  }
+
+  100% {
+    max-width: 100%;
+    transform: scaleY(1);
+  }
 }
 
 .expression-current img {
@@ -268,6 +365,10 @@ span#expBtnCount {
   height: 80%;
   width: 70%;
   filter: invert(0);
+
+  transition: opacity ease 200ms;
+  opacity: 0;
+  animation: fadeIn 500ms ease 700ms forwards;
 }
 
 .sub-button {
@@ -277,6 +378,9 @@ span#expBtnCount {
   height: 50%;
   max-height: 138px;
   align-items: center;
+
+  transition: max-width ease 100ms;
+  animation: maxWidth 1800ms ease-in-out;
 }
 
 
@@ -379,8 +483,21 @@ button.viseme-btn {
   border-radius: 10px;
   opacity: 0.5;
   filter: grayscale(100%);
+
+  clip-path: circle(10% at 125% 0%);
   transition: opacity 0.4s ease,
     filter 0.4s ease;
+  animation: visBtnIn 1500ms linear 500ms forwards;
+}
+
+@keyframes visBtnIn {
+  0% {
+    clip-path: circle(10% at 125% 0%);
+  }
+
+  100% {
+    clip-path: circle(150% at 20% 15%);
+  }
 }
 
 button.viseme-btn.active {

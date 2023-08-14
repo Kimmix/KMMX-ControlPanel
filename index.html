@@ -61,8 +61,10 @@
           <img id="movingElement" class="dotted-array" src="asset/svg/dot-array.svg" alt="dotted array">
         </div>
         <div class="expression-container">
-          <div class="expression-current">
-            <img id="current-exp" src="asset/svg/expression/default.svg" alt="Current Expression">
+          <div class="expression-current-container">
+            <div class="expression-current">
+              <img id="current-exp" src="asset/svg/expression/default.svg" alt="Current Expression">
+            </div>
           </div>
           <div id="exp-btn" class="sub-button">
           </div>
@@ -132,9 +134,9 @@
         </div>
         <input class="bn-slider" type="range" min="0" max="100" value="0" id="dotValue">
       </div>
-
     </div>
   </div>
+
   <footer>
     <hr>
     <div class="footer-container">
@@ -155,6 +157,7 @@
     </div>
   </footer>
   </div>
+  
   <script defer src="app.js"></script>
   <script defer src="control.js"></script>
   <script defer src="ble.js"></script>
