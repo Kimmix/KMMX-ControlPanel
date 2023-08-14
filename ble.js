@@ -1,66 +1,57 @@
 const bleUUID = {
   service: "c1449275-bf34-40ab-979d-e34a1fdbb129",
-  displayBrightnessCharacteristic: "9fdfd124-966b-44f7-8331-778c4d1512fc",
-  eyeStateCharacteristic: "49a36bb2-1c66-4e5c-8ff3-28e55a64beb3",
-  visemeCharacteristic: "493d06f3-0fa0-4a90-88f1-ebaed0da9b80"
+  characteristic : {
+    display: "9fdfd124-966b-44f7-8331-778c4d1512fc",
+    eyeState: "49a36bb2-1c66-4e5c-8ff3-28e55a64beb3",
+    viseme: "493d06f3-0fa0-4a90-88f1-ebaed0da9b80"
+  }
 };
 
 let eyeStateCharacteristic;
 let displayBrightnessCharacteristic;
 let visemeCharacteristic;
 
-function startBLE() {
-  navigator.bluetooth.requestDevice({
-    filters: [
-      { name: "KMMX-BLE" },
-      { services: [bleUUID.service] },
-    ]
-  })
-    .then(device => {
-      console.log(device.name);
-      device.addEventListener('gattserverdisconnected', onDisconnected);
-      return device.gatt.connect();
-    })
-    .then(server => {
-      console.log('Connected to GATT Server');
-      return server.getPrimaryService(bleUUID.service);
-    })
-    .then(service => {
-      return Promise.all([
-        service.getCharacteristic(bleUUID.eyeStateCharacteristic),
-        service.getCharacteristic(bleUUID.displayBrightnessCharacteristic),
-        service.getCharacteristic(bleUUID.visemeCharacteristic)
-      ]);
-    })
-    .then(characteristics => {
-      [eyeStateCharacteristic, displayBrightnessCharacteristic, visemeCharacteristic] = characteristics;
-      return Promise.all([
-        eyeStateCharacteristic.readValue(),
-        displayBrightnessCharacteristic.readValue(),
-        visemeCharacteristic.readValue()
-      ]);
-    })
-    .then(values => {
-      const eyeStateValue = values[0].getUint8(0);
-      const displayBrightnessValue = values[1].getUint8(0);
-      const visemeValue = values[2].getUint8(0);
-      console.log('Device connected');
-      console.log(`Eye state is ${eyeStateValue}`);
-      console.log(`Display brightness is ${displayBrightnessValue}`);
-      console.log(`Viseme value is ${visemeValue}`);
-
-      isStatusConnected(true);
-
-      setBrightnessvalue(displayBrightnessValue);
-      setExpression(eyeStateValue);
-      setViseme(visemeValue);
-
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      alert(error);
+async function startBLE() {
+  try {
+    const device = await navigator.bluetooth.requestDevice({
+      filters: [
+        { name: "KMMX-BLE" },
+        { services: [bleUUID.service] },
+      ],
     });
+
+    console.log(device.name);
+    device.addEventListener('gattserverdisconnected', onDisconnected);
+    const server = await device.gatt.connect();
+
+    console.log('Connected to GATT Server');
+    const service = await server.getPrimaryService(bleUUID.service);
+
+    console.log('Getting service...');
+    eyeStateCharacteristic = await service.getCharacteristic(bleUUID.characteristic.eyeState);
+    displayBrightnessCharacteristic = await service.getCharacteristic(bleUUID.characteristic.display);
+    visemeCharacteristic = await service.getCharacteristic(bleUUID.characteristic.viseme);
+
+    console.log('Reading value...');
+    let eyeStateValue = await eyeStateCharacteristic.readValue();
+    let displayBrightnessValue = await displayBrightnessCharacteristic.readValue();
+    let visemeValue = await visemeCharacteristic.readValue();
+
+    console.log(`Eye state is ${eyeStateValue.getUint8(0)}`);
+    console.log(`Display brightness is ${displayBrightnessValue.getUint8(0)}`);
+    console.log(`Viseme value is ${visemeValue.getUint8(0)}`);
+
+    isStatusConnected(true);
+    setBrightnessvalue(displayBrightnessValue.getUint8(0));
+    setExpression(eyeStateValue.getUint8(0));
+    setViseme(visemeValue.getUint8(0));
+
+  } catch (error) {
+    console.error('Error:', error);
+    alert(error);
+  }
 }
+
 
 function onDisconnected(event) {
   const device = event.target;
@@ -107,7 +98,6 @@ const throttledAndDebouncedSetDisplayBrightness = throttleAndDebounce(setdisplay
 // Throttle and debounce function
 function throttleAndDebounce(func, throttleDelay, debounceDelay) {
   let isThrottled = false;
-  let isDebounced = false;
   let lastCallTime = 0;
   let timeoutId;
 
@@ -125,11 +115,9 @@ function throttleAndDebounce(func, throttleDelay, debounceDelay) {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => {
       isThrottled = false;
-      isDebounced = false;
       if (Date.now() - lastCallTime >= debounceDelay) {
         func.apply(this, args);
         lastCallTime = Date.now();
-        isDebounced = true;
       }
     }, debounceDelay);
   }
