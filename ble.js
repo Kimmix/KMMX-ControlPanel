@@ -88,14 +88,18 @@ function setVisemeCharacteristic(value) {
     });
 }
 
-async function setdisplayBrightnessCharacteristic(value) {
-  displayBrightnessCharacteristic.writeValue(Uint8Array.of(value))
-    .then(_ => {
-      console.log('> Characteristic viseme changed to: ' + Uint8Array.of(value));
-    })
-    .catch(error => {
-      console.log('Argh! ' + error);
-    });
+let prevBrightnessValue = -1;
+function setdisplayBrightnessCharacteristic(value) {
+  if (value !== prevBrightnessValue) {
+    displayBrightnessCharacteristic.writeValue(Uint8Array.of(value))
+      .then(_ => {
+        console.log('> Characteristic viseme changed to: ' + Uint8Array.of(value));
+        prevBrightnessValue = value; // Update the previous value
+      })
+      .catch(error => {
+        console.log('Argh! ' + error);
+      });
+  }
 }
 
 const throttledAndDebouncedSetDisplayBrightness = throttleAndDebounce(setdisplayBrightnessCharacteristic, 300, 200);

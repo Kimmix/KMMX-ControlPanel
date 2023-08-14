@@ -29,6 +29,22 @@ const expression = [
 ]
 document.getElementById("expBtnCount").textContent = expression.length;
 
+// Create sub button
+const expBtn = document.getElementById('exp-btn');
+expression.forEach(exp => {
+    const button = document.createElement('button');
+    button.id = exp.buttonId;
+    button.className = 'exp-btn';
+    button.onclick = () => toggleButton(exp.buttonId);
+
+    const img = document.createElement('img');
+    img.src = exp.src;
+    img.alt = 'Expression';
+
+    button.appendChild(img);
+    expBtn.appendChild(button);
+});
+
 // Toggle button state
 let activeButton = null;
 async function toggleButton(btnId) {
@@ -48,7 +64,6 @@ async function toggleButton(btnId) {
 }
 
 function setExpression(i) {
-    console.log(i);
     let button = expression.find(({ id }) => id === i);
     if (!button) {
         toggleButton(expression[0].buttonId)
@@ -56,21 +71,6 @@ function setExpression(i) {
         toggleButton(button.buttonId)
     }
 }
-
-const expBtn = document.getElementById('exp-btn');
-expression.forEach(exp => {
-    const button = document.createElement('button');
-    button.id = exp.buttonId;
-    button.className = 'exp-btn';
-    button.onclick = () => toggleButton(exp.buttonId);
-
-    const img = document.createElement('img');
-    img.src = exp.src;
-    img.alt = 'Expression';
-
-    button.appendChild(img);
-    expBtn.appendChild(button);
-});
 
 let currentExp = 0;
 function setCurrentExpression(btn) {
@@ -131,7 +131,6 @@ renderTotalDots(); // On page load
 
 let dotValueInput = document.getElementById('dotValue');
 function setBrightnessvalue(i) {
-    console.log(i);
     dotValueInput.value = i;
     renderWhiteDots(dotValueInput.value);
 }
