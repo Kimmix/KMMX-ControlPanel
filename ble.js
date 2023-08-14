@@ -98,21 +98,6 @@ async function setdisplayBrightnessCharacteristic(value) {
     });
 }
 
-
-const debouncedSetDisplayBrightness = debounce(setdisplayBrightnessCharacteristic, 100);
-
-// Debounce function
-function debounce(func, delay) {
-  let timeoutId;
-  return function (...args) {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => {
-      func.apply(this, args);
-    }, delay);
-  };
-}
-
-
 const throttledAndDebouncedSetDisplayBrightness = throttleAndDebounce(setdisplayBrightnessCharacteristic, 300, 200);
 
 // Throttle and debounce function
