@@ -51,8 +51,9 @@ function startBLE() {
 
       isStatusConnected(true);
 
-      setExpression(eyeStateValue);
       setBrightnessvalue(displayBrightnessValue);
+      setExpression(eyeStateValue);
+      setViseme(visemeValue);
 
     })
     .catch(error => {
@@ -77,7 +78,7 @@ async function setEyeStateCharacteristic(value) {
     });
 }
 
-async function setVisemeCharacteristic(value) {
+function setVisemeCharacteristic(value) {
   visemeCharacteristic.writeValue(Uint8Array.of(value))
     .then(_ => {
       console.log('> Characteristic viseme changed to: ' + Uint8Array.of(value));
@@ -85,4 +86,64 @@ async function setVisemeCharacteristic(value) {
     .catch(error => {
       console.log('Argh! ' + error);
     });
+}
+
+async function setdisplayBrightnessCharacteristic(value) {
+  displayBrightnessCharacteristic.writeValue(Uint8Array.of(value))
+    .then(_ => {
+      console.log('> Characteristic viseme changed to: ' + Uint8Array.of(value));
+    })
+    .catch(error => {
+      console.log('Argh! ' + error);
+    });
+}
+
+
+const debouncedSetDisplayBrightness = debounce(setdisplayBrightnessCharacteristic, 100);
+
+// Debounce function
+function debounce(func, delay) {
+  let timeoutId;
+  return function (...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
+}
+
+
+const throttledAndDebouncedSetDisplayBrightness = throttleAndDebounce(setdisplayBrightnessCharacteristic, 300, 200);
+
+// Throttle and debounce function
+function throttleAndDebounce(func, throttleDelay, debounceDelay) {
+  let isThrottled = false;
+  let isDebounced = false;
+  let lastCallTime = 0;
+  let timeoutId;
+
+  function throttledAndDebounced(...args) {
+    const currentTime = Date.now();
+
+    // Throttle
+    if (!isThrottled || currentTime - lastCallTime >= throttleDelay) {
+      func.apply(this, args);
+      lastCallTime = currentTime;
+      isThrottled = true;
+    }
+
+    // Debounce
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      isThrottled = false;
+      isDebounced = false;
+      if (Date.now() - lastCallTime >= debounceDelay) {
+        func.apply(this, args);
+        lastCallTime = Date.now();
+        isDebounced = true;
+      }
+    }, debounceDelay);
+  }
+
+  return throttledAndDebounced;
 }

@@ -175,8 +175,30 @@ function toggleViseme() {
     visemeOn.classList.toggle('active');
     visemeOff.classList.toggle('active');
     vibrateDevice();
+    updateViseme();
 }
 
+function setViseme(i) {
+    if (i && !isVisemeOn()) {
+        toggleViseme();
+    } else if (!i && isVisemeOn()) {
+        toggleViseme();
+    }
+}
+
+function updateViseme() {
+    if (isVisemeOn()) {
+        setVisemeCharacteristic(1);
+    } else {
+        setVisemeCharacteristic(0);
+    }
+}
+
+function isVisemeOn() {
+    return visemeBtn.classList.contains('active')
+}
+
+//* --------- Matrix Brightness ---------
 function createDots(numDots) {
     const dotsContainer = document.getElementById('dots-container');
     for (let i = 0; i < numDots; i++) {
@@ -208,7 +230,10 @@ window.addEventListener('resize', () => {
 });
 
 dotValueInput.addEventListener('input', () => {
-    renderWhiteDots(dotValueInput.value);
+    let value = dotValueInput.value
+    renderWhiteDots(value);
+    // debouncedSetDisplayBrightness(value);
+    throttledAndDebouncedSetDisplayBrightness(value);
 });
 
 let prevNumOfWhiteDots = 0;
