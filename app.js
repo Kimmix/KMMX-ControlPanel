@@ -77,7 +77,7 @@ var yRotation = 0;
 window.addEventListener("deviceorientation", handleOrientation);
 // Function to handle device orientation changes
 function handleOrientation(event) {
-    xRotation = clamp((event.beta - 20) * 0.4, -70, 30); // x-axis rotation (tilt forward/backward)
+    xRotation = clamp((event.beta - 90) * 0.4, -70, 30); // x-axis rotation (tilt forward/backward)
     yRotation = clamp(event.gamma * 0.6, -100, 20); // y-axis rotation (tilt left/right)
 
     // Update element's position using CSS translate
