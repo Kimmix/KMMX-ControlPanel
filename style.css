@@ -654,7 +654,7 @@ input.vsm-slider {
   position: absolute;
   bottom: 0;
   height: 50px;
-  width: 100%;
+  width: calc(100% - 40px);
   opacity: 0;
 }
 
@@ -708,10 +708,10 @@ input.vsm-slider {
 
 input.bn-slider {
   position: absolute;
-  right: 15px;
+  right: -1px;
   bottom: 0;
   height: 50px;
-  width: calc(100% - 90px);
+  width: calc(100% - 66px);
   opacity: 0;
 }
 
