@@ -329,17 +329,11 @@ span#expBtnCount {
   width: 100%;
   height: 100%;
   margin: 0 auto;
-  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
 
   overflow: hidden;
   transition: max-width ease 100ms,
-    transform ease 100ms,
-    clip-path 0.5s ease-in-out;
+    transform ease 100ms;
   animation: expCurIn 1000ms ease;
-}
-
-.expression-current.active {
-  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
 }
 
 @keyframes expCurIn {
@@ -439,6 +433,7 @@ button.exp-btn.active img {
   display: flex;
   flex-direction: column;
   height: 220px;
+  overflow-y: hidden;
 }
 
 .slider-container {
@@ -478,7 +473,8 @@ button.exp-btn.active img {
 button.viseme-btn {
   background-image: url(asset/svg/viseme-wave.svg);
   background-repeat: no-repeat;
-  background-position: 0 26px;
+  background-position: -470px 30px;
+  background-size: 230%;
   position: relative;
   flex-direction: column;
   justify-content: flex-end;
@@ -488,10 +484,10 @@ button.viseme-btn {
   border-radius: 10px;
   opacity: 0.5;
   filter: grayscale(100%);
-
   clip-path: circle(10% at 125% 0%);
-  transition: opacity 0.4s ease,
-    filter 0.4s ease;
+  transition: opacity 400ms ease,
+    filter 400ms ease,
+    background 600ms ease;
   animation: visBtnIn 1500ms linear 500ms forwards;
 }
 
@@ -508,6 +504,8 @@ button.viseme-btn {
 button.viseme-btn.active {
   opacity: 1;
   filter: grayscale(0%);
+  background-size: 100%;
+  background-position: 0 35px;
 }
 
 button.viseme-btn.active .bitrate {
@@ -593,15 +591,18 @@ img.inline-icn {
   text-align: center;
   flex-direction: column;
   margin-top: 12px;
-  font-size: 12px;
+  font-size: 10px;
+  max-height: 100%;
   transition: filter 300ms ease-out,
-    opacity 300ms ease-out;
+    opacity 300ms ease-out,
+    max-height 500ms ease-out;
 }
 
 .viseme-value-slider.disable {
   pointer-events: none;
   filter: grayscale(1);
   opacity: 0.1;
+  max-height: 0%;
 }
 
 .viseme-value-slider h3 {
@@ -615,15 +616,15 @@ img.inline-icn {
   align-items: center;
   background-color: var(--black3-color);
   border-radius: 8px;
-  height: 36px;
+  height: 26px;
   width: 100%;
   margin: 5px auto;
   padding: 3px 0;
+  font-size: 18px;
 }
 
 .number-slider span {
   color: var(--black4-color);
-  font-size: 20px;
   font-weight: 600;
   display: inline-block;
   position: relative;
@@ -646,7 +647,7 @@ img.inline-icn {
   left: 0;
   text-align: center;
   width: 100%;
-  font-size: 25px;
+  font-size: 1.3em;
 }
 
 input.vsm-slider {
