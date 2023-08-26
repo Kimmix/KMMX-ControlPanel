@@ -106,6 +106,25 @@ function updateViseme() {
     }
 }
 
+//* Visme slider
+let vismeInput = document.getElementById('vsmValue');
+vismeInput.addEventListener('input', () => {
+    const sliderNumbers = document.querySelectorAll(".sliderNumber");
+    const rangeInput = document.getElementById("vsmValue");
+
+    rangeInput.addEventListener("input", () => {
+        const inputValue = parseInt(rangeInput.value, 10);
+
+        sliderNumbers.forEach((number, index) => {
+            if (index + 1 === inputValue) {
+                number.classList.add("active");
+            } else {
+                number.classList.remove("active");
+            }
+        });
+    });
+});
+
 function isVisemeOn() {
     return visemeBtn.classList.contains('active')
 }
@@ -130,10 +149,10 @@ function renderTotalDots() {
 renderTotalDots(); // On page load
 
 let dotValueInput = document.getElementById('dotValue');
-function setBrightnessvalue(i) {
-    dotValueInput.value = i;
-    renderWhiteDots(dotValueInput.value);
-}
+// function setBrightnessvalue(i) {
+//     dotValueInput.value = i;
+//     renderWhiteDots(dotValueInput.value);
+// }
 // Update dots when the window is resized
 window.addEventListener('resize', () => {
     renderTotalDots();

@@ -586,6 +586,8 @@ img.inline-icn {
   display: flex;
   text-align: center;
   flex-direction: column;
+  margin-top: 12px;
+  font-size: 12px;
 }
 
 .viseme-value-slider h3 {
@@ -594,21 +596,51 @@ img.inline-icn {
 
 .number-slider {
   display: flex;
-  justify-content: center;
+  position: relative;
+  justify-content: space-around;
   align-items: center;
-  gap: 35px;
   background-color: var(--black3-color);
   border-radius: 8px;
-  height: 1.9rem;
-  width: 85%;
-  margin: 8px auto;
-  padding: 1px;
+  height: 2rem;
+  width: 100%;
+  margin: 5px auto;
+  padding: 3px 0;
 }
 
 .number-slider span {
   color: var(--black4-color);
-  font-size: 1rem;
+  font-size: 18px;
   font-weight: 600;
+  display: inline-block;
+  position: relative;
+  padding: 3px 5px;
+  border-radius: 4px;
+  transition: background-color 0.3s, color 0.3s;
+  width: 20px;
+}
+
+.number-slider span.active {
+  background-color: var(--acc2-color);
+  color: var(--white-color);
+}
+
+.number-slider span.default-dot::before {
+  content: '.';
+  display: inline-block;
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  text-align: center;
+  width: 100%;
+  font-size: 25px;
+}
+
+input.vsm-slider {
+  position: absolute;
+  bottom: 0;
+  height: 50px;
+  width: 100%;
+  opacity: 0;
 }
 
 /* Matrix */

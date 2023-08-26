@@ -1,4 +1,5 @@
 const bleUUID = {
+  name: "KMMX-BLE",
   service: "c1449275-bf34-40ab-979d-e34a1fdbb129",
   characteristic : {
     display: "9fdfd124-966b-44f7-8331-778c4d1512fc",
@@ -15,7 +16,7 @@ async function startBLE() {
   try {
     const device = await navigator.bluetooth.requestDevice({
       filters: [
-        { name: "KMMX-BLE" },
+        { name: bleUUID.name },
         { services: [bleUUID.service] },
       ],
     });

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        .slider-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+
+        .sliderNumber {
+            display: inline-block;
+            margin: 5px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .active {
+            background-color: #007bff;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="slider-container">
+        <span class="sliderNumber">1</span>
+        <span class="sliderNumber">2</span>
+        <span class="sliderNumber">3</span>
+        <span class="sliderNumber">4</span>
+        <span class="sliderNumber">5</span>
+        <span class="sliderNumber">6</span>
+        <span class="sliderNumber">7</span>
+        <span class="sliderNumber">8</span>
+        <span class="sliderNumber">9</span>
+    </div>
+
+    <input class="vsm-slider" type="range" min="1" max="9" value="2" id="vsmValue">
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const sliderNumbers = document.querySelectorAll(".sliderNumber");
+            const rangeInput = document.getElementById("vsmValue");
+
+            rangeInput.addEventListener("input", () => {
+                const inputValue = parseInt(rangeInput.value, 10);
+
+                sliderNumbers.forEach((number, index) => {
+                    if (index + 1 === inputValue) {
+                        number.classList.add("active");
+                    } else {
+                        number.classList.remove("active");
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>
