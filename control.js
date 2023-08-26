@@ -3,31 +3,31 @@
 const expression = [
     {
         id: 0,
-        buttonId: "button1",
-        src: "asset/svg/expression/default.svg",
+        buttonId: 'button1',
+        src: 'asset/svg/expression/default.svg',
     },
     {
         id: 1,
-        buttonId: "button2",
-        src: "asset/svg/expression/googly.svg",
+        buttonId: 'button2',
+        src: 'asset/svg/expression/googly.svg',
     },
     {
         id: 2,
-        buttonId: "button3",
-        src: "asset/svg/expression/heart.svg",
+        buttonId: 'button3',
+        src: 'asset/svg/expression/heart.svg',
     },
     {
         id: 3,
-        buttonId: "button4",
-        src: "asset/svg/expression/googly.svg",
+        buttonId: 'button4',
+        src: 'asset/svg/expression/googly.svg',
     },
     {
         id: 4,
-        buttonId: "button5",
-        src: "asset/svg/expression/default.svg",
+        buttonId: 'button5',
+        src: 'asset/svg/expression/default.svg',
     },
 ]
-document.getElementById("expBtnCount").textContent = expression.length;
+document.getElementById('expBtnCount').textContent = expression.length;
 
 // Create sub button
 const expBtn = document.getElementById('exp-btn');
@@ -74,7 +74,7 @@ function setExpression(i) {
 
 let currentExp = 0;
 function setCurrentExpression(btn) {
-    document.getElementById("current-exp").src = btn.src;
+    document.getElementById('current-exp').src = btn.src;
     vibrateDevice();
 }
 
@@ -82,10 +82,12 @@ function setCurrentExpression(btn) {
 const visemeBtn = document.getElementById('visemeBtn');
 const visemeOn = document.getElementById('visemeOn');
 const visemeOff = document.getElementById('visemeOff');
+const visemeSilder = document.getElementById('vsmSlider');
 function toggleViseme() {
     visemeBtn.classList.toggle('active');
     visemeOn.classList.toggle('active');
     visemeOff.classList.toggle('active');
+    visemeSilder.classList.toggle('disable');
     vibrateDevice();
     updateViseme();
 }
@@ -107,21 +109,18 @@ function updateViseme() {
 }
 
 //* Visme slider
-let vismeInput = document.getElementById('vsmValue');
-vismeInput.addEventListener('input', () => {
-    const sliderNumbers = document.querySelectorAll(".sliderNumber");
-    const rangeInput = document.getElementById("vsmValue");
+const sliderNumbers = document.querySelectorAll('.sliderNumber');
+const rangeInput = document.getElementById('vsmValue');
 
-    rangeInput.addEventListener("input", () => {
-        const inputValue = parseInt(rangeInput.value, 10);
+rangeInput.addEventListener('input', () => {
+    const inputValue = parseInt(rangeInput.value, 10);
 
-        sliderNumbers.forEach((number, index) => {
-            if (index + 1 === inputValue) {
-                number.classList.add("active");
-            } else {
-                number.classList.remove("active");
-            }
-        });
+    sliderNumbers.forEach((number, index) => {
+        if (index + 1 === inputValue) {
+            number.classList.add('active');
+        } else {
+            number.classList.remove('active');
+        }
     });
 });
 

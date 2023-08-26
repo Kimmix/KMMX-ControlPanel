@@ -141,6 +141,7 @@
   animation: controlIn 1800ms linear;
   margin: 0 15px;
   overflow: hidden;
+  --footer-height: 65px;
 }
 
 @keyframes controlIn {
@@ -170,6 +171,7 @@
   width: 100%;
   max-width: 900px;
   margin: 0 auto;
+  /* overflow-y: auto; */
 }
 
 .status-header {
@@ -203,7 +205,7 @@
   display: flex;
   flex-direction: row;
   align-items: flex-end;
-  height: 20%;
+  height: 10%;
   max-height: 140px;
   min-height: 80px;
 }
@@ -260,11 +262,12 @@ button {
 .expression {
   display: flex;
   flex-direction: column;
-  height: 80%;
+  height: 50%;
+  min-height: 360px;
 }
 
 hr.cenhr {
-  margin: 20px auto;
+  margin: 15px auto;
   width: 70%;
   max-width: 0%;
 
@@ -276,7 +279,7 @@ hr.cenhr {
 .expression-title {
   display: flex;
   justify-content: space-between;
-  height: 60px;
+  height: 45px;
   width: 100%;
   align-items: end;
 }
@@ -307,7 +310,6 @@ span#expBtnCount {
 .expression-container {
   display: flex;
   flex-direction: column;
-  margin-top: 20px;
   gap: 10px;
   height: 100%;
   z-index: 1;
@@ -390,11 +392,12 @@ button.exp-btn {
   font-size: 2rem;
   align-items: center;
   height: 100%;
-  padding: 24px 10px;
+  padding: 5px 10px;
 }
 
 button.exp-btn img {
-  height: -webkit-fill-available;
+  height: 65%;
+  max-width: 110px;
   filter: invert(1);
   transition: filter 800ms ease 50ms,
     background-color 800ms ease;
@@ -433,7 +436,9 @@ button.exp-btn.active img {
 
 /* Viseme */
 .viseme {
-  /* height: 50%; */
+  display: flex;
+  flex-direction: column;
+  height: 220px;
 }
 
 .slider-container {
@@ -473,12 +478,12 @@ button.exp-btn.active img {
 button.viseme-btn {
   background-image: url(asset/svg/viseme-wave.svg);
   background-repeat: no-repeat;
-  background-position: -20px 10px;
+  background-position: 0 26px;
   position: relative;
   flex-direction: column;
   justify-content: flex-end;
   gap: 8px;
-  height: 175px;
+  height: 100%;
   width: 100%;
   border-radius: 10px;
   opacity: 0.5;
@@ -584,10 +589,19 @@ img.inline-icn {
 
 .viseme-value-slider {
   display: flex;
+  height: 120px;
   text-align: center;
   flex-direction: column;
   margin-top: 12px;
   font-size: 12px;
+  transition: filter 300ms ease-out,
+    opacity 300ms ease-out;
+}
+
+.viseme-value-slider.disable {
+  pointer-events: none;
+  filter: grayscale(1);
+  opacity: 0.1;
 }
 
 .viseme-value-slider h3 {
@@ -601,7 +615,7 @@ img.inline-icn {
   align-items: center;
   background-color: var(--black3-color);
   border-radius: 8px;
-  height: 2rem;
+  height: 36px;
   width: 100%;
   margin: 5px auto;
   padding: 3px 0;
@@ -609,11 +623,11 @@ img.inline-icn {
 
 .number-slider span {
   color: var(--black4-color);
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
   display: inline-block;
   position: relative;
-  padding: 3px 5px;
+  padding: 8px 10px;
   border-radius: 4px;
   transition: background-color 0.3s, color 0.3s;
   width: 20px;
@@ -628,7 +642,7 @@ img.inline-icn {
   content: '.';
   display: inline-block;
   position: absolute;
-  bottom: -5px;
+  bottom: -2px;
   left: 0;
   text-align: center;
   width: 100%;
@@ -649,7 +663,7 @@ input.vsm-slider {
   display: flex;
   flex-direction: column;
   margin-top: 10px;
-  margin-bottom: 80px;
+  margin-bottom: var(--footer-height);
 }
 
 .matrix-container {
@@ -726,8 +740,10 @@ input.bn-slider {
 footer {
   position: fixed;
   bottom: 0;
+  height: var(--footer-height);
   width: 100%;
   background-color: var(--black2-color);
+  z-index: 10;
 }
 
 footer hr {
