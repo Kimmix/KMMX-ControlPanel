@@ -90,6 +90,17 @@ h3 {
   font-weight: 300;
 }
 
+button {
+  display: flex;
+  background-color: var(--black3-color);
+  color: var(--white-color);
+  border: none;
+  cursor: pointer;
+  border-radius: 10%;
+  padding: 10px;
+  height: 120px;
+}
+
 .bold {
   font-weight: 600 !important;
 }

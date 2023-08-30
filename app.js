@@ -2,8 +2,8 @@
 document.addEventListener('DOMContentLoaded', function () {
     const splash = document.getElementById('splash');
     splash.addEventListener('click', async function () {
-        await startBLE();
-        // showControlPanel();
+        // await startBLE();
+        showControlPanel();
     });
 });
 
