@@ -122,6 +122,8 @@ rangeInput.addEventListener('input', () => {
             number.classList.remove('active');
         }
     });
+    throttledAndDebouncedsetVisemeCharacteristic(inputValue + 1);
+    vibrateDevice();
 });
 
 function isVisemeOn() {
@@ -148,10 +150,10 @@ function renderTotalDots() {
 renderTotalDots(); // On page load
 
 let dotValueInput = document.getElementById('dotValue');
-// function setBrightnessvalue(i) {
-//     dotValueInput.value = i;
-//     renderWhiteDots(dotValueInput.value);
-// }
+function setBrightnessvalue(i) {
+    dotValueInput.value = i;
+    renderWhiteDots(dotValueInput.value);
+}
 // Update dots when the window is resized
 window.addEventListener('resize', () => {
     renderTotalDots();

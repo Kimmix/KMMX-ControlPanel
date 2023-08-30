@@ -94,6 +94,7 @@ function setdisplayBrightnessCharacteristic(value) {
   }
 }
 
+const throttledAndDebouncedsetVisemeCharacteristic = throttleAndDebounce(setVisemeCharacteristic, 800, 300);
 const throttledAndDebouncedSetDisplayBrightness = throttleAndDebounce(setdisplayBrightnessCharacteristic, 300, 200);
 
 // Throttle and debounce function
