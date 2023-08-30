@@ -122,8 +122,8 @@ rangeInput.addEventListener('input', () => {
             number.classList.remove('active');
         }
     });
-    throttledAndDebouncedsetVisemeCharacteristic(inputValue + 1);
     vibrateDevice();
+    throttledAndDebouncedsetVisemeCharacteristic(inputValue + 1);
 });
 
 function isVisemeOn() {
