@@ -19,7 +19,7 @@ const expression = [
     {
         id: 3,
         buttonId: 'button4',
-        src: 'asset/svg/expression/googly.svg',
+        src: 'asset/svg/expression/smile.svg',
     },
     {
         id: 4,
