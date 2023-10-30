@@ -2,8 +2,8 @@
 document.addEventListener('DOMContentLoaded', function () {
     const splash = document.getElementById('splash');
     splash.addEventListener('click', async function () {
-        // await startBLE();
-        showControlPanel();
+        await startBLE();
+        // showControlPanel();
     });
 });
 
@@ -40,7 +40,7 @@ function updateStatusAndTimer() {
     timerElement.textContent = formattedTimer;
 }
 
-//? Connection status
+//? Connection status 
 const statusElement = document.getElementById("status");
 const pill = document.getElementById("s-pill");
 function isStatusConnected(bool) {
