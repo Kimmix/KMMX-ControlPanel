@@ -281,14 +281,25 @@
         </div>
 
         <div class="about-content">
-          <div class="about-card">
+          <div class="about-card about-main-card">
             <h2 class="about-title">KMMX Control Panel</h2>
             <p class="about-version">Version 0.5</p>
+            <div class="about-divider"></div>
+            <div class="about-copyright">
+              <p class="copyright-text">Kimmix ©2026</p>
+              <p class="copyright-auth">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lock-icon">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                Authorized use only
+              </p>
+            </div>
           </div>
 
-          <!-- Connection Status -->
+          <!-- Device Connection -->
           <div class="about-card connection-status-card">
-            <h3 class="card-title">Connection Status</h3>
+            <h3 class="card-title">Device Connection</h3>
             <div class="status-grid">
               <div class="status-info">
                 <span class="status-label">Status:</span>
@@ -299,15 +310,14 @@
                 <span id="timer" class="status-value timer">0:00</span>
               </div>
             </div>
-          </div>
 
-          <!-- BLE Characteristics -->
-          <div class="about-card ble-characteristics-card">
+            <div class="connection-divider"></div>
+
             <button id="bleCharBtn" class="ble-char-toggle-button" onclick="toggleBLECharacteristics()">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px;">
                 <path d="M6 9l6 6 6-6"/>
               </svg>
-              Show BLE Characteristics
+              Show Device Details
             </button>
             <div id="bleCharContent" class="ble-char-content" style="display: none;">
               <div class="ble-char-grid">
@@ -370,15 +380,6 @@
                 Refresh Values
               </button>
             </div>
-          </div>
-
-          <div class="about-card">
-            <h3 class="card-title">Copyright</h3>
-            <p>Kimmix ©2026</p>
-            <p class="fade" style="margin-top: 10px;">
-              <img src="asset/svg/lock.svg" alt="lock" style="width: 12px; vertical-align: middle; margin-right: 5px;">
-              Authorized use only
-            </p>
           </div>
 
           <!-- Debug Button -->

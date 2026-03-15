@@ -34,6 +34,13 @@
   color: var(--acc1-color);
 }
 
+.connection-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(249, 130, 108, 0.3), transparent);
+  margin: 20px 0 15px 0;
+}
+
 /* BLE Characteristics Card */
 .ble-char-grid {
   display: flex;
@@ -243,6 +250,10 @@
   transform: translateY(-2px);
 }
 
+.about-main-card {
+  text-align: center;
+}
+
 .about-title {
   font-size: 2rem;
   font-weight: 600;
@@ -256,6 +267,45 @@
   color: var(--acc1-color);
   text-align: center;
   font-weight: 500;
+  margin-bottom: 0;
+}
+
+.about-divider {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--acc1-color), transparent);
+  margin: 20px auto;
+  border-radius: 2px;
+}
+
+.about-copyright {
+  margin-top: 15px;
+}
+
+.copyright-text {
+  font-size: 0.95rem;
+  color: var(--white-color);
+  font-weight: 500;
+  margin: 0 0 8px 0;
+  opacity: 0.9;
+}
+
+.copyright-auth {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--white2-color);
+  opacity: 0.7;
+  margin: 0;
+}
+
+.lock-icon {
+  width: 14px;
+  height: 14px;
+  stroke: var(--acc1-color);
+  opacity: 0.8;
 }
 
 .card-title {
