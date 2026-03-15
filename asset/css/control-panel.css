@@ -152,8 +152,9 @@
     width: 44%;
     margin-right: calc(10% - 30px);
     margin-bottom: 4px;
-    transition: transform 100ms ease, opacity ease 200ms;
+    transition: opacity ease 200ms;
     animation: fadeIn 3000ms linear 500ms forwards;
+    will-change: transform;
   }
 }
 

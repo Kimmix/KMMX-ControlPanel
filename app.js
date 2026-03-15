@@ -258,23 +258,40 @@ function showDisconnectPopup() {
 }
 
 //* ------- Gyroscope ---------
-// Get the moving element
-var element = document.getElementById("movingElement");
-// Initialize variables to store gyroscope data
-var xRotation = 0;
-var yRotation = 0;
-window.addEventListener("deviceorientation", handleOrientation);
-// Function to handle device orientation changes
-function handleOrientation(event) {
-    xRotation = clamp((event.beta - 90) * 0.4, -70, 30); // x-axis rotation (tilt forward/backward)
-    yRotation = clamp(event.gamma * 0.6, -100, 20); // y-axis rotation (tilt left/right)
+// Initialize gyroscope after DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the moving element
+    var element = document.getElementById("movingElement");
 
-    // Update element's position using CSS translate
-    element.style.transform = "translate(" + yRotation + "px, " + xRotation + "px)";
-}
-function clamp(value, min, max) {
-    return Math.min(Math.max(value, min), max);
-}
+    if (!element) {
+        console.warn('movingElement not found for gyroscope');
+        return;
+    }
+
+    // Initialize variables to store gyroscope data
+    var xRotation = 0;
+    var yRotation = 0;
+
+    // Function to handle device orientation changes
+    function handleOrientation(event) {
+        if (!event.beta || !event.gamma) return;
+
+        xRotation = clamp((event.beta - 90) * 0.4, -70, 30); // x-axis rotation (tilt forward/backward)
+        yRotation = clamp(event.gamma * 0.6, -100, 20); // y-axis rotation (tilt left/right)
+
+        // Update element's position using CSS translate
+        element.style.transform = "translate(" + yRotation + "px, " + xRotation + "px)";
+    }
+
+    function clamp(value, min, max) {
+        return Math.min(Math.max(value, min), max);
+    }
+
+    // Add event listener for device orientation
+    window.addEventListener("deviceorientation", handleOrientation);
+
+    console.log('Gyroscope initialized for dotted-array');
+});
 
 //* ------- BLE Characteristics Toggle ---------
 function toggleBLECharacteristics() {
