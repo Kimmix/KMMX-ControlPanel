@@ -44,6 +44,29 @@
   font-family: 'Courier New', monospace;
   min-width: 40px;
   text-align: right;
+  transition: all 0.2s ease;
+}
+
+/* Clickable Device ID Item */
+#device-id-item[style*="cursor: pointer"] {
+  user-select: none;
+  -webkit-user-select: none;
+  transition: all 0.2s ease;
+}
+
+#device-id-item[style*="cursor: pointer"]:hover {
+  background: rgba(249, 130, 108, 0.08);
+  border-color: rgba(249, 130, 108, 0.3);
+}
+
+#device-id-item[style*="cursor: pointer"]:hover .ble-char-value {
+  color: rgba(249, 130, 108, 1);
+  text-shadow: 0 0 8px rgba(249, 130, 108, 0.3);
+}
+
+#device-id-item[style*="cursor: pointer"]:active {
+  transform: scale(0.98);
+  background: rgba(249, 130, 108, 0.12);
 }
 
 .ble-char-uuid {

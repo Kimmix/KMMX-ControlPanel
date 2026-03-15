@@ -134,10 +134,15 @@ function isStatusConnected(bool) {
     }
 }
 
+//? Store full device ID for toggling
+let fullDeviceId = null;
+let isShowingFullId = false;
+
 //? Update device information
 function updateDeviceInfo(device) {
     const deviceNameStat = document.getElementById('device-name-stat');
     const bleProtocolStat = document.getElementById('ble-protocol-stat');
+    const deviceIdItem = document.getElementById('device-id-item');
 
     if (device) {
         // Update device name
@@ -147,10 +152,19 @@ function updateDeviceInfo(device) {
 
         // Update device ID (show last 6 characters of device ID)
         if (bleProtocolStat && device.id) {
+            fullDeviceId = device.id;
             const shortId = device.id.length > 6 ? device.id.slice(-6) : device.id;
             bleProtocolStat.textContent = shortId.toUpperCase();
+            isShowingFullId = false;
+
+            // Make the entire item clickable
+            if (deviceIdItem) {
+                deviceIdItem.style.cursor = 'pointer';
+                deviceIdItem.onclick = toggleDeviceId;
+            }
         } else if (bleProtocolStat) {
             bleProtocolStat.textContent = '-';
+            fullDeviceId = null;
         }
     } else {
         // Clear device info when disconnected
@@ -160,6 +174,36 @@ function updateDeviceInfo(device) {
         if (bleProtocolStat) {
             bleProtocolStat.textContent = '-';
         }
+        if (deviceIdItem) {
+            deviceIdItem.style.cursor = 'default';
+            deviceIdItem.onclick = null;
+        }
+        fullDeviceId = null;
+        isShowingFullId = false;
+    }
+}
+
+//? Toggle between short and full device ID
+function toggleDeviceId() {
+    const bleProtocolStat = document.getElementById('ble-protocol-stat');
+
+    if (!fullDeviceId || !bleProtocolStat) return;
+
+    vibrateDevice();
+
+    if (isShowingFullId) {
+        // Show short ID (last 6 characters)
+        const shortId = fullDeviceId.length > 6 ? fullDeviceId.slice(-6) : fullDeviceId;
+        bleProtocolStat.textContent = shortId.toUpperCase();
+        bleProtocolStat.style.fontSize = '1.1rem';
+        bleProtocolStat.style.wordBreak = 'normal';
+        isShowingFullId = false;
+    } else {
+        // Show full ID (smaller font to fit screen)
+        bleProtocolStat.textContent = fullDeviceId.toUpperCase();
+        bleProtocolStat.style.fontSize = '0.95rem';
+        bleProtocolStat.style.wordBreak = 'break-all';
+        isShowingFullId = true;
     }
 }
 
