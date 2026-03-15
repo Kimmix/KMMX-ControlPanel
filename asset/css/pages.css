@@ -1,5 +1,17 @@
 /* Page-specific styles */
 
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* BLE Characteristics Card */
 .ble-char-grid {
   display: flex;
@@ -295,17 +307,6 @@
   animation: fadeIn 0.3s ease-in-out;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .card-title {
   font-size: 1.1rem;
   font-weight: 600;
@@ -327,10 +328,6 @@
 }
 
 /* Debug Info */
-.debug-info {
-  animation: fadeIn 0.3s ease-in-out;
-}
-
 .debug-item {
   display: flex;
   justify-content: space-between;
@@ -359,17 +356,6 @@
   text-align: right;
   word-break: break-word;
   font-family: 'Courier New', monospace;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 /* Mobile Responsiveness */

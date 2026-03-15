@@ -1,3 +1,26 @@
+/* Animations */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 /* Floating Navigation Icons */
 .floating-nav {
   position: fixed;
@@ -17,17 +40,6 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
   z-index: 1000;
   animation: slideInRight 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateY(50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .nav-icon {
@@ -92,18 +104,14 @@
   display: block;
 }
 
-/* Add padding to account for static header */
-.page .control-panel {
-  padding-top: clamp(90px, 10vh + 20px, 150px);
-}
-
 /* Unified scrollable container for all pages */
 .page-content-container {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
   /* Add bottom padding so content can scroll past the floating nav (nav height ~200px + 20px bottom margin + extra space) */
-  padding-bottom: 240px;
+  padding-top: clamp(90px, 10vh + 20px, 150px);
+  padding-bottom: 35vh;
   /* No padding-top so content can scroll behind header for blur effect */
 
   /* Smooth scrolling */
@@ -117,17 +125,6 @@
 
 .page-content-container::-webkit-scrollbar {
   display: none;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
 }
 
 /* Mobile optimizations */
@@ -182,4 +179,3 @@
     min-width: 20px;
   }
 }
-

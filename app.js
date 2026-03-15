@@ -220,8 +220,19 @@ function updateStatusAndTimer() {
 //? Show control panel
 function showControlPanel() {
     // document.documentElement.requestFullscreen();
+    const statusHeader = document.querySelector('.status-header');
+    const staticHeader = document.querySelector('.static-header');
+
     splash.style.display = 'none';
     mainContent.style.display = 'flex';
+
+    // Show headers with animation
+    if (statusHeader) {
+        statusHeader.style.display = 'block';
+    }
+    if (staticHeader) {
+        staticHeader.style.display = 'block';
+    }
 }
 
 //? Skip pairing and go directly to control panel
@@ -233,6 +244,8 @@ function skipPairing(event) {
 
     const splash = document.getElementById('splash');
     const mainContent = document.getElementById('mainContent');
+    const statusHeader = document.querySelector('.status-header');
+    const staticHeader = document.querySelector('.static-header');
 
     // Vibrate on tap
     vibrateDevice();
@@ -243,6 +256,14 @@ function skipPairing(event) {
     }
     if (mainContent) {
         mainContent.style.display = 'flex';
+    }
+
+    // Show headers with animation
+    if (statusHeader) {
+        statusHeader.style.display = 'block';
+    }
+    if (staticHeader) {
+        staticHeader.style.display = 'block';
     }
 
     console.log('Pairing skipped - running in offline mode');

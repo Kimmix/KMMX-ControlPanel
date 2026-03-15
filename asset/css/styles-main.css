@@ -1,4 +1,4 @@
-/* Gobal */
+/* Global */
 
 :root {
   --acc1-color: #f9826c;
@@ -120,4 +120,14 @@ button {
 .superscript {
   vertical-align: super;
   font-size: smaller;
+}
+
+/* Shared Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
