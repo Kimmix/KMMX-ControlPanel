@@ -90,14 +90,6 @@ let isConnected = true;
 let timerValue = 0;
 let timerInterval;
 const timerElement = document.getElementById("timer");
-function updateStatusAndTimer() {
-    if (timerElement) {
-        const minutes = Math.floor(timerValue / 60);
-        const seconds = timerValue % 60;
-        const formattedTimer = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-        timerElement.textContent = formattedTimer;
-    }
-}
 
 //? Connection status
 const statusElement = document.getElementById("status");
@@ -132,11 +124,52 @@ function isStatusConnected(bool) {
             pill.classList.add('inactive');
         }
         timerValue = 0;
+        // Clear device info
+        updateDeviceInfo(null);
         // Disable BLE refresh button
         const refreshBleBtn = document.getElementById('refreshBleBtn');
         if (refreshBleBtn) {
             refreshBleBtn.disabled = true;
         }
+    }
+}
+
+//? Update device information
+function updateDeviceInfo(device) {
+    const deviceNameStat = document.getElementById('device-name-stat');
+    const bleProtocolStat = document.getElementById('ble-protocol-stat');
+
+    if (device) {
+        // Update device name
+        if (deviceNameStat) {
+            deviceNameStat.textContent = device.name || 'KMMX-BLE';
+        }
+
+        // Update device ID (show last 6 characters of device ID)
+        if (bleProtocolStat && device.id) {
+            const shortId = device.id.length > 6 ? device.id.slice(-6) : device.id;
+            bleProtocolStat.textContent = shortId.toUpperCase();
+        } else if (bleProtocolStat) {
+            bleProtocolStat.textContent = '-';
+        }
+    } else {
+        // Clear device info when disconnected
+        if (deviceNameStat) {
+            deviceNameStat.textContent = '-';
+        }
+        if (bleProtocolStat) {
+            bleProtocolStat.textContent = '-';
+        }
+    }
+}
+
+//? Update timer in stats
+function updateStatusAndTimer() {
+    if (timerElement) {
+        const minutes = Math.floor(timerValue / 60);
+        const seconds = timerValue % 60;
+        const formattedTimer = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        timerElement.textContent = formattedTimer;
     }
 }
 
@@ -184,12 +217,6 @@ function toggleBLECharacteristics() {
         // Show BLE characteristics
         bleCharContent.style.display = 'block';
         bleCharBtn.classList.add('expanded');
-        bleCharBtn.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px;">
-                <path d="M6 9l6 6 6-6"/>
-            </svg>
-            Hide Device Details
-        `;
 
         // Scroll to bottom after a short delay to allow rendering
         setTimeout(() => {
@@ -199,12 +226,6 @@ function toggleBLECharacteristics() {
         // Hide BLE characteristics
         bleCharContent.style.display = 'none';
         bleCharBtn.classList.remove('expanded');
-        bleCharBtn.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px;">
-                <path d="M6 9l6 6 6-6"/>
-            </svg>
-            Show Device Details
-        `;
     }
 
     // Vibrate on toggle
@@ -219,13 +240,7 @@ function toggleDebugInfo() {
     if (debugInfo.style.display === 'none') {
         // Show debug info and populate it
         debugInfo.style.display = 'block';
-        debugBtn.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px;">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-            Hide Debug Info
-        `;
+        debugBtn.classList.add('expanded');
         populateDebugInfo();
 
         // Scroll to bottom after a short delay to allow rendering
@@ -235,14 +250,7 @@ function toggleDebugInfo() {
     } else {
         // Hide debug info
         debugInfo.style.display = 'none';
-        debugBtn.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px;">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                <line x1="9" y1="9" x2="15" y2="9"></line>
-                <line x1="9" y1="15" x2="15" y2="15"></line>
-            </svg>
-            Show Debug Info
-        `;
+        debugBtn.classList.remove('expanded');
     }
 
     // Vibrate on toggle

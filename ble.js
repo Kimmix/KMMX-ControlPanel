@@ -91,6 +91,10 @@ async function connectToDevice(device, isReconnect = false) {
   }
 
   isStatusConnected(true);
+  // Update device info in About page
+  if (typeof updateDeviceInfo === 'function') {
+    updateDeviceInfo(device);
+  }
   // setBrightnessvalue(displayBrightnessValue.getUint8(0)); // Matrix brightness - Disabled
   setExpression(eyeStateValue.getUint8(0));
   setViseme(visemeValue.getUint8(0));

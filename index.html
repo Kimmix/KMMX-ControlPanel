@@ -281,7 +281,11 @@
         </div>
 
         <div class="about-content">
-          <div class="about-card about-main-card">
+          <!-- Hero Card -->
+          <div class="about-card about-hero-card">
+            <div class="hero-icon-wrapper">
+              <img class="hero-icon" src="asset/svg/control-icon.svg" alt="KMMX Icon">
+            </div>
             <h2 class="about-title">KMMX Control Panel</h2>
             <p class="about-version">Version 0.5</p>
             <div class="about-divider"></div>
@@ -297,30 +301,30 @@
             </div>
           </div>
 
-          <!-- Device Connection -->
-          <div class="about-card connection-status-card">
-            <h3 class="card-title">Device Connection</h3>
-            <div class="status-grid">
-              <div class="status-info">
-                <span class="status-label">Status:</span>
-                <span id="status" class="status-value">Disconnected</span>
-              </div>
-              <div class="status-info">
-                <span class="status-label">Duration:</span>
-                <span id="timer" class="status-value timer">0:00</span>
-              </div>
-            </div>
-
-            <div class="connection-divider"></div>
-
-            <button id="bleCharBtn" class="ble-char-toggle-button" onclick="toggleBLECharacteristics()">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px;">
+          <!-- Device Details Section -->
+          <div class="about-card collapsible-section">
+            <button id="bleCharBtn" class="section-toggle-button" onclick="toggleBLECharacteristics()">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="toggle-icon">
                 <path d="M6 9l6 6 6-6"/>
               </svg>
-              Show Device Details
+              <span>Device Details</span>
             </button>
-            <div id="bleCharContent" class="ble-char-content" style="display: none;">
+            <div id="bleCharContent" class="collapsible-content" style="display: none;">
               <div class="ble-char-grid">
+              <div class="ble-char-item">
+                <div class="ble-char-header">
+                  <span class="ble-char-name">Device Name</span>
+                  <span class="ble-char-value" id="device-name-stat">-</span>
+                </div>
+                <span class="ble-char-uuid">Bluetooth device name</span>
+              </div>
+              <div class="ble-char-item">
+                <div class="ble-char-header">
+                  <span class="ble-char-name">Device ID</span>
+                  <span class="ble-char-value" id="ble-protocol-stat">-</span>
+                </div>
+                <span class="ble-char-uuid">Bluetooth device identifier</span>
+              </div>
               <div class="ble-char-item">
                 <div class="ble-char-header">
                   <span class="ble-char-name">Eye State</span>
@@ -382,18 +386,15 @@
             </div>
           </div>
 
-          <!-- Debug Button -->
-          <div class="about-card">
-            <button id="debugBtn" class="debug-button" onclick="toggleDebugInfo()">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px;">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                <line x1="9" y1="9" x2="15" y2="9"></line>
-                <line x1="9" y1="15" x2="15" y2="15"></line>
+          <!-- System Information Section -->
+          <div class="about-card collapsible-section">
+            <button id="debugBtn" class="section-toggle-button" onclick="toggleDebugInfo()">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="toggle-icon">
+                <path d="M6 9l6 6 6-6"/>
               </svg>
-              Show Debug Info
+              <span>System Information</span>
             </button>
-            <div id="debugInfo" class="debug-info" style="display: none;">
-              <h4 style="margin-bottom: 10px; color: var(--acc1-color);">System Information</h4>
+            <div id="debugInfo" class="collapsible-content" style="display: none;">
               <div class="debug-item">
                 <span class="debug-label">User Agent:</span>
                 <span class="debug-value" id="debug-ua">-</span>
