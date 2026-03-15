@@ -110,7 +110,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   /* Add bottom padding so content can scroll past the floating nav (nav height ~200px + 20px bottom margin + extra space) */
-  padding-top: clamp(90px, 10vh + 20px, 150px);
+  padding-top: 10vh;
   padding-bottom: 35vh;
   /* No padding-top so content can scroll behind header for blur effect */
 
