@@ -34,6 +34,111 @@
   color: var(--acc1-color);
 }
 
+/* BLE Characteristics Card */
+.ble-char-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.ble-char-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.ble-char-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(249, 130, 108, 0.2);
+}
+
+.ble-char-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.ble-char-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--white-color);
+}
+
+.ble-char-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--acc1-color);
+  font-family: 'Courier New', monospace;
+  min-width: 40px;
+  text-align: right;
+}
+
+.ble-char-uuid {
+  font-size: 0.7rem;
+  color: var(--white2-color);
+  opacity: 0.5;
+  font-family: 'Courier New', monospace;
+  word-break: break-all;
+}
+
+.refresh-ble-button {
+  width: 100%;
+  height: auto;
+  padding: 12px 16px;
+  margin-top: 15px;
+  background: rgba(249, 130, 108, 0.1);
+  border: 1px solid rgba(249, 130, 108, 0.3);
+  border-radius: 8px;
+  color: var(--white-color);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Montserrat", sans-serif;
+}
+
+.refresh-ble-button:hover:not(:disabled) {
+  background: rgba(249, 130, 108, 0.2);
+  border-color: rgba(249, 130, 108, 0.5);
+  transform: translateY(-2px);
+}
+
+.refresh-ble-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.refresh-ble-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.refresh-ble-button svg {
+  transition: transform 0.3s ease;
+}
+
+.refresh-ble-button:hover:not(:disabled) svg {
+  transform: rotate(180deg);
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* Settings Page */
 .settings-section {
   margin: 30px 0;
@@ -57,6 +162,7 @@
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
+  overflow-y: auto;
 }
 
 .about-card {
@@ -110,15 +216,87 @@
   opacity: 0.7;
 }
 
+/* Debug Button */
+.debug-button {
+  width: 100%;
+  height: auto;
+  padding: 15px 20px;
+  background: linear-gradient(135deg, rgba(249, 130, 108, 0.1), rgba(249, 130, 108, 0.05));
+  border: 1px solid rgba(249, 130, 108, 0.3);
+  border-radius: 8px;
+  color: var(--white-color);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Montserrat", sans-serif;
+}
+
+.debug-button:hover {
+  background: linear-gradient(135deg, rgba(249, 130, 108, 0.2), rgba(249, 130, 108, 0.1));
+  border-color: rgba(249, 130, 108, 0.5);
+  transform: translateY(-2px);
+}
+
+.debug-button:active {
+  transform: translateY(0);
+}
+
+.debug-info {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.debug-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  gap: 15px;
+}
+
+.debug-item:last-child {
+  border-bottom: none;
+}
+
+.debug-label {
+  font-size: 0.85rem;
+  color: var(--white2-color);
+  opacity: 0.8;
+  font-weight: 500;
+  min-width: 140px;
+}
+
+.debug-value {
+  font-size: 0.85rem;
+  color: var(--white-color);
+  font-weight: 400;
+  text-align: right;
+  word-break: break-word;
+  font-family: 'Courier New', monospace;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
-  .status-grid {
-    flex-direction: column;
-    gap: 15px;
-  }
-
   .about-content {
-    padding: 10px 0;
+    padding: 10px 0 90px;
   }
 
   .about-card {

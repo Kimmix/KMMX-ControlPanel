@@ -11,6 +11,7 @@ const bleUUID = {
 let eyeStateCharacteristic;
 let displayBrightnessCharacteristic;
 let visemeCharacteristic;
+let bleDevice; // Store the connected device
 
 async function startBLE() {
   try {
@@ -21,6 +22,7 @@ async function startBLE() {
       ],
     });
 
+    bleDevice = device; // Store the device reference
     console.log(device.name);
     device.addEventListener('gattserverdisconnected', onDisconnected);
     const server = await device.gatt.connect();
@@ -46,6 +48,7 @@ async function startBLE() {
     setBrightnessvalue(displayBrightnessValue.getUint8(0));
     setExpression(eyeStateValue.getUint8(0));
     setViseme(visemeValue.getUint8(0));
+    updateBLECharacteristicsDisplay(eyeStateValue.getUint8(0), displayBrightnessValue.getUint8(0), visemeValue.getUint8(0));
 
   } catch (error) {
     console.error('Error:', error);
@@ -58,12 +61,14 @@ function onDisconnected(event) {
   const device = event.target;
   console.log(`Device ${device.name} is disconnected.`);
   isStatusConnected(false);
+  updateBLECharacteristicsDisplay('-', '-', '-');
 }
 
 async function setEyeStateCharacteristic(value) {
   eyeStateCharacteristic.writeValue(Uint8Array.of(value))
     .then(_ => {
       console.log('> Characteristic eye state changed to: ' + Uint8Array.of(value));
+      updateBLECharValue('ble-eyestate', value);
     })
     .catch(error => {
       console.log('Argh! ' + error);
@@ -74,6 +79,7 @@ function setVisemeCharacteristic(value) {
   visemeCharacteristic.writeValue(Uint8Array.of(value))
     .then(_ => {
       console.log('> Characteristic viseme changed to: ' + Uint8Array.of(value));
+      updateBLECharValue('ble-viseme', value);
     })
     .catch(error => {
       console.log('Argh! ' + error);
@@ -87,6 +93,7 @@ function setdisplayBrightnessCharacteristic(value) {
       .then(_ => {
         console.log('> Characteristic viseme changed to: ' + Uint8Array.of(value));
         prevBrightnessValue = value; // Update the previous value
+        updateBLECharValue('ble-brightness', value);
       })
       .catch(error => {
         console.log('Argh! ' + error);
@@ -125,4 +132,82 @@ function throttleAndDebounce(func, throttleDelay, debounceDelay) {
   }
 
   return throttledAndDebounced;
+}
+
+// Update BLE characteristics display on About page
+function updateBLECharacteristicsDisplay(eyeState, brightness, viseme) {
+  updateBLECharValue('ble-eyestate', eyeState);
+  updateBLECharValue('ble-brightness', brightness);
+  updateBLECharValue('ble-viseme', viseme);
+}
+
+function updateBLECharValue(elementId, value) {
+  const element = document.getElementById(elementId);
+  if (element) {
+    element.textContent = value;
+  }
+}
+
+// Refresh BLE characteristics from device
+async function refreshBLECharacteristics() {
+  if (!bleDevice || !bleDevice.gatt.connected) {
+    alert('Device not connected');
+    return;
+  }
+
+  try {
+    const refreshBtn = document.getElementById('refreshBleBtn');
+    if (refreshBtn) {
+      refreshBtn.disabled = true;
+      refreshBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px; animation: spin 1s linear infinite;">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <polyline points="1 20 1 14 7 14"></polyline>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </svg>
+        Refreshing...
+      `;
+    }
+
+    const eyeStateValue = await eyeStateCharacteristic.readValue();
+    const displayBrightnessValue = await displayBrightnessCharacteristic.readValue();
+    const visemeValue = await visemeCharacteristic.readValue();
+
+    updateBLECharacteristicsDisplay(
+      eyeStateValue.getUint8(0),
+      displayBrightnessValue.getUint8(0),
+      visemeValue.getUint8(0)
+    );
+
+    console.log('BLE characteristics refreshed');
+    vibrateDevice();
+
+    if (refreshBtn) {
+      refreshBtn.disabled = false;
+      refreshBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px;">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <polyline points="1 20 1 14 7 14"></polyline>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </svg>
+        Refresh Values
+      `;
+    }
+  } catch (error) {
+    console.error('Error refreshing BLE characteristics:', error);
+    alert('Failed to refresh characteristics: ' + error);
+
+    const refreshBtn = document.getElementById('refreshBleBtn');
+    if (refreshBtn) {
+      refreshBtn.disabled = false;
+      refreshBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px;">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <polyline points="1 20 1 14 7 14"></polyline>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </svg>
+        Refresh Values
+      `;
+    }
+  }
 }

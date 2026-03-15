@@ -188,6 +188,42 @@
             </div>
           </div>
 
+          <!-- BLE Characteristics -->
+          <div class="about-card ble-characteristics-card">
+            <h3 class="card-title">BLE Characteristics</h3>
+            <div class="ble-char-grid">
+              <div class="ble-char-item">
+                <div class="ble-char-header">
+                  <span class="ble-char-name">Eye State</span>
+                  <span class="ble-char-value" id="ble-eyestate">-</span>
+                </div>
+                <span class="ble-char-uuid">UUID: 49a36bb2-1c66-4e5c-8ff3-28e55a64beb3</span>
+              </div>
+              <div class="ble-char-item">
+                <div class="ble-char-header">
+                  <span class="ble-char-name">Display Brightness</span>
+                  <span class="ble-char-value" id="ble-brightness">-</span>
+                </div>
+                <span class="ble-char-uuid">UUID: 9fdfd124-966b-44f7-8331-778c4d1512fc</span>
+              </div>
+              <div class="ble-char-item">
+                <div class="ble-char-header">
+                  <span class="ble-char-name">Viseme</span>
+                  <span class="ble-char-value" id="ble-viseme">-</span>
+                </div>
+                <span class="ble-char-uuid">UUID: 493d06f3-0fa0-4a90-88f1-ebaed0da9b80</span>
+              </div>
+            </div>
+            <button id="refreshBleBtn" class="refresh-ble-button" onclick="refreshBLECharacteristics()" disabled>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px;">
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <polyline points="1 20 1 14 7 14"></polyline>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+              </svg>
+              Refresh Values
+            </button>
+          </div>
+
           <div class="about-card">
             <h3 class="card-title">Copyright</h3>
             <p>Kimmix ©2026</p>
@@ -195,6 +231,61 @@
               <img src="asset/svg/lock.svg" alt="lock" style="width: 12px; vertical-align: middle; margin-right: 5px;">
               Authorized use only
             </p>
+          </div>
+
+          <!-- Debug Button -->
+          <div class="about-card">
+            <button id="debugBtn" class="debug-button" onclick="toggleDebugInfo()">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; margin-right: 8px;">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="9" y1="9" x2="15" y2="9"></line>
+                <line x1="9" y1="15" x2="15" y2="15"></line>
+              </svg>
+              Show Debug Info
+            </button>
+            <div id="debugInfo" class="debug-info" style="display: none;">
+              <h4 style="margin-bottom: 10px; color: var(--acc1-color);">System Information</h4>
+              <div class="debug-item">
+                <span class="debug-label">User Agent:</span>
+                <span class="debug-value" id="debug-ua">-</span>
+              </div>
+              <div class="debug-item">
+                <span class="debug-label">Platform:</span>
+                <span class="debug-value" id="debug-platform">-</span>
+              </div>
+              <div class="debug-item">
+                <span class="debug-label">Screen Size:</span>
+                <span class="debug-value" id="debug-screen">-</span>
+              </div>
+              <div class="debug-item">
+                <span class="debug-label">Viewport:</span>
+                <span class="debug-value" id="debug-viewport">-</span>
+              </div>
+              <div class="debug-item">
+                <span class="debug-label">BLE Support:</span>
+                <span class="debug-value" id="debug-ble">-</span>
+              </div>
+              <div class="debug-item">
+                <span class="debug-label">Vibration Support:</span>
+                <span class="debug-value" id="debug-vibrate">-</span>
+              </div>
+              <div class="debug-item">
+                <span class="debug-label">Orientation Support:</span>
+                <span class="debug-value" id="debug-orientation">-</span>
+              </div>
+              <div class="debug-item">
+                <span class="debug-label">Online Status:</span>
+                <span class="debug-value" id="debug-online">-</span>
+              </div>
+              <div class="debug-item">
+                <span class="debug-label">Service Worker:</span>
+                <span class="debug-value" id="debug-sw">-</span>
+              </div>
+              <div class="debug-item">
+                <span class="debug-label">Connection Type:</span>
+                <span class="debug-value" id="debug-connection">-</span>
+              </div>
+            </div>
           </div>
 
         </div>
