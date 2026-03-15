@@ -22,6 +22,7 @@
 .main-content {
   --footer-height: 65px;
   display: none;
+  height: 100svh;
   margin: 0 15px;
   overflow: hidden;
   animation: controlIn 1800ms linear;
@@ -101,6 +102,7 @@
   height: 10%;
   max-height: 140px;
   min-height: 80px;
+  padding-bottom: 10px;
 
   .glow-icon {
     height: 64px;
@@ -188,6 +190,7 @@
     z-index: 1;
 
     .expression-current-container {
+      max-height: 240px;
       height: 100%;
       margin: 10px 0;
 
@@ -333,11 +336,11 @@ hr.cenhr {
     border-radius: 10px;
     opacity: 0.5;
     filter: grayscale(100%);
-    clip-path: circle(10% at 125% 0%);
+    /* clip-path: circle(10% at 125% 0%); */
     transition: opacity 400ms ease,
       filter 400ms ease,
       background 600ms ease;
-    animation: visBtnIn 1500ms linear 500ms forwards;
+    /* animation: visBtnIn 1500ms linear 500ms forwards; */
 
     .bitrate {
       position: absolute;
