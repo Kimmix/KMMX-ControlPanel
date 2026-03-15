@@ -151,8 +151,37 @@ function setExpression(i) {
 
 let currentExp = 0;
 function setCurrentExpression(btn) {
-    // Grid layout doesn't need current expression preview
-    // Just provide haptic feedback
+    // Update the current expression display
+    const currentExpressionDisplay = document.getElementById('currentExpressionDisplay');
+    const currentExpressionName = document.getElementById('currentExpressionName');
+    const currentExpressionImg = document.getElementById('currentExpressionImg');
+    const currentExpressionPlaceholder = document.getElementById('currentExpressionPlaceholder');
+
+    if (currentExpressionName && currentExpressionDisplay) {
+        // Update the name
+        currentExpressionName.textContent = btn.name;
+
+        // Update the icon or placeholder
+        if (btn.src) {
+            // Show image
+            currentExpressionImg.src = btn.src;
+            currentExpressionImg.style.display = 'block';
+            currentExpressionPlaceholder.style.display = 'none';
+        } else {
+            // Show placeholder text
+            currentExpressionImg.style.display = 'none';
+            currentExpressionPlaceholder.textContent = btn.name;
+            currentExpressionPlaceholder.style.display = 'block';
+        }
+
+        // Add active animation
+        currentExpressionDisplay.classList.add('active');
+        setTimeout(() => {
+            currentExpressionDisplay.classList.remove('active');
+        }, 300);
+    }
+
+    // Provide haptic feedback
     vibrateDevice();
 }
 

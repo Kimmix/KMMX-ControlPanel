@@ -143,12 +143,31 @@
 
 }
 
+/* Expression Content Container (Scrollable) */
+.expression-content-container {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 80px;
+  margin-top: 10px;
+
+  /* Smooth scrolling */
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+
+  /* Hide scrollbar */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.expression-content-container::-webkit-scrollbar {
+  display: none;
+}
+
 /* EXPRESSION */
 .expression {
   display: flex;
   flex-direction: column;
-  height: 50%;
-  min-height: 360px;
 
   .expression-title {
     display: flex;
@@ -185,12 +204,129 @@
   .expression-container {
     display: flex;
     flex-direction: column;
-    height: 100%;
     z-index: 1;
     margin-top: 10px;
   }
 
 }
+
+/* Current Expression Display - Option 1: Minimal & Clean */
+.current-expression-display {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 8px 12px;
+  margin-top: 15px;
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 3px solid var(--acc1-color);
+  border-radius: 8px;
+  transition: all 300ms ease;
+}
+
+.current-expression-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 45px;
+  height: 45px;
+  background: transparent;
+  transition: all 300ms ease;
+}
+
+.current-expression-icon > img {
+  width: 35px;
+  height: 35px;
+  filter: invert(1);
+  transition: all 300ms ease;
+}
+
+.current-expression-icon > .current-expression-placeholder {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--white-color);
+  text-align: center;
+}
+
+.current-expression-name {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--white2-color);
+  letter-spacing: 0.3px;
+  transition: all 300ms ease;
+}
+
+.current-expression-name::before {
+  content: "Current: ";
+  color: var(--acc1-color);
+  font-weight: 600;
+}
+
+.current-expression-display.active {
+  background: rgba(249, 130, 108, 0.1);
+  border-left-color: var(--acc2-color);
+}
+
+.current-expression-display.active .current-expression-icon {
+  transform: scale(1.1);
+}
+
+.current-expression-display.active .current-expression-name {
+  color: var(--white-color);
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .current-expression-display {
+    gap: 10px;
+    padding: 6px 10px;
+    margin-top: 12px;
+  }
+
+  .current-expression-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .current-expression-icon > img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .current-expression-icon > .current-expression-placeholder {
+    font-size: 0.7rem;
+  }
+
+  .current-expression-name {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .current-expression-display {
+    gap: 14px;
+    padding: 10px 14px;
+  }
+
+  .current-expression-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .current-expression-icon > img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .current-expression-icon > .current-expression-placeholder {
+    font-size: 0.8rem;
+  }
+
+  .current-expression-name {
+    font-size: 1.2rem;
+  }
+}
+
 
 /* Expression Grid Layout - Fursuit Friendly */
 .expression-grid {

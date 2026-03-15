@@ -224,6 +224,30 @@ function showControlPanel() {
     mainContent.style.display = 'flex';
 }
 
+//? Skip pairing and go directly to control panel
+function skipPairing(event) {
+    // Stop the event from bubbling up to the splash screen click handler
+    if (event) {
+        event.stopPropagation();
+    }
+
+    const splash = document.getElementById('splash');
+    const mainContent = document.getElementById('mainContent');
+
+    // Vibrate on tap
+    vibrateDevice();
+
+    // Hide splash and show control panel
+    if (splash) {
+        splash.style.display = 'none';
+    }
+    if (mainContent) {
+        mainContent.style.display = 'flex';
+    }
+
+    console.log('Pairing skipped - running in offline mode');
+}
+
 //? Disconnect Popup
 function showDisconnectPopup() {
     const popup = document.getElementById('disconnectPopup');

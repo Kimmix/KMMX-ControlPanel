@@ -133,3 +133,55 @@
       filter: drop-shadow(0 0 0.1rem var(--acc2-color));
     }
   }
+
+  /* Skip Pairing Button */
+  .skip-pairing-btn {
+    position: absolute;
+    bottom: 4%;
+    right: 4%;
+    padding: 8px 16px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    color: var(--white2-color);
+    font-size: 0.85rem;
+    font-weight: 500;
+    font-family: "Montserrat", sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.7;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .skip-pairing-btn svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s ease;
+  }
+
+  .skip-pairing-btn:hover {
+    background: rgba(249, 130, 108, 0.15);
+    border-color: rgba(249, 130, 108, 0.4);
+    color: var(--white-color);
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+
+  .skip-pairing-btn:hover svg {
+    transform: translateX(3px);
+  }
+
+  .skip-pairing-btn:active {
+    transform: translateY(0);
+  }
+
+  /* Hide skip button when progress is active */
+  .progress-container.active ~ .skip-pairing-btn {
+    opacity: 0;
+    pointer-events: none;
+  }
