@@ -156,7 +156,7 @@ async function setEyeStateCharacteristic(value) {
       updateBLECharValue('ble-eyestate', value);
     })
     .catch(error => {
-      console.log('Argh! ' + error);
+      console.error('Argh! ' + error);
     });
 }
 
@@ -167,7 +167,7 @@ function setVisemeCharacteristic(value) {
       updateBLECharValue('ble-viseme', value);
     })
     .catch(error => {
-      console.log('Argh! ' + error);
+      console.error('Argh! ' + error);
     });
 }
 
@@ -181,7 +181,7 @@ function setdisplayBrightnessCharacteristic(value) {
         updateBLECharValue('ble-brightness', value);
       })
       .catch(error => {
-        console.log('Argh! ' + error);
+        console.error('Argh! ' + error);
       });
   }
 }
@@ -196,7 +196,7 @@ function setHornLedBrightnessCharacteristic(value) {
         updateBLECharValue('ble-hornled', value);
       })
       .catch(error => {
-        console.log('Argh! ' + error);
+        console.error('Argh! ' + error);
       });
   }
 }
@@ -211,7 +211,7 @@ function setCheekPanelBrightnessCharacteristic(value) {
         updateBLECharValue('ble-cheekpanel', value);
       })
       .catch(error => {
-        console.log('Argh! ' + error);
+        console.error('Argh! ' + error);
       });
   }
 }
@@ -227,7 +227,7 @@ function setCheekBgColorCharacteristic(r, g, b) {
         updateBLECharColorValue('ble-cheekbgcolor', r, g, b);
       })
       .catch(error => {
-        console.log('Argh! ' + error);
+        console.error('Argh! ' + error);
       });
   }
 }
@@ -243,17 +243,17 @@ function setCheekFadeColorCharacteristic(r, g, b) {
         updateBLECharColorValue('ble-cheekfadecolor', r, g, b);
       })
       .catch(error => {
-        console.log('Argh! ' + error);
+        console.error('Argh! ' + error);
       });
   }
 }
 
-const throttledAndDebouncedsetVisemeCharacteristic = throttleAndDebounce(setVisemeCharacteristic, 800, 300);
-const throttledAndDebouncedSetDisplayBrightness = throttleAndDebounce(setdisplayBrightnessCharacteristic, 300, 200);
-const throttledAndDebouncedSetHornLedBrightness = throttleAndDebounce(setHornLedBrightnessCharacteristic, 300, 200);
-const throttledAndDebouncedSetCheekPanelBrightness = throttleAndDebounce(setCheekPanelBrightnessCharacteristic, 300, 200);
-const throttledAndDebouncedSetCheekBgColor = throttleAndDebounce(setCheekBgColorCharacteristic, 300, 200);
-const throttledAndDebouncedSetCheekFadeColor = throttleAndDebounce(setCheekFadeColorCharacteristic, 300, 200);
+const throttledAndDebouncedsetVisemeCharacteristic = throttleAndDebounce(setVisemeCharacteristic, 100, 50);
+const throttledAndDebouncedSetDisplayBrightness = throttleAndDebounce(setdisplayBrightnessCharacteristic, 100, 50);
+const throttledAndDebouncedSetHornLedBrightness = throttleAndDebounce(setHornLedBrightnessCharacteristic, 100, 50);
+const throttledAndDebouncedSetCheekPanelBrightness = throttleAndDebounce(setCheekPanelBrightnessCharacteristic, 100, 50);
+const throttledAndDebouncedSetCheekBgColor = throttleAndDebounce(setCheekBgColorCharacteristic, 100, 50);
+const throttledAndDebouncedSetCheekFadeColor = throttleAndDebounce(setCheekFadeColorCharacteristic, 100, 50);
 
 // Throttle and debounce function
 function throttleAndDebounce(func, throttleDelay, debounceDelay) {
