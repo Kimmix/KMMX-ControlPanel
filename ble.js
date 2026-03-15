@@ -17,8 +17,135 @@ let hornLedBrightnessCharacteristic;
 let cheekPanelBrightnessCharacteristic;
 let bleDevice; // Store the connected device
 
+//? Try to reconnect to previously paired device
+async function tryAutoReconnect() {
+  try {
+    // Check if Web Bluetooth API supports getDevices (Chrome 85+)
+    if (!navigator.bluetooth || !navigator.bluetooth.getDevices) {
+      console.log('Auto-reconnect not supported in this browser');
+      return false;
+    }
+
+    const devices = await navigator.bluetooth.getDevices();
+    console.log('Previously paired devices:', devices);
+
+    // Find our KMMX device
+    const kmmxDevice = devices.find(device => device.name === bleUUID.name);
+
+    if (!kmmxDevice) {
+      console.log('No previously paired KMMX device found');
+      return false;
+    }
+
+    console.log('Found previously paired device, attempting to reconnect...');
+
+    // Check if device is already connected
+    if (kmmxDevice.gatt.connected) {
+      console.log('Device already connected');
+      bleDevice = kmmxDevice;
+      bleDevice.addEventListener('gattserverdisconnected', onDisconnected);
+      await connectToDevice(bleDevice, true);
+      return true;
+    }
+
+    // Try to reconnect
+    bleDevice = kmmxDevice;
+    bleDevice.addEventListener('gattserverdisconnected', onDisconnected);
+
+    await connectToDevice(bleDevice, true);
+    return true;
+
+  } catch (error) {
+    console.error('Auto-reconnect failed:', error);
+    // Clean up on failure
+    bleDevice = null;
+    return false;
+  }
+}
+
+//? Connect to a BLE device (new or existing)
+async function connectToDevice(device, isReconnect = false) {
+  // Progress update helper
+  const updateBLEProgress = (percent, text) => {
+    if (typeof updateProgress === 'function') {
+      updateProgress(percent, text);
+    }
+  };
+
+  if (!isReconnect) {
+    updateBLEProgress(50, 'Connecting...');
+  }
+
+  // Check if already connected, if not connect
+  let server;
+  if (device.gatt.connected) {
+    console.log('Device already connected');
+    server = device.gatt;
+  } else {
+    console.log('Connecting to device...');
+    server = await device.gatt.connect();
+  }
+
+  console.log('Connected to GATT Server');
+
+  if (!isReconnect) {
+    updateBLEProgress(65, 'Loading...');
+  }
+
+  const service = await server.getPrimaryService(bleUUID.service);
+
+  console.log('Getting service...');
+  if (!isReconnect) {
+    updateBLEProgress(75, 'Syncing...');
+  }
+
+  eyeStateCharacteristic = await service.getCharacteristic(bleUUID.characteristic.eyeState);
+  displayBrightnessCharacteristic = await service.getCharacteristic(bleUUID.characteristic.display);
+  visemeCharacteristic = await service.getCharacteristic(bleUUID.characteristic.viseme);
+  hornLedBrightnessCharacteristic = await service.getCharacteristic(bleUUID.characteristic.hornLedBrightness);
+  cheekPanelBrightnessCharacteristic = await service.getCharacteristic(bleUUID.characteristic.cheekPanelBrightness);
+
+  console.log('Reading value...');
+  if (!isReconnect) {
+    updateBLEProgress(90, 'Reading...');
+  }
+
+  let eyeStateValue = await eyeStateCharacteristic.readValue();
+  let displayBrightnessValue = await displayBrightnessCharacteristic.readValue();
+  let visemeValue = await visemeCharacteristic.readValue();
+  let hornLedBrightnessValue = await hornLedBrightnessCharacteristic.readValue();
+  let cheekPanelBrightnessValue = await cheekPanelBrightnessCharacteristic.readValue();
+
+  console.log(`Eye state is ${eyeStateValue.getUint8(0)}`);
+  console.log(`Display brightness is ${displayBrightnessValue.getUint8(0)}`);
+  console.log(`Viseme value is ${visemeValue.getUint8(0)}`);
+  console.log(`Horn LED brightness is ${hornLedBrightnessValue.getUint8(0)}`);
+  console.log(`Cheek Panel brightness is ${cheekPanelBrightnessValue.getUint8(0)}`);
+
+  if (!isReconnect) {
+    updateBLEProgress(100, 'Connected!');
+  }
+
+  isStatusConnected(true);
+  setBrightnessvalue(displayBrightnessValue.getUint8(0));
+  setExpression(eyeStateValue.getUint8(0));
+  setViseme(visemeValue.getUint8(0));
+  setHornLedBrightnessValue(hornLedBrightnessValue.getUint8(0));
+  setCheekPanelBrightnessValue(cheekPanelBrightnessValue.getUint8(0));
+  updateBLECharacteristicsDisplay(eyeStateValue.getUint8(0), displayBrightnessValue.getUint8(0), visemeValue.getUint8(0), hornLedBrightnessValue.getUint8(0), cheekPanelBrightnessValue.getUint8(0));
+}
+
 async function startBLE() {
   try {
+    // Progress update helper
+    const updateBLEProgress = (percent, text) => {
+      if (typeof updateProgress === 'function') {
+        updateProgress(percent, text);
+      }
+    };
+
+    updateBLEProgress(30, 'Searching...');
+
     const device = await navigator.bluetooth.requestDevice({
       filters: [
         { name: bleUUID.name },
@@ -28,39 +155,11 @@ async function startBLE() {
 
     bleDevice = device; // Store the device reference
     console.log(device.name);
+
     device.addEventListener('gattserverdisconnected', onDisconnected);
-    const server = await device.gatt.connect();
 
-    console.log('Connected to GATT Server');
-    const service = await server.getPrimaryService(bleUUID.service);
-
-    console.log('Getting service...');
-    eyeStateCharacteristic = await service.getCharacteristic(bleUUID.characteristic.eyeState);
-    displayBrightnessCharacteristic = await service.getCharacteristic(bleUUID.characteristic.display);
-    visemeCharacteristic = await service.getCharacteristic(bleUUID.characteristic.viseme);
-    hornLedBrightnessCharacteristic = await service.getCharacteristic(bleUUID.characteristic.hornLedBrightness);
-    cheekPanelBrightnessCharacteristic = await service.getCharacteristic(bleUUID.characteristic.cheekPanelBrightness);
-
-    console.log('Reading value...');
-    let eyeStateValue = await eyeStateCharacteristic.readValue();
-    let displayBrightnessValue = await displayBrightnessCharacteristic.readValue();
-    let visemeValue = await visemeCharacteristic.readValue();
-    let hornLedBrightnessValue = await hornLedBrightnessCharacteristic.readValue();
-    let cheekPanelBrightnessValue = await cheekPanelBrightnessCharacteristic.readValue();
-
-    console.log(`Eye state is ${eyeStateValue.getUint8(0)}`);
-    console.log(`Display brightness is ${displayBrightnessValue.getUint8(0)}`);
-    console.log(`Viseme value is ${visemeValue.getUint8(0)}`);
-    console.log(`Horn LED brightness is ${hornLedBrightnessValue.getUint8(0)}`);
-    console.log(`Cheek Panel brightness is ${cheekPanelBrightnessValue.getUint8(0)}`);
-
-    isStatusConnected(true);
-    setBrightnessvalue(displayBrightnessValue.getUint8(0));
-    setExpression(eyeStateValue.getUint8(0));
-    setViseme(visemeValue.getUint8(0));
-    setHornLedBrightnessValue(hornLedBrightnessValue.getUint8(0));
-    setCheekPanelBrightnessValue(cheekPanelBrightnessValue.getUint8(0));
-    updateBLECharacteristicsDisplay(eyeStateValue.getUint8(0), displayBrightnessValue.getUint8(0), visemeValue.getUint8(0), hornLedBrightnessValue.getUint8(0), cheekPanelBrightnessValue.getUint8(0));
+    // Use the shared connection function
+    await connectToDevice(device, false);
 
   } catch (error) {
     console.error('Error:', error);
@@ -74,6 +173,7 @@ function onDisconnected(event) {
   console.log(`Device ${device.name} is disconnected.`);
   isStatusConnected(false);
   updateBLECharacteristicsDisplay('-', '-', '-', '-', '-');
+  showDisconnectPopup();
 }
 
 async function setEyeStateCharacteristic(value) {

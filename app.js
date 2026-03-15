@@ -1,11 +1,82 @@
 //! Show main page
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
     const splash = document.getElementById('splash');
-    splash.addEventListener('click', async function () {
-        await startBLE();
-        // showControlPanel();
-    });
+    const progressContainer = document.getElementById('progressContainer');
+
+    // Try to auto-reconnect to previously paired device
+    const autoConnected = await tryAutoReconnect();
+
+    if (autoConnected) {
+        // Successfully reconnected, skip splash screen
+        console.log('Auto-reconnected successfully, skipping splash');
+        showControlPanel();
+    } else {
+        // No previous device or reconnection failed, show splash screen
+        splash.addEventListener('click', async function () {
+            // Show progress bar and status text
+            if (progressContainer) {
+                progressContainer.classList.add('active');
+            }
+
+            // Vibrate on tap
+            vibrateDevice();
+
+            // First, try to reconnect to paired device
+            const reconnected = await tryAutoReconnect();
+
+            if (!reconnected) {
+                // No paired device found, show pairing UI
+                await startBLEWithProgress();
+            }
+        });
+    }
 });
+
+//? Start BLE with progress feedback
+async function startBLEWithProgress() {
+    const loaderProgress = document.getElementById('loaderProgress');
+
+    try {
+        // Show status text
+        if (loaderProgress) {
+            loaderProgress.classList.add('active');
+        }
+
+        await startBLE();
+
+    } catch (error) {
+        console.error('BLE connection failed:', error);
+        updateProgress(0, 'Failed');
+
+        // Reset UI after error
+        setTimeout(() => {
+            const progressContainer = document.getElementById('progressContainer');
+            const loaderProgress = document.getElementById('loaderProgress');
+
+            if (progressContainer) {
+                progressContainer.classList.remove('active');
+            }
+            if (loaderProgress) {
+                loaderProgress.classList.remove('active');
+                loaderProgress.textContent = '';
+            }
+            updateProgress(0);
+        }, 2000);
+    }
+}
+
+//? Update progress bar and loader text
+function updateProgress(percent, text) {
+    const progressBar = document.getElementById('progressBar');
+    const loaderProgress = document.getElementById('loaderProgress');
+
+    if (progressBar) {
+        progressBar.style.width = percent + '%';
+    }
+    if (loaderProgress && text) {
+        loaderProgress.textContent = text;
+    }
+}
 
 //? Check BLE compatibility
 try {
@@ -88,6 +159,15 @@ function showControlPanel() {
     // document.documentElement.requestFullscreen();
     splash.style.display = 'none';
     mainContent.style.display = 'flex';
+}
+
+//? Disconnect Popup
+function showDisconnectPopup() {
+    const popup = document.getElementById('disconnectPopup');
+    if (popup) {
+        popup.classList.add('show');
+        vibrateDevice();
+    }
 }
 
 //* ------- Gyroscope ---------
