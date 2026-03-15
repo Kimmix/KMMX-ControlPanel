@@ -301,6 +301,10 @@
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
 
+  /* Native-like overscroll bounce */
+  overscroll-behavior-y: contain;
+  overscroll-behavior-x: none;
+
   /* Hide scrollbar */
   scrollbar-width: none;
   -ms-overflow-style: none;
