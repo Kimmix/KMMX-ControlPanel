@@ -142,6 +142,49 @@
   }
 }
 
+/* Reboot Device Button */
+.reboot-device-button {
+  width: 100%;
+  height: auto;
+  padding: 12px 16px;
+  margin-top: 10px;
+  background: rgba(203, 32, 64, 0.1);
+  border: 1px solid rgba(203, 32, 64, 0.3);
+  border-radius: 8px;
+  color: var(--white-color);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Montserrat", sans-serif;
+}
+
+.reboot-device-button:hover:not(:disabled) {
+  background: rgba(203, 32, 64, 0.2);
+  border-color: rgba(203, 32, 64, 0.5);
+  transform: translateY(-2px);
+}
+
+.reboot-device-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.reboot-device-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.reboot-device-button svg {
+  transition: transform 0.3s ease;
+}
+
+.reboot-device-button:hover:not(:disabled) svg {
+  transform: rotate(180deg);
+}
+
 /* Settings Page - Now uses unified .page-content-container class */
 
 .settings-section {

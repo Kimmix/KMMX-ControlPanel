@@ -8,7 +8,8 @@ const bleUUID = {
     hornLedBrightness: "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d",
     cheekPanelBrightness: "b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e",
     cheekBgColor: "c3d4e5f6-a7b8-4c5d-9e0f-1a2b3c4d5e6f",
-    cheekFadeColor: "d4e5f6a7-b8c9-4d5e-9f0a-1b2c3d4e5f6a"
+    cheekFadeColor: "d4e5f6a7-b8c9-4d5e-9f0a-1b2c3d4e5f6a",
+    reboot: "e5f6a7b8-c9d0-4e5f-a0b1-2c3d4e5f6a7b"
   }
 };
 
@@ -19,6 +20,7 @@ let hornLedBrightnessCharacteristic;
 let cheekPanelBrightnessCharacteristic;
 let cheekBgColorCharacteristic;
 let cheekFadeColorCharacteristic;
+let rebootCharacteristic;
 let bleDevice; // Store the connected device
 
 //? Connect to a BLE device (new or existing)
@@ -64,6 +66,7 @@ async function connectToDevice(device, isReconnect = false) {
   cheekPanelBrightnessCharacteristic = await service.getCharacteristic(bleUUID.characteristic.cheekPanelBrightness);
   cheekBgColorCharacteristic = await service.getCharacteristic(bleUUID.characteristic.cheekBgColor);
   cheekFadeColorCharacteristic = await service.getCharacteristic(bleUUID.characteristic.cheekFadeColor);
+  rebootCharacteristic = await service.getCharacteristic(bleUUID.characteristic.reboot);
 
   console.log('Reading value...');
   if (!isReconnect) {
@@ -381,6 +384,69 @@ async function refreshBLECharacteristics() {
           <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
         </svg>
         Refresh Values
+      `;
+    }
+  }
+}
+
+// Reboot device
+async function rebootDevice() {
+  if (!bleDevice || !bleDevice.gatt.connected) {
+    alert('Device not connected');
+    return;
+  }
+
+  // Confirm before rebooting
+  if (!confirm('Are you sure you want to reboot the device? This will disconnect and restart the device.')) {
+    return;
+  }
+
+  try {
+    const rebootBtn = document.getElementById('rebootDeviceBtn');
+    if (rebootBtn) {
+      rebootBtn.disabled = true;
+      rebootBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px; animation: spin 1s linear infinite;">
+          <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+        </svg>
+        Rebooting...
+      `;
+    }
+
+    // Write non-zero value to trigger reboot
+    await rebootCharacteristic.writeValue(Uint8Array.of(1));
+    console.log('Reboot command sent to device');
+
+    // Vibrate to confirm
+    if (typeof vibrateDevice === 'function') {
+      vibrateDevice('success');
+    }
+
+    // Reset button after a delay
+    setTimeout(() => {
+      if (rebootBtn) {
+        rebootBtn.disabled = false;
+        rebootBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px;">
+            <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+          </svg>
+          Reboot Device
+        `;
+      }
+    }, 3000);
+
+  } catch (error) {
+    console.error('Error rebooting device:', error);
+    alert('Failed to reboot device: ' + error);
+
+    const rebootBtn = document.getElementById('rebootDeviceBtn');
+    if (rebootBtn) {
+      rebootBtn.disabled = false;
+      rebootBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px;">
+          <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+        </svg>
+        Reboot Device
       `;
     }
   }

@@ -112,6 +112,11 @@ function isStatusConnected(bool) {
         if (refreshBleBtn) {
             refreshBleBtn.disabled = false;
         }
+        // Enable reboot device button
+        const rebootDeviceBtn = document.getElementById('rebootDeviceBtn');
+        if (rebootDeviceBtn) {
+            rebootDeviceBtn.disabled = false;
+        }
     } else {
         clearInterval(timerInterval);
         if (statusElement) {
@@ -130,6 +135,11 @@ function isStatusConnected(bool) {
         const refreshBleBtn = document.getElementById('refreshBleBtn');
         if (refreshBleBtn) {
             refreshBleBtn.disabled = true;
+        }
+        // Disable reboot device button
+        const rebootDeviceBtn = document.getElementById('rebootDeviceBtn');
+        if (rebootDeviceBtn) {
+            rebootDeviceBtn.disabled = true;
         }
     }
 }
