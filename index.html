@@ -81,16 +81,21 @@
       </svg>
     </div>
 
+    <!-- Static Header (shared across all pages) -->
+    <div class="static-header">
+      <div class="header">
+        <img class="glow-icon" src="asset/svg/control-icon.svg" alt="Icon">
+        <div class="header-title">
+          <h2>KMMX</h2>
+          <h3 id="header-subtitle" class="header-subtitle">Control panel</h3>
+        </div>
+        <img id="movingElement" class="dotted-array" src="asset/svg/dot-array.svg" alt="dotted array">
+      </div>
+    </div>
+
     <!-- Page: Home/Control -->
     <div id="page-home" class="page active">
       <div id="pairingMode" class="control-panel">
-        <div class="header">
-          <img class="glow-icon" src="asset/svg/control-icon.svg" alt="Icon">
-          <div class="header-title">
-            <h2>KMMX</h2>
-            <h3>Control panel</h3>
-          </div>
-        </div>
 
         <!-- Expression Content Container (Scrollable) -->
         <div class="expression-content-container">
@@ -98,7 +103,6 @@
           <div class="expression">
             <div class="expression-title">
               <h2>Expression <span id="expBtnCount">0</span></h2>
-              <img id="movingElement" class="dotted-array" src="asset/svg/dot-array.svg" alt="dotted array">
             </div>
 
             <!-- Current Expression Display -->
@@ -126,14 +130,6 @@
     <!-- Page: Settings -->
     <div id="page-settings" class="page">
       <div class="control-panel">
-        <div class="header">
-          <img class="glow-icon" src="asset/svg/control-icon.svg" alt="Icon">
-          <div class="header-title">
-            <h2>Settings</h2>
-            <h3>Audio & Display</h3>
-          </div>
-        </div>
-
         <!-- Settings Content Container (Scrollable) -->
         <div class="settings-content-container">
           <!-- Settings Section: Audio -->
@@ -295,14 +291,6 @@
     <!-- Page: About -->
     <div id="page-about" class="page">
       <div class="control-panel">
-        <div class="header">
-          <img class="glow-icon" src="asset/svg/control-icon.svg" alt="Icon">
-          <div class="header-title">
-            <h2>About</h2>
-            <h3>Information</h3>
-          </div>
-        </div>
-
         <div class="about-content">
           <!-- Hero Card -->
           <div class="about-card about-hero-card">

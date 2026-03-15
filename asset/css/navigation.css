@@ -89,6 +89,13 @@
   display: block;
 }
 
+/* Add padding to account for static header */
+.page .control-panel {
+  padding-top: 10vh;
+  min-padding-top: 80px;
+  max-padding-top: 140px;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

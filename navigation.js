@@ -2,6 +2,14 @@
 document.addEventListener('DOMContentLoaded', function () {
     const navIcons = document.querySelectorAll('.nav-icon');
     const pages = document.querySelectorAll('.page');
+    const headerSubtitle = document.getElementById('header-subtitle');
+
+    // Page subtitle mapping
+    const pageSubtitles = {
+        'home': 'Control panel',
+        'settings': 'Setting',
+        'about': 'Information'
+    };
 
     // Navigation click handler
     navIcons.forEach(icon => {
@@ -26,6 +34,19 @@ document.addEventListener('DOMContentLoaded', function () {
             const targetPageElement = document.getElementById(`page-${targetPage}`);
             if (targetPageElement) {
                 targetPageElement.classList.add('active');
+            }
+
+            // Update header subtitle with smooth transition
+            if (headerSubtitle && pageSubtitles[targetPage]) {
+                headerSubtitle.classList.add('fade-out');
+                setTimeout(() => {
+                    headerSubtitle.textContent = pageSubtitles[targetPage];
+                    headerSubtitle.classList.remove('fade-out');
+                    headerSubtitle.classList.add('fade-in');
+                    setTimeout(() => {
+                        headerSubtitle.classList.remove('fade-in');
+                    }, 300);
+                }, 150);
             }
         });
     });
