@@ -354,6 +354,10 @@ function toggleDebugInfo() {
 }
 
 async function populateDebugInfo() {
+    // Display Mode (PWA detection)
+    const displayMode = getDisplayMode();
+    document.getElementById('debug-display-mode').textContent = displayMode;
+
     // User Agent
     document.getElementById('debug-ua').textContent = navigator.userAgent;
 
@@ -367,6 +371,21 @@ async function populateDebugInfo() {
     // Viewport
     document.getElementById('debug-viewport').textContent =
         `${window.innerWidth} × ${window.innerHeight}`;
+}
+
+//? Get display mode (PWA detection)
+function getDisplayMode() {
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+    const isFullscreen = window.matchMedia('(display-mode: fullscreen)').matches;
+    const isMinimalUI = window.matchMedia('(display-mode: minimal-ui)').matches;
+
+    // iOS Safari specific check
+    const isIOSStandalone = window.navigator.standalone === true;
+
+    if (isFullscreen) return 'Fullscreen (PWA)';
+    if (isStandalone || isIOSStandalone) return 'Standalone (PWA)';
+    if (isMinimalUI) return 'Minimal UI (PWA)';
+    return 'Browser';
 }
 
 //? Haptic Feedback Patterns
