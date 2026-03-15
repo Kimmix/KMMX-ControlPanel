@@ -496,7 +496,7 @@ hr.cenhr {
   display: flex;
   flex-direction: column;
   margin-top: 10px;
-  margin-bottom: var(--footer-height);
+  margin-bottom: 100px;
 
   .matrix-container {
     display: flex;

@@ -34,13 +34,15 @@ let timerValue = 0;
 let timerInterval;
 const timerElement = document.getElementById("timer");
 function updateStatusAndTimer() {
-    const minutes = Math.floor(timerValue / 60);
-    const seconds = timerValue % 60;
-    const formattedTimer = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-    timerElement.textContent = formattedTimer;
+    if (timerElement) {
+        const minutes = Math.floor(timerValue / 60);
+        const seconds = timerValue % 60;
+        const formattedTimer = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        timerElement.textContent = formattedTimer;
+    }
 }
 
-//? Connection status 
+//? Connection status
 const statusElement = document.getElementById("status");
 const pill = document.getElementById("s-pill");
 function isStatusConnected(bool) {
@@ -50,13 +52,23 @@ function isStatusConnected(bool) {
             updateStatusAndTimer();
         }, 1000);
         showControlPanel();
-        statusElement.textContent = "Connected";
-        pill.classList.remove('inactive')
+        if (statusElement) {
+            statusElement.textContent = "Connected";
+        }
+        if (pill) {
+            pill.classList.remove('inactive');
+        }
     } else {
         clearInterval(timerInterval);
-        statusElement.textContent = "Disconnected";
-        document.getElementById("timer").textContent = "0:00";
-        pill.classList.add('inactive')
+        if (statusElement) {
+            statusElement.textContent = "Disconnected";
+        }
+        if (timerElement) {
+            timerElement.textContent = "0:00";
+        }
+        if (pill) {
+            pill.classList.add('inactive');
+        }
         timerValue = 0;
     }
 }
