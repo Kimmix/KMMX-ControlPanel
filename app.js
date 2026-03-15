@@ -414,38 +414,6 @@ async function populateDebugInfo() {
     document.getElementById('debug-connection').textContent = connectionType;
 }
 
-//? Toast Notification System
-function showToast(message, type = 'info', duration = 3000) {
-    const container = document.getElementById('toastContainer');
-    if (!container) return;
-
-    // Create toast element
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-
-    // Add icon based on type
-    const icons = {
-        success: '✓',
-        error: '✗',
-        info: 'ℹ'
-    };
-
-    toast.innerHTML = `
-        <span class="toast-icon">${icons[type] || icons.info}</span>
-        <span>${message}</span>
-    `;
-
-    container.appendChild(toast);
-
-    // Auto-remove after duration
-    setTimeout(() => {
-        toast.classList.add('hiding');
-        setTimeout(() => {
-            container.removeChild(toast);
-        }, 300); // Match animation duration
-    }, duration);
-}
-
 //? Haptic Feedback Patterns
 function vibrateDevice(pattern = 'light') {
     if (!navigator.vibrate) return;
