@@ -302,11 +302,6 @@ function toggleBLECharacteristics() {
         // Show BLE characteristics
         bleCharContent.style.display = 'block';
         bleCharBtn.classList.add('expanded');
-
-        // Scroll to bottom after a short delay to allow rendering
-        setTimeout(() => {
-            bleCharContent.scrollIntoView({ behavior: 'smooth', block: 'end' });
-        }, 100);
     } else {
         // Hide BLE characteristics
         bleCharContent.style.display = 'none';
@@ -327,11 +322,6 @@ function toggleDebugInfo() {
         debugInfo.style.display = 'block';
         debugBtn.classList.add('expanded');
         populateDebugInfo();
-
-        // Scroll to bottom after a short delay to allow rendering
-        setTimeout(() => {
-            debugInfo.scrollIntoView({ behavior: 'smooth', block: 'end' });
-        }, 100);
     } else {
         // Hide debug info
         debugInfo.style.display = 'none';

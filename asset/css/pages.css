@@ -130,26 +130,7 @@
   }
 }
 
-/* Settings Page */
-.settings-content-container {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-bottom: 60px;
-  margin-top: 10px;
-
-  /* Smooth scrolling */
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-
-  /* Hide scrollbar */
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.settings-content-container::-webkit-scrollbar {
-  display: none;
-}
+/* Settings Page - Now uses unified .page-content-container class */
 
 .settings-section {
   margin: 30px 0;
@@ -164,16 +145,16 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* About Page */
+/* About Page - Now uses unified .page-content-container class */
+
 .about-content {
-  padding: 20px 0;
+  padding: 20px 0 80px;
   display: flex;
   flex-direction: column;
   gap: 20px;
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
-  overflow-y: auto;
 }
 
 .about-card {

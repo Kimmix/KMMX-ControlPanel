@@ -6,12 +6,15 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  background: rgba(22, 22, 26, 0.9);
+  background: linear-gradient(135deg,
+    rgba(22, 22, 26, 0.7) 0%,
+    rgba(16, 16, 20, 0.8) 100%);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-radius: 50px;
   padding: 12px 8px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   z-index: 1000;
   animation: slideInRight 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -91,9 +94,29 @@
 
 /* Add padding to account for static header */
 .page .control-panel {
-  padding-top: 10vh;
-  min-padding-top: 80px;
-  max-padding-top: 140px;
+  padding-top: clamp(90px, 10vh + 20px, 150px);
+}
+
+/* Unified scrollable container for all pages */
+.page-content-container {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Add bottom padding so content can scroll past the floating nav (nav height ~200px + 20px bottom margin + extra space) */
+  padding-bottom: 240px;
+  /* No padding-top so content can scroll behind header for blur effect */
+
+  /* Smooth scrolling */
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+
+  /* Hide scrollbar */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.page-content-container::-webkit-scrollbar {
+  display: none;
 }
 
 @keyframes fadeIn {
