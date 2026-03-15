@@ -52,42 +52,36 @@ const expression = [
     {
         id: 8,
         buttonId: 'button8',
-        name: 'Sleep',
+        name: 'Cry',
         src: null, // Placeholder - add icon later
     },
     {
         id: 9,
         buttonId: 'button9',
-        name: 'Cry',
+        name: 'Doubted',
         src: null, // Placeholder - add icon later
     },
     {
         id: 10,
         buttonId: 'button10',
-        name: 'Doubted',
+        name: 'Rounded',
         src: null, // Placeholder - add icon later
     },
     {
         id: 11,
         buttonId: 'button11',
-        name: 'Rounded',
+        name: 'Sharp',
         src: null, // Placeholder - add icon later
     },
     {
         id: 12,
         buttonId: 'button12',
-        name: 'Sharp',
+        name: 'Giggle',
         src: null, // Placeholder - add icon later
     },
     {
         id: 13,
         buttonId: 'button13',
-        name: 'Giggle',
-        src: null, // Placeholder - add icon later
-    },
-    {
-        id: 14,
-        buttonId: 'button14',
         name: 'Unimpressed',
         src: null, // Placeholder - add icon later
     },
