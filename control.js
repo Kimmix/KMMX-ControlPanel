@@ -3,33 +3,98 @@
 const expression = [
     {
         id: 0,
-        buttonId: 'button1',
+        buttonId: 'button0',
+        name: 'Idle',
         src: 'asset/svg/expression/default.svg',
     },
     {
         id: 1,
-        buttonId: 'button2',
+        buttonId: 'button1',
+        name: 'Googly',
         src: 'asset/svg/expression/googly.svg',
     },
     {
         id: 2,
-        buttonId: 'button3',
+        buttonId: 'button2',
+        name: 'Heart',
         src: 'asset/svg/expression/heart.svg',
     },
     {
         id: 3,
-        buttonId: 'button4',
+        buttonId: 'button3',
+        name: 'Smile',
         src: 'asset/svg/expression/smile.svg',
     },
     {
         id: 4,
+        buttonId: 'button4',
+        name: 'Angry',
+        src: null, // Placeholder - add icon later
+    },
+    {
+        id: 5,
         buttonId: 'button5',
-        src: 'asset/svg/expression/default.svg',
+        name: 'Sad',
+        src: null, // Placeholder - add icon later
+    },
+    {
+        id: 6,
+        buttonId: 'button6',
+        name: 'Boop',
+        src: null, // Placeholder - add icon later
+    },
+    {
+        id: 7,
+        buttonId: 'button7',
+        name: 'O Eye',
+        src: null, // Placeholder - add icon later
+    },
+    {
+        id: 8,
+        buttonId: 'button8',
+        name: 'Sleep',
+        src: null, // Placeholder - add icon later
+    },
+    {
+        id: 9,
+        buttonId: 'button9',
+        name: 'Cry',
+        src: null, // Placeholder - add icon later
+    },
+    {
+        id: 10,
+        buttonId: 'button10',
+        name: 'Doubted',
+        src: null, // Placeholder - add icon later
+    },
+    {
+        id: 11,
+        buttonId: 'button11',
+        name: 'Rounded',
+        src: null, // Placeholder - add icon later
+    },
+    {
+        id: 12,
+        buttonId: 'button12',
+        name: 'Sharp',
+        src: null, // Placeholder - add icon later
+    },
+    {
+        id: 13,
+        buttonId: 'button13',
+        name: 'Giggle',
+        src: null, // Placeholder - add icon later
+    },
+    {
+        id: 14,
+        buttonId: 'button14',
+        name: 'Unimpressed',
+        src: null, // Placeholder - add icon later
     },
 ]
 document.getElementById('expBtnCount').textContent = expression.length;
 
-// Create sub button
+// Create expression buttons
 const expBtn = document.getElementById('exp-btn');
 expression.forEach(exp => {
     const button = document.createElement('button');
@@ -37,11 +102,23 @@ expression.forEach(exp => {
     button.className = 'exp-btn';
     button.onclick = () => toggleButton(exp.buttonId);
 
-    const img = document.createElement('img');
-    img.src = exp.src;
-    img.alt = 'Expression';
+    // Add placeholder class and text if no icon is available
+    if (!exp.src) {
+        button.classList.add('placeholder');
+        button.title = exp.name;
 
-    button.appendChild(img);
+        // Create text element for placeholder
+        const textSpan = document.createElement('span');
+        textSpan.className = 'placeholder-text';
+        textSpan.textContent = exp.name;
+        button.appendChild(textSpan);
+    } else {
+        const img = document.createElement('img');
+        img.src = exp.src;
+        img.alt = exp.name;
+        button.appendChild(img);
+    }
+
     expBtn.appendChild(button);
 });
 
@@ -74,7 +151,8 @@ function setExpression(i) {
 
 let currentExp = 0;
 function setCurrentExpression(btn) {
-    document.getElementById('current-exp').src = btn.src;
+    // Grid layout doesn't need current expression preview
+    // Just provide haptic feedback
     vibrateDevice();
 }
 
