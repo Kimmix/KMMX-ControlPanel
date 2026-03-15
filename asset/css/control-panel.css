@@ -252,38 +252,62 @@
 /* Expression Content Container - Now uses unified .page-content-container class */
 
 /* EXPRESSION */
+/* Disable page-content-container scrolling for expression page */
+#page-home .page-content-container {
+  overflow: hidden;
+  padding-bottom: 0;
+}
+
 .expression {
   display: flex;
   flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
 
-  .expression-title {
-    display: flex;
-    justify-content: flex-start;
-    height: 45px;
-    width: 100%;
-    align-items: end;
+.expression-title {
+  display: flex;
+  justify-content: flex-start;
+  height: 45px;
+  width: 100%;
+  align-items: end;
+  flex-shrink: 0;
+}
 
-    >h2 {
-      font-size: 1.6rem;
+.expression-title > h2 {
+  font-size: 1.6rem;
+}
 
-      >span#expBtnCount {
-        display: inline-block;
-        background-color: var(--acc2-color);
-        border-radius: 16px;
-        padding: 1px 7px;
-        font-size: 0.5rem;
-        text-align: center;
-      }
-    }
-  }
+.expression-title > h2 > span#expBtnCount {
+  display: inline-block;
+  background-color: var(--acc2-color);
+  border-radius: 16px;
+  padding: 1px 7px;
+  font-size: 0.5rem;
+  text-align: center;
+}
 
-  .expression-container {
-    display: flex;
-    flex-direction: column;
-    z-index: 1;
-    margin-top: 10px;
-  }
+.expression-container {
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+  margin-top: 10px;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 35vh;
 
+  /* Smooth scrolling */
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+
+  /* Hide scrollbar */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.expression-container::-webkit-scrollbar {
+  display: none;
 }
 
 /* Current Expression Display - Option 1: Minimal & Clean */
@@ -298,6 +322,7 @@
   border-left: 3px solid var(--acc1-color);
   border-radius: 8px;
   transition: all 300ms ease;
+  flex-shrink: 0;
 }
 
 .current-expression-icon {
