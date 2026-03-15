@@ -30,8 +30,8 @@
   flex-direction: column;
   gap: 8px;
   background: linear-gradient(135deg,
-    rgba(22, 22, 26, 0.7) 0%,
-    rgba(16, 16, 20, 0.8) 100%);
+    rgba(22, 22, 26, 0.25) 0%,
+    rgba(16, 16, 20, 0.25) 100%);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-radius: 50px;

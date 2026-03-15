@@ -256,12 +256,15 @@
 #page-home .page-content-container {
   overflow: hidden;
   padding-bottom: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .expression {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  flex: 1;
+  min-height: 0;
   overflow: hidden;
 }
 
@@ -293,6 +296,7 @@
   z-index: 1;
   margin-top: 10px;
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
   padding-bottom: 35vh;
