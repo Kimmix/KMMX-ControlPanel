@@ -367,51 +367,6 @@ async function populateDebugInfo() {
     // Viewport
     document.getElementById('debug-viewport').textContent =
         `${window.innerWidth} × ${window.innerHeight}`;
-
-    // BLE Support
-    let bleStatus = 'Not supported';
-    if (navigator.bluetooth) {
-        try {
-            const available = await navigator.bluetooth.getAvailability();
-            bleStatus = available ? '✓ Available' : '✗ Not available';
-        } catch (e) {
-            bleStatus = '✓ Supported (availability unknown)';
-        }
-    }
-    document.getElementById('debug-ble').textContent = bleStatus;
-
-    // Vibration Support
-    document.getElementById('debug-vibrate').textContent =
-        navigator.vibrate ? '✓ Supported' : '✗ Not supported';
-
-    // Orientation Support
-    const orientationSupport = typeof DeviceOrientationEvent !== 'undefined';
-    document.getElementById('debug-orientation').textContent =
-        orientationSupport ? '✓ Supported' : '✗ Not supported';
-
-    // Online Status
-    document.getElementById('debug-online').textContent =
-        navigator.onLine ? '✓ Online' : '✗ Offline';
-
-    // Service Worker
-    let swStatus = 'Not supported';
-    if ('serviceWorker' in navigator) {
-        try {
-            const registration = await navigator.serviceWorker.getRegistration();
-            swStatus = registration ? '✓ Registered' : '✗ Not registered';
-        } catch (e) {
-            swStatus = '✓ Supported (not registered)';
-        }
-    }
-    document.getElementById('debug-sw').textContent = swStatus;
-
-    // Connection Type
-    let connectionType = 'Unknown';
-    if (navigator.connection || navigator.mozConnection || navigator.webkitConnection) {
-        const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-        connectionType = connection.effectiveType || connection.type || 'Unknown';
-    }
-    document.getElementById('debug-connection').textContent = connectionType;
 }
 
 //? Haptic Feedback Patterns
