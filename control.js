@@ -378,3 +378,109 @@ window.addEventListener('resize', () => {
     renderTotalCheekDots();
     renderCheekWhiteDots(cheekPanelValueInput.value);
 });
+
+//* --------- Cheek Panel Color Controls ---------
+const bgColorPicker = document.getElementById('bgColorPicker');
+const fadeColorPicker = document.getElementById('fadeColorPicker');
+const bgColorHex = document.getElementById('bgColorHex');
+const fadeColorHex = document.getElementById('fadeColorHex');
+
+// Helper function to convert hex to RGB
+function hexToRgb(hex) {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
+}
+
+// Helper function to convert RGB to hex
+function rgbToHex(r, g, b) {
+    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+}
+
+// Background color picker handler
+bgColorPicker.addEventListener('input', (e) => {
+    const color = e.target.value;
+    bgColorHex.textContent = color.toUpperCase();
+    const rgb = hexToRgb(color);
+    if (rgb) {
+        throttledAndDebouncedSetCheekBgColor(rgb.r, rgb.g, rgb.b);
+        vibrateDevice();
+    }
+});
+
+// Fade color picker handler
+fadeColorPicker.addEventListener('input', (e) => {
+    const color = e.target.value;
+    fadeColorHex.textContent = color.toUpperCase();
+    const rgb = hexToRgb(color);
+    if (rgb) {
+        throttledAndDebouncedSetCheekFadeColor(rgb.r, rgb.g, rgb.b);
+        vibrateDevice();
+    }
+});
+
+// Color preset buttons handler
+document.querySelectorAll('.color-preset-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const color = btn.getAttribute('data-color');
+        const target = btn.getAttribute('data-target');
+
+        if (target === 'bg') {
+            bgColorPicker.value = color;
+            bgColorHex.textContent = color.toUpperCase();
+            const rgb = hexToRgb(color);
+            if (rgb) {
+                throttledAndDebouncedSetCheekBgColor(rgb.r, rgb.g, rgb.b);
+            }
+        } else if (target === 'fade') {
+            fadeColorPicker.value = color;
+            fadeColorHex.textContent = color.toUpperCase();
+            const rgb = hexToRgb(color);
+            if (rgb) {
+                throttledAndDebouncedSetCheekFadeColor(rgb.r, rgb.g, rgb.b);
+            }
+        }
+        vibrateDevice();
+    });
+});
+
+// Set color values from BLE (called when connecting to device)
+function setCheekBgColorValue(r, g, b) {
+    const hex = rgbToHex(r, g, b);
+    bgColorPicker.value = hex;
+    bgColorHex.textContent = hex;
+}
+
+function setCheekFadeColorValue(r, g, b) {
+    const hex = rgbToHex(r, g, b);
+    fadeColorPicker.value = hex;
+    fadeColorHex.textContent = hex;
+}
+
+// Reset colors to default values
+function resetCheekColors() {
+    const defaultBgColor = '#FF446C';  // Default pink
+    const defaultFadeColor = '#F9826C';  // Default coral
+
+    // Update background color
+    bgColorPicker.value = defaultBgColor;
+    bgColorHex.textContent = defaultBgColor;
+    const bgRgb = hexToRgb(defaultBgColor);
+    if (bgRgb) {
+        throttledAndDebouncedSetCheekBgColor(bgRgb.r, bgRgb.g, bgRgb.b);
+    }
+
+    // Update fade color
+    fadeColorPicker.value = defaultFadeColor;
+    fadeColorHex.textContent = defaultFadeColor;
+    const fadeRgb = hexToRgb(defaultFadeColor);
+    if (fadeRgb) {
+        throttledAndDebouncedSetCheekFadeColor(fadeRgb.r, fadeRgb.g, fadeRgb.b);
+    }
+
+    // Haptic feedback
+    vibrateDevice();
+}

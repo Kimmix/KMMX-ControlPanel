@@ -6,7 +6,9 @@ const bleUUID = {
     eyeState: "49a36bb2-1c66-4e5c-8ff3-28e55a64beb3",
     viseme: "493d06f3-0fa0-4a90-88f1-ebaed0da9b80",
     hornLedBrightness: "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d",
-    cheekPanelBrightness: "b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e"
+    cheekPanelBrightness: "b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e",
+    cheekBgColor: "c3d4e5f6-a7b8-4c5d-9e0f-1a2b3c4d5e6f",
+    cheekFadeColor: "d4e5f6a7-b8c9-4d5e-9f0a-1b2c3d4e5f6a"
   }
 };
 
@@ -15,6 +17,8 @@ let displayBrightnessCharacteristic;
 let visemeCharacteristic;
 let hornLedBrightnessCharacteristic;
 let cheekPanelBrightnessCharacteristic;
+let cheekBgColorCharacteristic;
+let cheekFadeColorCharacteristic;
 let bleDevice; // Store the connected device
 
 //? Try to reconnect to previously paired device
@@ -104,6 +108,8 @@ async function connectToDevice(device, isReconnect = false) {
   visemeCharacteristic = await service.getCharacteristic(bleUUID.characteristic.viseme);
   hornLedBrightnessCharacteristic = await service.getCharacteristic(bleUUID.characteristic.hornLedBrightness);
   cheekPanelBrightnessCharacteristic = await service.getCharacteristic(bleUUID.characteristic.cheekPanelBrightness);
+  cheekBgColorCharacteristic = await service.getCharacteristic(bleUUID.characteristic.cheekBgColor);
+  cheekFadeColorCharacteristic = await service.getCharacteristic(bleUUID.characteristic.cheekFadeColor);
 
   console.log('Reading value...');
   if (!isReconnect) {
@@ -115,12 +121,16 @@ async function connectToDevice(device, isReconnect = false) {
   let visemeValue = await visemeCharacteristic.readValue();
   let hornLedBrightnessValue = await hornLedBrightnessCharacteristic.readValue();
   let cheekPanelBrightnessValue = await cheekPanelBrightnessCharacteristic.readValue();
+  let cheekBgColorValue = await cheekBgColorCharacteristic.readValue();
+  let cheekFadeColorValue = await cheekFadeColorCharacteristic.readValue();
 
   console.log(`Eye state is ${eyeStateValue.getUint8(0)}`);
   console.log(`Display brightness is ${displayBrightnessValue.getUint8(0)}`);
   console.log(`Viseme value is ${visemeValue.getUint8(0)}`);
   console.log(`Horn LED brightness is ${hornLedBrightnessValue.getUint8(0)}`);
   console.log(`Cheek Panel brightness is ${cheekPanelBrightnessValue.getUint8(0)}`);
+  console.log(`Cheek BG Color: R=${cheekBgColorValue.getUint8(0)} G=${cheekBgColorValue.getUint8(1)} B=${cheekBgColorValue.getUint8(2)}`);
+  console.log(`Cheek Fade Color: R=${cheekFadeColorValue.getUint8(0)} G=${cheekFadeColorValue.getUint8(1)} B=${cheekFadeColorValue.getUint8(2)}`);
 
   if (!isReconnect) {
     updateBLEProgress(100, 'Connected!');
@@ -132,7 +142,9 @@ async function connectToDevice(device, isReconnect = false) {
   setViseme(visemeValue.getUint8(0));
   setHornLedBrightnessValue(hornLedBrightnessValue.getUint8(0));
   setCheekPanelBrightnessValue(cheekPanelBrightnessValue.getUint8(0));
-  updateBLECharacteristicsDisplay(eyeStateValue.getUint8(0), displayBrightnessValue.getUint8(0), visemeValue.getUint8(0), hornLedBrightnessValue.getUint8(0), cheekPanelBrightnessValue.getUint8(0));
+  setCheekBgColorValue(cheekBgColorValue.getUint8(0), cheekBgColorValue.getUint8(1), cheekBgColorValue.getUint8(2));
+  setCheekFadeColorValue(cheekFadeColorValue.getUint8(0), cheekFadeColorValue.getUint8(1), cheekFadeColorValue.getUint8(2));
+  updateBLECharacteristicsDisplay(eyeStateValue.getUint8(0), displayBrightnessValue.getUint8(0), visemeValue.getUint8(0), hornLedBrightnessValue.getUint8(0), cheekPanelBrightnessValue.getUint8(0), cheekBgColorValue, cheekFadeColorValue);
 }
 
 async function startBLE() {
@@ -172,7 +184,7 @@ function onDisconnected(event) {
   const device = event.target;
   console.log(`Device ${device.name} is disconnected.`);
   isStatusConnected(false);
-  updateBLECharacteristicsDisplay('-', '-', '-', '-', '-');
+  updateBLECharacteristicsDisplay('-', '-', '-', '-', '-', null, null);
   showDisconnectPopup();
 }
 
@@ -243,10 +255,44 @@ function setCheekPanelBrightnessCharacteristic(value) {
   }
 }
 
+let prevCheekBgColor = null;
+function setCheekBgColorCharacteristic(r, g, b) {
+  const colorKey = `${r},${g},${b}`;
+  if (colorKey !== prevCheekBgColor) {
+    cheekBgColorCharacteristic.writeValue(Uint8Array.of(r, g, b))
+      .then(_ => {
+        console.log(`> Characteristic cheek BG color changed to: R=${r} G=${g} B=${b}`);
+        prevCheekBgColor = colorKey;
+        updateBLECharColorValue('ble-cheekbgcolor', r, g, b);
+      })
+      .catch(error => {
+        console.log('Argh! ' + error);
+      });
+  }
+}
+
+let prevCheekFadeColor = null;
+function setCheekFadeColorCharacteristic(r, g, b) {
+  const colorKey = `${r},${g},${b}`;
+  if (colorKey !== prevCheekFadeColor) {
+    cheekFadeColorCharacteristic.writeValue(Uint8Array.of(r, g, b))
+      .then(_ => {
+        console.log(`> Characteristic cheek fade color changed to: R=${r} G=${g} B=${b}`);
+        prevCheekFadeColor = colorKey;
+        updateBLECharColorValue('ble-cheekfadecolor', r, g, b);
+      })
+      .catch(error => {
+        console.log('Argh! ' + error);
+      });
+  }
+}
+
 const throttledAndDebouncedsetVisemeCharacteristic = throttleAndDebounce(setVisemeCharacteristic, 800, 300);
 const throttledAndDebouncedSetDisplayBrightness = throttleAndDebounce(setdisplayBrightnessCharacteristic, 300, 200);
 const throttledAndDebouncedSetHornLedBrightness = throttleAndDebounce(setHornLedBrightnessCharacteristic, 300, 200);
 const throttledAndDebouncedSetCheekPanelBrightness = throttleAndDebounce(setCheekPanelBrightnessCharacteristic, 300, 200);
+const throttledAndDebouncedSetCheekBgColor = throttleAndDebounce(setCheekBgColorCharacteristic, 300, 200);
+const throttledAndDebouncedSetCheekFadeColor = throttleAndDebounce(setCheekFadeColorCharacteristic, 300, 200);
 
 // Throttle and debounce function
 function throttleAndDebounce(func, throttleDelay, debounceDelay) {
@@ -279,18 +325,34 @@ function throttleAndDebounce(func, throttleDelay, debounceDelay) {
 }
 
 // Update BLE characteristics display on About page
-function updateBLECharacteristicsDisplay(eyeState, brightness, viseme, hornLed, cheekPanel) {
+function updateBLECharacteristicsDisplay(eyeState, brightness, viseme, hornLed, cheekPanel, cheekBgColor, cheekFadeColor) {
   updateBLECharValue('ble-eyestate', eyeState);
   updateBLECharValue('ble-brightness', brightness);
   updateBLECharValue('ble-viseme', viseme);
   updateBLECharValue('ble-hornled', hornLed);
   updateBLECharValue('ble-cheekpanel', cheekPanel);
+
+  if (cheekBgColor) {
+    updateBLECharColorValue('ble-cheekbgcolor', cheekBgColor.getUint8(0), cheekBgColor.getUint8(1), cheekBgColor.getUint8(2));
+  }
+  if (cheekFadeColor) {
+    updateBLECharColorValue('ble-cheekfadecolor', cheekFadeColor.getUint8(0), cheekFadeColor.getUint8(1), cheekFadeColor.getUint8(2));
+  }
 }
 
 function updateBLECharValue(elementId, value) {
   const element = document.getElementById(elementId);
   if (element) {
     element.textContent = value;
+  }
+}
+
+function updateBLECharColorValue(elementId, r, g, b) {
+  const element = document.getElementById(elementId);
+  if (element) {
+    const hexColor = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+    element.textContent = hexColor.toUpperCase();
+    element.style.color = hexColor;
   }
 }
 
@@ -320,13 +382,17 @@ async function refreshBLECharacteristics() {
     const visemeValue = await visemeCharacteristic.readValue();
     const hornLedBrightnessValue = await hornLedBrightnessCharacteristic.readValue();
     const cheekPanelBrightnessValue = await cheekPanelBrightnessCharacteristic.readValue();
+    const cheekBgColorValue = await cheekBgColorCharacteristic.readValue();
+    const cheekFadeColorValue = await cheekFadeColorCharacteristic.readValue();
 
     updateBLECharacteristicsDisplay(
       eyeStateValue.getUint8(0),
       displayBrightnessValue.getUint8(0),
       visemeValue.getUint8(0),
       hornLedBrightnessValue.getUint8(0),
-      cheekPanelBrightnessValue.getUint8(0)
+      cheekPanelBrightnessValue.getUint8(0),
+      cheekBgColorValue,
+      cheekFadeColorValue
     );
 
     console.log('BLE characteristics refreshed');

@@ -140,6 +140,41 @@
 }
 
 /* Settings Page */
+.settings-content-container {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 60px;
+  margin-top: 10px;
+
+  /* Smooth scrolling */
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+
+  /* Custom scrollbar styling */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(249, 130, 108, 0.3) rgba(255, 255, 255, 0.05);
+}
+
+.settings-content-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.settings-content-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.settings-content-container::-webkit-scrollbar-thumb {
+  background: rgba(249, 130, 108, 0.3);
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+.settings-content-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(249, 130, 108, 0.5);
+}
+
 .settings-section {
   margin: 30px 0;
 }

@@ -111,7 +111,9 @@
           </div>
         </div>
 
-        <!-- Settings Section: Audio -->
+        <!-- Settings Content Container (Scrollable) -->
+        <div class="settings-content-container">
+          <!-- Settings Section: Audio -->
         <div class="settings-section">
           <h3 class="section-title">Audio Processing</h3>
           <div class="viseme">
@@ -211,7 +213,57 @@
             </div>
             <input class="bn-slider" type="range" min="0" max="255" value="255" id="cheekPanelValue">
           </div>
+
+          <!-- Cheek Panel Colors -->
+          <div class="settings-section" style="margin-top: 30px; position: relative;">
+            <h3 class="section-title">Cheek Panel Colors</h3>
+            <button id="resetColorsBtn" class="reset-colors-btn" onclick="resetCheekColors()">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; margin-right: 4px;">
+                <polyline points="1 4 1 10 7 10"></polyline>
+                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+              </svg>
+              Reset
+            </button>
+
+            <!-- Background Color -->
+            <div class="color-picker-container" style="margin-bottom: 20px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                <h3 style="margin: 0;">Background Color</h3>
+                <span id="bgColorHex" class="fade" style="font-size: 0.9rem;">#FF446C</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 15px;">
+                <input type="color" id="bgColorPicker" value="#FF446C" style="width: 60px; height: 40px; border: 2px solid var(--acc1-color); border-radius: 8px; cursor: pointer; background: transparent;">
+                <div style="flex: 1; display: flex; gap: 8px; flex-wrap: wrap;">
+                  <button class="color-preset-btn" data-color="#FF446C" data-target="bg" style="background: #FF446C;" title="Pink (Default)"></button>
+                  <button class="color-preset-btn" data-color="#4488FF" data-target="bg" style="background: #4488FF;" title="Blue"></button>
+                  <button class="color-preset-btn" data-color="#AA44FF" data-target="bg" style="background: #AA44FF;" title="Purple"></button>
+                  <button class="color-preset-btn" data-color="#44FF88" data-target="bg" style="background: #44FF88;" title="Green"></button>
+                  <button class="color-preset-btn" data-color="#FFAA44" data-target="bg" style="background: #FFAA44;" title="Orange"></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Fade/Sparkle Color -->
+            <div class="color-picker-container">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                <h3 style="margin: 0;">Sparkle Color</h3>
+                <span id="fadeColorHex" class="fade" style="font-size: 0.9rem;">#F9826C</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 15px;">
+                <input type="color" id="fadeColorPicker" value="#F9826C" style="width: 60px; height: 40px; border: 2px solid var(--acc1-color); border-radius: 8px; cursor: pointer; background: transparent;">
+                <div style="flex: 1; display: flex; gap: 8px; flex-wrap: wrap;">
+                  <button class="color-preset-btn" data-color="#F9826C" data-target="fade" style="background: #F9826C;" title="Coral (Default)"></button>
+                  <button class="color-preset-btn" data-color="#6CC8FF" data-target="fade" style="background: #6CC8FF;" title="Cyan"></button>
+                  <button class="color-preset-btn" data-color="#FF6CFF" data-target="fade" style="background: #FF6CFF;" title="Magenta"></button>
+                  <button class="color-preset-btn" data-color="#6CFFAA" data-target="fade" style="background: #6CFFAA;" title="Lime"></button>
+                  <button class="color-preset-btn" data-color="#FFD66C" data-target="fade" style="background: #FFD66C;" title="Yellow"></button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+        </div>
+        <!-- End Settings Content Container -->
       </div>
     </div>
     <!-- End Page: Settings -->
@@ -286,6 +338,20 @@
                   <span class="ble-char-value" id="ble-cheekpanel">-</span>
                 </div>
                 <span class="ble-char-uuid">UUID: b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e</span>
+              </div>
+              <div class="ble-char-item">
+                <div class="ble-char-header">
+                  <span class="ble-char-name">Cheek Background Color</span>
+                  <span class="ble-char-value" id="ble-cheekbgcolor">-</span>
+                </div>
+                <span class="ble-char-uuid">UUID: c3d4e5f6-a7b8-4c5d-9e0f-1a2b3c4d5e6f</span>
+              </div>
+              <div class="ble-char-item">
+                <div class="ble-char-header">
+                  <span class="ble-char-name">Cheek Sparkle Color</span>
+                  <span class="ble-char-value" id="ble-cheekfadecolor">-</span>
+                </div>
+                <span class="ble-char-uuid">UUID: d4e5f6a7-b8c9-4d5e-9f0a-1b2c3d4e5f6a</span>
               </div>
             </div>
             <button id="refreshBleBtn" class="refresh-ble-button" onclick="refreshBLECharacteristics()" disabled>
