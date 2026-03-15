@@ -1,0 +1,148 @@
+/* Page-specific styles */
+
+/* Connection Status Card (About Page) */
+.status-grid {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 30px;
+  margin-top: 15px;
+}
+
+.status-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-label {
+  font-size: 0.85rem;
+  color: var(--white2-color);
+  opacity: 0.6;
+  font-weight: 400;
+}
+
+.status-value {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--white-color);
+}
+
+.status-value.timer {
+  font-family: 'Courier New', monospace;
+  color: var(--acc1-color);
+}
+
+/* Settings Page */
+.settings-section {
+  margin: 30px 0;
+}
+
+.section-title {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--white-color);
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* About Page */
+.about-content {
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.about-card {
+  background: rgba(22, 22, 26, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 25px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.about-card:hover {
+  background: rgba(22, 22, 26, 0.6);
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.about-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--white-color);
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.about-version {
+  font-size: 1rem;
+  color: var(--acc1-color);
+  text-align: center;
+  font-weight: 500;
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--white-color);
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(249, 130, 108, 0.2);
+}
+
+.about-card p {
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: var(--white-color);
+  margin: 5px 0;
+}
+
+.about-card p.fade {
+  opacity: 0.7;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .status-grid {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .about-content {
+    padding: 10px 0;
+  }
+
+  .about-card {
+    padding: 20px;
+  }
+
+  .about-title {
+    font-size: 1.6rem;
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+  }
+}
+
+/* Smooth page transitions */
+.page {
+  min-height: calc(100vh - 200px);
+  width: 100%;
+}
+
+.page .control-panel {
+  padding-bottom: 120px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+

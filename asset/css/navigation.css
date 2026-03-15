@@ -81,6 +81,7 @@
   padding: 0 16px 0 12px;
   justify-content: flex-start;
   border-radius: 10px;
+  gap: 8px;
 }
 
 .nav-icon.active svg {
