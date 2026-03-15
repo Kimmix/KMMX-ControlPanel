@@ -152,7 +152,8 @@
         <!-- Settings Section: Display -->
         <div class="settings-section">
           <h3 class="section-title">Display</h3>
-          <div class="matrix">
+          <!-- Matrix brightness - Commented out for now -->
+          <!-- <div class="matrix">
             <div class="matrix-container">
               <div class="blub-icon">
                 <img src="asset/svg/bulb.svg" alt="Light bulb" style="width: 30px;">
@@ -170,7 +171,7 @@
               </div>
             </div>
             <input class="bn-slider" type="range" min="0" max="100" value="0" id="dotValue">
-          </div>
+          </div> -->
 
           <!-- Horn LED Brightness -->
           <div class="matrix" style="margin-top: 20px;">
@@ -302,8 +303,14 @@
 
           <!-- BLE Characteristics -->
           <div class="about-card ble-characteristics-card">
-            <h3 class="card-title">BLE Characteristics</h3>
-            <div class="ble-char-grid">
+            <button id="bleCharBtn" class="ble-char-toggle-button" onclick="toggleBLECharacteristics()">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px;">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+              Show BLE Characteristics
+            </button>
+            <div id="bleCharContent" class="ble-char-content" style="display: none;">
+              <div class="ble-char-grid">
               <div class="ble-char-item">
                 <div class="ble-char-header">
                   <span class="ble-char-name">Eye State</span>
@@ -353,15 +360,16 @@
                 </div>
                 <span class="ble-char-uuid">UUID: d4e5f6a7-b8c9-4d5e-9f0a-1b2c3d4e5f6a</span>
               </div>
+              </div>
+              <button id="refreshBleBtn" class="refresh-ble-button" onclick="refreshBLECharacteristics()" disabled>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px;">
+                  <polyline points="23 4 23 10 17 10"></polyline>
+                  <polyline points="1 20 1 14 7 14"></polyline>
+                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                </svg>
+                Refresh Values
+              </button>
             </div>
-            <button id="refreshBleBtn" class="refresh-ble-button" onclick="refreshBLECharacteristics()" disabled>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px;">
-                <polyline points="23 4 23 10 17 10"></polyline>
-                <polyline points="1 20 1 14 7 14"></polyline>
-                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-              </svg>
-              Refresh Values
-            </button>
           </div>
 
           <div class="about-card">
@@ -376,7 +384,7 @@
           <!-- Debug Button -->
           <div class="about-card">
             <button id="debugBtn" class="debug-button" onclick="toggleDebugInfo()">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; margin-right: 8px;">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px;">
                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                 <line x1="9" y1="9" x2="15" y2="9"></line>
                 <line x1="9" y1="15" x2="15" y2="15"></line>

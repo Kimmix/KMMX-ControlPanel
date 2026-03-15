@@ -208,56 +208,56 @@ function isVisemeOn() {
     return visemeBtn.classList.contains('active')
 }
 
-//* --------- Matrix Brightness ---------
-function createDots(numDots) {
-    const dotsContainer = document.getElementById('dots-container');
-    for (let i = 0; i < numDots; i++) {
-        const dot = document.createElement('div');
-        dot.className = 'dot';
-        dotsContainer.appendChild(dot);
-    }
-}
+//* --------- Matrix Brightness - Disabled ---------
+// function createDots(numDots) {
+//     const dotsContainer = document.getElementById('dots-container');
+//     for (let i = 0; i < numDots; i++) {
+//         const dot = document.createElement('div');
+//         dot.className = 'dot';
+//         dotsContainer.appendChild(dot);
+//     }
+// }
 
-function renderTotalDots() {
-    const deviceWidth = window.innerWidth;
-    const numDots = Math.floor(deviceWidth / 30); // Adjust as needed
-    const dotsContainer = document.getElementById('dots-container');
-    dotsContainer.innerHTML = ''; // Clear previous dots
-    createDots(numDots);
-}
-renderTotalDots(); // On page load
+// function renderTotalDots() {
+//     const deviceWidth = window.innerWidth;
+//     const numDots = Math.floor(deviceWidth / 30); // Adjust as needed
+//     const dotsContainer = document.getElementById('dots-container');
+//     dotsContainer.innerHTML = ''; // Clear previous dots
+//     createDots(numDots);
+// }
+// renderTotalDots(); // On page load
 
-let dotValueInput = document.getElementById('dotValue');
-function setBrightnessvalue(i) {
-    dotValueInput.value = i;
-    renderWhiteDots(dotValueInput.value);
-}
+// let dotValueInput = document.getElementById('dotValue');
+// function setBrightnessvalue(i) {
+//     dotValueInput.value = i;
+//     renderWhiteDots(dotValueInput.value);
+// }
 
-dotValueInput.addEventListener('input', () => {
-    let value = dotValueInput.value
-    renderWhiteDots(value);
-    throttledAndDebouncedSetDisplayBrightness(value);
-});
+// dotValueInput.addEventListener('input', () => {
+//     let value = dotValueInput.value
+//     renderWhiteDots(value);
+//     throttledAndDebouncedSetDisplayBrightness(value);
+// });
 
-let prevNumOfWhiteDots = 0;
-function renderWhiteDots(value, firstTime) {
-    const dotsContainer = document.getElementById('dots-container');
-    let dots = dotsContainer.querySelectorAll('.dot');
-    const numOfWhiteDots = Math.ceil((value / 100) * dots.length);
-    if ((numOfWhiteDots !== prevNumOfWhiteDots) && !firstTime) {
-        vibrateDevice();
-        prevNumOfWhiteDots = numOfWhiteDots;
-    }
-    dots.forEach((dot, index) => {
-        if (index < numOfWhiteDots) {
-            dot.classList.add('white-dot');
-        } else {
-            dot.classList.remove('white-dot');
-        }
-    });
-    const sliderValueElement = document.getElementById('sliderValue');
-    sliderValueElement.textContent = value;
-}
+// let prevNumOfWhiteDots = 0;
+// function renderWhiteDots(value, firstTime) {
+//     const dotsContainer = document.getElementById('dots-container');
+//     let dots = dotsContainer.querySelectorAll('.dot');
+//     const numOfWhiteDots = Math.ceil((value / 100) * dots.length);
+//     if ((numOfWhiteDots !== prevNumOfWhiteDots) && !firstTime) {
+//         vibrateDevice();
+//         prevNumOfWhiteDots = numOfWhiteDots;
+//     }
+//     dots.forEach((dot, index) => {
+//         if (index < numOfWhiteDots) {
+//             dot.classList.add('white-dot');
+//         } else {
+//             dot.classList.remove('white-dot');
+//         }
+//     });
+//     const sliderValueElement = document.getElementById('sliderValue');
+//     sliderValueElement.textContent = value;
+// }
 
 //* --------- Horn LED Brightness ---------
 function createHornDots(numDots) {
@@ -366,9 +366,9 @@ function renderCheekWhiteDots(value, firstTime) {
 //* --------- Consolidated Resize Handler ---------
 // Update all dots when the window is resized
 window.addEventListener('resize', () => {
-    // Matrix brightness
-    renderTotalDots();
-    renderWhiteDots(dotValueInput.value);
+    // Matrix brightness - Disabled
+    // renderTotalDots();
+    // renderWhiteDots(dotValueInput.value);
 
     // Horn LED brightness
     renderTotalHornDots();

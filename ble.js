@@ -21,52 +21,6 @@ let cheekBgColorCharacteristic;
 let cheekFadeColorCharacteristic;
 let bleDevice; // Store the connected device
 
-//? Try to reconnect to previously paired device
-async function tryAutoReconnect() {
-  try {
-    // Check if Web Bluetooth API supports getDevices (Chrome 85+)
-    if (!navigator.bluetooth || !navigator.bluetooth.getDevices) {
-      console.log('Auto-reconnect not supported in this browser');
-      return false;
-    }
-
-    const devices = await navigator.bluetooth.getDevices();
-    console.log('Previously paired devices:', devices);
-
-    // Find our KMMX device
-    const kmmxDevice = devices.find(device => device.name === bleUUID.name);
-
-    if (!kmmxDevice) {
-      console.log('No previously paired KMMX device found');
-      return false;
-    }
-
-    console.log('Found previously paired device, attempting to reconnect...');
-
-    // Check if device is already connected
-    if (kmmxDevice.gatt.connected) {
-      console.log('Device already connected');
-      bleDevice = kmmxDevice;
-      bleDevice.addEventListener('gattserverdisconnected', onDisconnected);
-      await connectToDevice(bleDevice, true);
-      return true;
-    }
-
-    // Try to reconnect
-    bleDevice = kmmxDevice;
-    bleDevice.addEventListener('gattserverdisconnected', onDisconnected);
-
-    await connectToDevice(bleDevice, true);
-    return true;
-
-  } catch (error) {
-    console.error('Auto-reconnect failed:', error);
-    // Clean up on failure
-    bleDevice = null;
-    return false;
-  }
-}
-
 //? Connect to a BLE device (new or existing)
 async function connectToDevice(device, isReconnect = false) {
   // Progress update helper
@@ -137,7 +91,7 @@ async function connectToDevice(device, isReconnect = false) {
   }
 
   isStatusConnected(true);
-  setBrightnessvalue(displayBrightnessValue.getUint8(0));
+  // setBrightnessvalue(displayBrightnessValue.getUint8(0)); // Matrix brightness - Disabled
   setExpression(eyeStateValue.getUint8(0));
   setViseme(visemeValue.getUint8(0));
   setHornLedBrightnessValue(hornLedBrightnessValue.getUint8(0));

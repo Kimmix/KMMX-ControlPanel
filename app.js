@@ -3,33 +3,19 @@ document.addEventListener('DOMContentLoaded', async function () {
     const splash = document.getElementById('splash');
     const progressContainer = document.getElementById('progressContainer');
 
-    // Try to auto-reconnect to previously paired device
-    const autoConnected = await tryAutoReconnect();
+    // Show splash screen and wait for user to tap to connect
+    splash.addEventListener('click', async function () {
+        // Show progress bar and status text
+        if (progressContainer) {
+            progressContainer.classList.add('active');
+        }
 
-    if (autoConnected) {
-        // Successfully reconnected, skip splash screen
-        console.log('Auto-reconnected successfully, skipping splash');
-        showControlPanel();
-    } else {
-        // No previous device or reconnection failed, show splash screen
-        splash.addEventListener('click', async function () {
-            // Show progress bar and status text
-            if (progressContainer) {
-                progressContainer.classList.add('active');
-            }
+        // Vibrate on tap
+        vibrateDevice();
 
-            // Vibrate on tap
-            vibrateDevice();
-
-            // First, try to reconnect to paired device
-            const reconnected = await tryAutoReconnect();
-
-            if (!reconnected) {
-                // No paired device found, show pairing UI
-                await startBLEWithProgress();
-            }
-        });
-    }
+        // Show pairing UI
+        await startBLEWithProgress();
+    });
 });
 
 //? Start BLE with progress feedback
@@ -189,6 +175,42 @@ function clamp(value, min, max) {
     return Math.min(Math.max(value, min), max);
 }
 
+//* ------- BLE Characteristics Toggle ---------
+function toggleBLECharacteristics() {
+    const bleCharContent = document.getElementById('bleCharContent');
+    const bleCharBtn = document.getElementById('bleCharBtn');
+
+    if (bleCharContent.style.display === 'none') {
+        // Show BLE characteristics
+        bleCharContent.style.display = 'block';
+        bleCharBtn.classList.add('expanded');
+        bleCharBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px;">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+            Hide BLE Characteristics
+        `;
+
+        // Scroll to bottom after a short delay to allow rendering
+        setTimeout(() => {
+            bleCharContent.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }, 100);
+    } else {
+        // Hide BLE characteristics
+        bleCharContent.style.display = 'none';
+        bleCharBtn.classList.remove('expanded');
+        bleCharBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px;">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+            Show BLE Characteristics
+        `;
+    }
+
+    // Vibrate on toggle
+    vibrateDevice();
+}
+
 //* ------- Debug Info ---------
 function toggleDebugInfo() {
     const debugInfo = document.getElementById('debugInfo');
@@ -198,18 +220,23 @@ function toggleDebugInfo() {
         // Show debug info and populate it
         debugInfo.style.display = 'block';
         debugBtn.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; margin-right: 8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px;">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
             Hide Debug Info
         `;
         populateDebugInfo();
+
+        // Scroll to bottom after a short delay to allow rendering
+        setTimeout(() => {
+            debugInfo.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }, 100);
     } else {
         // Hide debug info
         debugInfo.style.display = 'none';
         debugBtn.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; margin-right: 8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px;">
                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                 <line x1="9" y1="9" x2="15" y2="9"></line>
                 <line x1="9" y1="15" x2="15" y2="15"></line>

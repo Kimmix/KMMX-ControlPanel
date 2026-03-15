@@ -88,6 +88,48 @@
   word-break: break-all;
 }
 
+/* BLE Characteristics Toggle Button */
+.ble-char-toggle-button {
+  width: 100%;
+  height: auto;
+  padding: 12px 16px;
+  background: rgba(249, 130, 108, 0.1);
+  border: 1px solid rgba(249, 130, 108, 0.3);
+  border-radius: 12px;
+  color: var(--acc1-color);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Montserrat", sans-serif;
+  margin-bottom: 0;
+}
+
+.ble-char-toggle-button:hover {
+  background: rgba(249, 130, 108, 0.2);
+  border-color: rgba(249, 130, 108, 0.5);
+  transform: translateY(-2px);
+}
+
+.ble-char-toggle-button:active {
+  transform: translateY(0);
+}
+
+.ble-char-toggle-button svg {
+  transition: transform 0.3s ease;
+}
+
+.ble-char-toggle-button.expanded svg {
+  transform: rotate(180deg);
+}
+
+.ble-char-content {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
 .refresh-ble-button {
   width: 100%;
   height: auto;
@@ -151,28 +193,13 @@
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
 
-  /* Custom scrollbar styling */
-  scrollbar-width: thin;
-  scrollbar-color: rgba(249, 130, 108, 0.3) rgba(255, 255, 255, 0.05);
+  /* Hide scrollbar */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .settings-content-container::-webkit-scrollbar {
-  width: 6px;
-}
-
-.settings-content-container::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
-}
-
-.settings-content-container::-webkit-scrollbar-thumb {
-  background: rgba(249, 130, 108, 0.3);
-  border-radius: 10px;
-  transition: background 0.3s ease;
-}
-
-.settings-content-container::-webkit-scrollbar-thumb:hover {
-  background: rgba(249, 130, 108, 0.5);
+  display: none;
 }
 
 .settings-section {
@@ -255,12 +282,12 @@
 .debug-button {
   width: 100%;
   height: auto;
-  padding: 15px 20px;
-  background: linear-gradient(135deg, rgba(249, 130, 108, 0.1), rgba(249, 130, 108, 0.05));
+  padding: 12px 16px;
+  background: rgba(249, 130, 108, 0.1);
   border: 1px solid rgba(249, 130, 108, 0.3);
   border-radius: 8px;
   color: var(--white-color);
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -271,13 +298,17 @@
 }
 
 .debug-button:hover {
-  background: linear-gradient(135deg, rgba(249, 130, 108, 0.2), rgba(249, 130, 108, 0.1));
+  background: rgba(249, 130, 108, 0.2);
   border-color: rgba(249, 130, 108, 0.5);
   transform: translateY(-2px);
 }
 
 .debug-button:active {
   transform: translateY(0);
+}
+
+.debug-button svg {
+  transition: transform 0.3s ease;
 }
 
 .debug-info {
