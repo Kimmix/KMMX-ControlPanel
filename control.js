@@ -232,11 +232,6 @@ function setBrightnessvalue(i) {
     dotValueInput.value = i;
     renderWhiteDots(dotValueInput.value);
 }
-// Update dots when the window is resized
-window.addEventListener('resize', () => {
-    renderTotalDots();
-    renderWhiteDots(dotValueInput.value);
-});
 
 dotValueInput.addEventListener('input', () => {
     let value = dotValueInput.value
@@ -246,7 +241,8 @@ dotValueInput.addEventListener('input', () => {
 
 let prevNumOfWhiteDots = 0;
 function renderWhiteDots(value, firstTime) {
-    let dots = document.querySelectorAll('.dot');
+    const dotsContainer = document.getElementById('dots-container');
+    let dots = dotsContainer.querySelectorAll('.dot');
     const numOfWhiteDots = Math.ceil((value / 100) * dots.length);
     if ((numOfWhiteDots !== prevNumOfWhiteDots) && !firstTime) {
         vibrateDevice();
@@ -262,3 +258,123 @@ function renderWhiteDots(value, firstTime) {
     const sliderValueElement = document.getElementById('sliderValue');
     sliderValueElement.textContent = value;
 }
+
+//* --------- Horn LED Brightness ---------
+function createHornDots(numDots) {
+    const dotsContainer = document.getElementById('horn-dots-container');
+    for (let i = 0; i < numDots; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        dotsContainer.appendChild(dot);
+    }
+}
+
+function renderTotalHornDots() {
+    const deviceWidth = window.innerWidth;
+    const numDots = Math.floor(deviceWidth / 30);
+    const dotsContainer = document.getElementById('horn-dots-container');
+    dotsContainer.innerHTML = '';
+    createHornDots(numDots);
+}
+renderTotalHornDots();
+
+let hornLedValueInput = document.getElementById('hornLedValue');
+function setHornLedBrightnessValue(i) {
+    hornLedValueInput.value = i;
+    renderHornWhiteDots(hornLedValueInput.value);
+}
+
+hornLedValueInput.addEventListener('input', () => {
+    let value = hornLedValueInput.value;
+    renderHornWhiteDots(value);
+    throttledAndDebouncedSetHornLedBrightness(value);
+});
+
+let prevNumOfHornWhiteDots = 0;
+function renderHornWhiteDots(value, firstTime) {
+    const dotsContainer = document.getElementById('horn-dots-container');
+    let dots = dotsContainer.querySelectorAll('.dot');
+    const numOfWhiteDots = Math.ceil((value / 100) * dots.length);
+    if ((numOfWhiteDots !== prevNumOfHornWhiteDots) && !firstTime) {
+        vibrateDevice();
+        prevNumOfHornWhiteDots = numOfWhiteDots;
+    }
+    dots.forEach((dot, index) => {
+        if (index < numOfWhiteDots) {
+            dot.classList.add('white-dot');
+        } else {
+            dot.classList.remove('white-dot');
+        }
+    });
+    const sliderValueElement = document.getElementById('hornLedSliderValue');
+    sliderValueElement.textContent = value;
+}
+
+//* --------- Cheek Panel Brightness ---------
+function createCheekDots(numDots) {
+    const dotsContainer = document.getElementById('cheek-dots-container');
+    for (let i = 0; i < numDots; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        dotsContainer.appendChild(dot);
+    }
+}
+
+function renderTotalCheekDots() {
+    const deviceWidth = window.innerWidth;
+    const numDots = Math.floor(deviceWidth / 30);
+    const dotsContainer = document.getElementById('cheek-dots-container');
+    dotsContainer.innerHTML = '';
+    createCheekDots(numDots);
+}
+renderTotalCheekDots();
+
+let cheekPanelValueInput = document.getElementById('cheekPanelValue');
+function setCheekPanelBrightnessValue(i) {
+    cheekPanelValueInput.value = i;
+    renderCheekWhiteDots(cheekPanelValueInput.value);
+}
+
+cheekPanelValueInput.addEventListener('input', () => {
+    let value = cheekPanelValueInput.value;
+    renderCheekWhiteDots(value);
+    throttledAndDebouncedSetCheekPanelBrightness(value);
+});
+
+let prevNumOfCheekWhiteDots = 0;
+function renderCheekWhiteDots(value, firstTime) {
+    const dotsContainer = document.getElementById('cheek-dots-container');
+    let dots = dotsContainer.querySelectorAll('.dot');
+    const numOfWhiteDots = Math.ceil((value / 255) * dots.length);
+    if ((numOfWhiteDots !== prevNumOfCheekWhiteDots) && !firstTime) {
+        vibrateDevice();
+        prevNumOfCheekWhiteDots = numOfWhiteDots;
+    }
+    dots.forEach((dot, index) => {
+        if (index < numOfWhiteDots) {
+            dot.classList.add('white-dot');
+        } else {
+            dot.classList.remove('white-dot');
+        }
+    });
+    const sliderValueElement = document.getElementById('cheekPanelSliderValue');
+    // Convert 0-255 to 0-100 percentage
+    const percentageValue = Math.round((value / 255) * 100);
+    sliderValueElement.textContent = percentageValue;
+}
+
+//* --------- Consolidated Resize Handler ---------
+// Update all dots when the window is resized
+window.addEventListener('resize', () => {
+    // Matrix brightness
+    renderTotalDots();
+    renderWhiteDots(dotValueInput.value);
+
+    // Horn LED brightness
+    renderTotalHornDots();
+    renderHornWhiteDots(hornLedValueInput.value);
+
+    // Cheek Panel brightness
+    renderTotalCheekDots();
+    renderCheekWhiteDots(cheekPanelValueInput.value);
+});

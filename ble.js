@@ -4,13 +4,17 @@ const bleUUID = {
   characteristic : {
     display: "9fdfd124-966b-44f7-8331-778c4d1512fc",
     eyeState: "49a36bb2-1c66-4e5c-8ff3-28e55a64beb3",
-    viseme: "493d06f3-0fa0-4a90-88f1-ebaed0da9b80"
+    viseme: "493d06f3-0fa0-4a90-88f1-ebaed0da9b80",
+    hornLedBrightness: "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d",
+    cheekPanelBrightness: "b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e"
   }
 };
 
 let eyeStateCharacteristic;
 let displayBrightnessCharacteristic;
 let visemeCharacteristic;
+let hornLedBrightnessCharacteristic;
+let cheekPanelBrightnessCharacteristic;
 let bleDevice; // Store the connected device
 
 async function startBLE() {
@@ -34,21 +38,29 @@ async function startBLE() {
     eyeStateCharacteristic = await service.getCharacteristic(bleUUID.characteristic.eyeState);
     displayBrightnessCharacteristic = await service.getCharacteristic(bleUUID.characteristic.display);
     visemeCharacteristic = await service.getCharacteristic(bleUUID.characteristic.viseme);
+    hornLedBrightnessCharacteristic = await service.getCharacteristic(bleUUID.characteristic.hornLedBrightness);
+    cheekPanelBrightnessCharacteristic = await service.getCharacteristic(bleUUID.characteristic.cheekPanelBrightness);
 
     console.log('Reading value...');
     let eyeStateValue = await eyeStateCharacteristic.readValue();
     let displayBrightnessValue = await displayBrightnessCharacteristic.readValue();
     let visemeValue = await visemeCharacteristic.readValue();
+    let hornLedBrightnessValue = await hornLedBrightnessCharacteristic.readValue();
+    let cheekPanelBrightnessValue = await cheekPanelBrightnessCharacteristic.readValue();
 
     console.log(`Eye state is ${eyeStateValue.getUint8(0)}`);
     console.log(`Display brightness is ${displayBrightnessValue.getUint8(0)}`);
     console.log(`Viseme value is ${visemeValue.getUint8(0)}`);
+    console.log(`Horn LED brightness is ${hornLedBrightnessValue.getUint8(0)}`);
+    console.log(`Cheek Panel brightness is ${cheekPanelBrightnessValue.getUint8(0)}`);
 
     isStatusConnected(true);
     setBrightnessvalue(displayBrightnessValue.getUint8(0));
     setExpression(eyeStateValue.getUint8(0));
     setViseme(visemeValue.getUint8(0));
-    updateBLECharacteristicsDisplay(eyeStateValue.getUint8(0), displayBrightnessValue.getUint8(0), visemeValue.getUint8(0));
+    setHornLedBrightnessValue(hornLedBrightnessValue.getUint8(0));
+    setCheekPanelBrightnessValue(cheekPanelBrightnessValue.getUint8(0));
+    updateBLECharacteristicsDisplay(eyeStateValue.getUint8(0), displayBrightnessValue.getUint8(0), visemeValue.getUint8(0), hornLedBrightnessValue.getUint8(0), cheekPanelBrightnessValue.getUint8(0));
 
   } catch (error) {
     console.error('Error:', error);
@@ -61,7 +73,7 @@ function onDisconnected(event) {
   const device = event.target;
   console.log(`Device ${device.name} is disconnected.`);
   isStatusConnected(false);
-  updateBLECharacteristicsDisplay('-', '-', '-');
+  updateBLECharacteristicsDisplay('-', '-', '-', '-', '-');
 }
 
 async function setEyeStateCharacteristic(value) {
@@ -101,8 +113,40 @@ function setdisplayBrightnessCharacteristic(value) {
   }
 }
 
+let prevHornLedBrightnessValue = -1;
+function setHornLedBrightnessCharacteristic(value) {
+  if (value !== prevHornLedBrightnessValue) {
+    hornLedBrightnessCharacteristic.writeValue(Uint8Array.of(value))
+      .then(_ => {
+        console.log('> Characteristic horn LED brightness changed to: ' + Uint8Array.of(value));
+        prevHornLedBrightnessValue = value;
+        updateBLECharValue('ble-hornled', value);
+      })
+      .catch(error => {
+        console.log('Argh! ' + error);
+      });
+  }
+}
+
+let prevCheekPanelBrightnessValue = -1;
+function setCheekPanelBrightnessCharacteristic(value) {
+  if (value !== prevCheekPanelBrightnessValue) {
+    cheekPanelBrightnessCharacteristic.writeValue(Uint8Array.of(value))
+      .then(_ => {
+        console.log('> Characteristic cheek panel brightness changed to: ' + Uint8Array.of(value));
+        prevCheekPanelBrightnessValue = value;
+        updateBLECharValue('ble-cheekpanel', value);
+      })
+      .catch(error => {
+        console.log('Argh! ' + error);
+      });
+  }
+}
+
 const throttledAndDebouncedsetVisemeCharacteristic = throttleAndDebounce(setVisemeCharacteristic, 800, 300);
 const throttledAndDebouncedSetDisplayBrightness = throttleAndDebounce(setdisplayBrightnessCharacteristic, 300, 200);
+const throttledAndDebouncedSetHornLedBrightness = throttleAndDebounce(setHornLedBrightnessCharacteristic, 300, 200);
+const throttledAndDebouncedSetCheekPanelBrightness = throttleAndDebounce(setCheekPanelBrightnessCharacteristic, 300, 200);
 
 // Throttle and debounce function
 function throttleAndDebounce(func, throttleDelay, debounceDelay) {
@@ -135,10 +179,12 @@ function throttleAndDebounce(func, throttleDelay, debounceDelay) {
 }
 
 // Update BLE characteristics display on About page
-function updateBLECharacteristicsDisplay(eyeState, brightness, viseme) {
+function updateBLECharacteristicsDisplay(eyeState, brightness, viseme, hornLed, cheekPanel) {
   updateBLECharValue('ble-eyestate', eyeState);
   updateBLECharValue('ble-brightness', brightness);
   updateBLECharValue('ble-viseme', viseme);
+  updateBLECharValue('ble-hornled', hornLed);
+  updateBLECharValue('ble-cheekpanel', cheekPanel);
 }
 
 function updateBLECharValue(elementId, value) {
@@ -172,11 +218,15 @@ async function refreshBLECharacteristics() {
     const eyeStateValue = await eyeStateCharacteristic.readValue();
     const displayBrightnessValue = await displayBrightnessCharacteristic.readValue();
     const visemeValue = await visemeCharacteristic.readValue();
+    const hornLedBrightnessValue = await hornLedBrightnessCharacteristic.readValue();
+    const cheekPanelBrightnessValue = await cheekPanelBrightnessCharacteristic.readValue();
 
     updateBLECharacteristicsDisplay(
       eyeStateValue.getUint8(0),
       displayBrightnessValue.getUint8(0),
-      visemeValue.getUint8(0)
+      visemeValue.getUint8(0),
+      hornLedBrightnessValue.getUint8(0),
+      cheekPanelBrightnessValue.getUint8(0)
     );
 
     console.log('BLE characteristics refreshed');
