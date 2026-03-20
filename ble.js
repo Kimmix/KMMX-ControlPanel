@@ -5,6 +5,7 @@ const bleUUID = {
     display: "9fdfd124-966b-44f7-8331-778c4d1512fc",
     eyeState: "49a36bb2-1c66-4e5c-8ff3-28e55a64beb3",
     viseme: "493d06f3-0fa0-4a90-88f1-ebaed0da9b80",
+    mouthState: "f6a7b8c9-d0e1-4f5a-b1c2-3d4e5f6a7b8c",
     hornLedBrightness: "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d",
     cheekPanelBrightness: "b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e",
     cheekBgColor: "c3d4e5f6-a7b8-4c5d-9e0f-1a2b3c4d5e6f",
@@ -16,6 +17,7 @@ const bleUUID = {
 let eyeStateCharacteristic;
 let displayBrightnessCharacteristic;
 let visemeCharacteristic;
+let mouthStateCharacteristic;
 let hornLedBrightnessCharacteristic;
 let cheekPanelBrightnessCharacteristic;
 let cheekBgColorCharacteristic;
@@ -62,6 +64,7 @@ async function connectToDevice(device, isReconnect = false) {
   eyeStateCharacteristic = await service.getCharacteristic(bleUUID.characteristic.eyeState);
   displayBrightnessCharacteristic = await service.getCharacteristic(bleUUID.characteristic.display);
   visemeCharacteristic = await service.getCharacteristic(bleUUID.characteristic.viseme);
+  mouthStateCharacteristic = await service.getCharacteristic(bleUUID.characteristic.mouthState);
   hornLedBrightnessCharacteristic = await service.getCharacteristic(bleUUID.characteristic.hornLedBrightness);
   cheekPanelBrightnessCharacteristic = await service.getCharacteristic(bleUUID.characteristic.cheekPanelBrightness);
   cheekBgColorCharacteristic = await service.getCharacteristic(bleUUID.characteristic.cheekBgColor);
@@ -76,6 +79,7 @@ async function connectToDevice(device, isReconnect = false) {
   let eyeStateValue = await eyeStateCharacteristic.readValue();
   let displayBrightnessValue = await displayBrightnessCharacteristic.readValue();
   let visemeValue = await visemeCharacteristic.readValue();
+  let mouthStateValue = await mouthStateCharacteristic.readValue();
   let hornLedBrightnessValue = await hornLedBrightnessCharacteristic.readValue();
   let cheekPanelBrightnessValue = await cheekPanelBrightnessCharacteristic.readValue();
   let cheekBgColorValue = await cheekBgColorCharacteristic.readValue();
@@ -84,6 +88,7 @@ async function connectToDevice(device, isReconnect = false) {
   console.log(`Eye state is ${eyeStateValue.getUint8(0)}`);
   console.log(`Display brightness is ${displayBrightnessValue.getUint8(0)}`);
   console.log(`Viseme value is ${visemeValue.getUint8(0)}`);
+  console.log(`Mouth state is ${mouthStateValue.getUint8(0)}`);
   console.log(`Horn LED brightness is ${hornLedBrightnessValue.getUint8(0)}`);
   console.log(`Cheek Panel brightness is ${cheekPanelBrightnessValue.getUint8(0)}`);
   console.log(`Cheek BG Color: R=${cheekBgColorValue.getUint8(0)} G=${cheekBgColorValue.getUint8(1)} B=${cheekBgColorValue.getUint8(2)}`);
@@ -101,11 +106,12 @@ async function connectToDevice(device, isReconnect = false) {
   // setBrightnessvalue(displayBrightnessValue.getUint8(0)); // Matrix brightness - Disabled
   setExpression(eyeStateValue.getUint8(0));
   setViseme(visemeValue.getUint8(0));
+  setMouthState(mouthStateValue.getUint8(0));
   setHornLedBrightnessValue(hornLedBrightnessValue.getUint8(0));
   setCheekPanelBrightnessValue(cheekPanelBrightnessValue.getUint8(0));
   setCheekBgColorValue(cheekBgColorValue.getUint8(0), cheekBgColorValue.getUint8(1), cheekBgColorValue.getUint8(2));
   setCheekFadeColorValue(cheekFadeColorValue.getUint8(0), cheekFadeColorValue.getUint8(1), cheekFadeColorValue.getUint8(2));
-  updateBLECharacteristicsDisplay(eyeStateValue.getUint8(0), displayBrightnessValue.getUint8(0), visemeValue.getUint8(0), hornLedBrightnessValue.getUint8(0), cheekPanelBrightnessValue.getUint8(0), cheekBgColorValue, cheekFadeColorValue);
+  updateBLECharacteristicsDisplay(eyeStateValue.getUint8(0), displayBrightnessValue.getUint8(0), visemeValue.getUint8(0), mouthStateValue.getUint8(0), hornLedBrightnessValue.getUint8(0), cheekPanelBrightnessValue.getUint8(0), cheekBgColorValue, cheekFadeColorValue);
 }
 
 async function startBLE() {
@@ -145,7 +151,7 @@ function onDisconnected(event) {
   const device = event.target;
   console.log(`Device ${device.name} is disconnected.`);
   isStatusConnected(false);
-  updateBLECharacteristicsDisplay('-', '-', '-', '-', '-', null, null);
+  updateBLECharacteristicsDisplay('-', '-', '-', '-', '-', '-', null, null);
   showDisconnectPopup();
 }
 
@@ -165,6 +171,17 @@ function setVisemeCharacteristic(value) {
     .then(_ => {
       console.log('> Characteristic viseme changed to: ' + Uint8Array.of(value));
       updateBLECharValue('ble-viseme', value);
+    })
+    .catch(error => {
+      console.error('Argh! ' + error);
+    });
+}
+
+function setMouthStateCharacteristic(value) {
+  mouthStateCharacteristic.writeValue(Uint8Array.of(value))
+    .then(_ => {
+      console.log('> Characteristic mouth state changed to: ' + Uint8Array.of(value));
+      updateBLECharValue('ble-mouthstate', value);
     })
     .catch(error => {
       console.error('Argh! ' + error);
@@ -286,10 +303,11 @@ function throttleAndDebounce(func, throttleDelay, debounceDelay) {
 }
 
 // Update BLE characteristics display on About page
-function updateBLECharacteristicsDisplay(eyeState, brightness, viseme, hornLed, cheekPanel, cheekBgColor, cheekFadeColor) {
+function updateBLECharacteristicsDisplay(eyeState, brightness, viseme, mouthState, hornLed, cheekPanel, cheekBgColor, cheekFadeColor) {
   updateBLECharValue('ble-eyestate', eyeState);
   updateBLECharValue('ble-brightness', brightness);
   updateBLECharValue('ble-viseme', viseme);
+  updateBLECharValue('ble-mouthstate', mouthState);
   updateBLECharValue('ble-hornled', hornLed);
   updateBLECharValue('ble-cheekpanel', cheekPanel);
 
@@ -341,6 +359,7 @@ async function refreshBLECharacteristics() {
     const eyeStateValue = await eyeStateCharacteristic.readValue();
     const displayBrightnessValue = await displayBrightnessCharacteristic.readValue();
     const visemeValue = await visemeCharacteristic.readValue();
+    const mouthStateValue = await mouthStateCharacteristic.readValue();
     const hornLedBrightnessValue = await hornLedBrightnessCharacteristic.readValue();
     const cheekPanelBrightnessValue = await cheekPanelBrightnessCharacteristic.readValue();
     const cheekBgColorValue = await cheekBgColorCharacteristic.readValue();
@@ -350,6 +369,7 @@ async function refreshBLECharacteristics() {
       eyeStateValue.getUint8(0),
       displayBrightnessValue.getUint8(0),
       visemeValue.getUint8(0),
+      mouthStateValue.getUint8(0),
       hornLedBrightnessValue.getUint8(0),
       cheekPanelBrightnessValue.getUint8(0),
       cheekBgColorValue,

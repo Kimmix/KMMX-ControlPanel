@@ -145,34 +145,73 @@ function setExpression(i) {
 
 let currentExp = 0;
 function setCurrentExpression(btn) {
-    // Update the current expression display
-    const currentExpressionDisplay = document.getElementById('currentExpressionDisplay');
-    const currentExpressionName = document.getElementById('currentExpressionName');
-    const currentExpressionImg = document.getElementById('currentExpressionImg');
-    const currentExpressionPlaceholder = document.getElementById('currentExpressionPlaceholder');
+    // Update the dual status display for eye
+    const currentEyeState = document.getElementById('currentEyeState');
+    if (currentEyeState) {
+        currentEyeState.textContent = btn.name;
+    }
 
-    if (currentExpressionName && currentExpressionDisplay) {
-        // Update the name
-        currentExpressionName.textContent = btn.name;
+    // Provide haptic feedback
+    vibrateDevice();
+}
 
-        // Update the icon or placeholder
-        if (btn.src) {
-            // Show image
-            currentExpressionImg.src = btn.src;
-            currentExpressionImg.style.display = 'block';
-            currentExpressionPlaceholder.style.display = 'none';
-        } else {
-            // Show placeholder text
-            currentExpressionImg.style.display = 'none';
-            currentExpressionPlaceholder.textContent = btn.name;
-            currentExpressionPlaceholder.style.display = 'block';
-        }
+//* --------- Control Mode Switching ---------
+let currentControlMode = 'eye'; // 'eye' or 'mouth'
 
-        // Add active animation
-        currentExpressionDisplay.classList.add('active');
-        setTimeout(() => {
-            currentExpressionDisplay.classList.remove('active');
-        }, 300);
+function switchControlMode(mode) {
+    if (currentControlMode === mode) return;
+
+    currentControlMode = mode;
+
+    // Update status item highlighting (the clickable status cards)
+    const eyeStatus = document.querySelector('.eye-status');
+    const mouthStatus = document.querySelector('.mouth-status');
+
+    if (mode === 'eye') {
+        eyeStatus.classList.add('active');
+        mouthStatus.classList.remove('active');
+    } else {
+        eyeStatus.classList.remove('active');
+        mouthStatus.classList.add('active');
+    }
+
+    // Switch control sections
+    const eyeSection = document.getElementById('eyeControlSection');
+    const mouthSection = document.getElementById('mouthControlSection');
+
+    if (mode === 'eye') {
+        eyeSection.classList.add('active');
+        mouthSection.classList.remove('active');
+    } else {
+        eyeSection.classList.remove('active');
+        mouthSection.classList.add('active');
+    }
+
+    // Provide haptic feedback
+    vibrateDevice();
+}
+
+//* --------- Mouth State ---------
+const mouthStateNames = ['IDLE', 'WAH', 'EH', 'POUT', 'DROOL'];
+
+function setMouthState(state) {
+    // Update BLE characteristic
+    setMouthStateCharacteristic(state);
+
+    // Update UI - remove active class from all buttons
+    const buttons = document.querySelectorAll('.mouth-state-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+
+    // Add active class to selected button
+    const activeButton = document.querySelector(`.mouth-state-btn[data-state="${state}"]`);
+    if (activeButton) {
+        activeButton.classList.add('active');
+    }
+
+    // Update current state display in dual status
+    const currentMouthState = document.getElementById('currentMouthState');
+    if (currentMouthState && state >= 0 && state < mouthStateNames.length) {
+        currentMouthState.textContent = mouthStateNames[state];
     }
 
     // Provide haptic feedback

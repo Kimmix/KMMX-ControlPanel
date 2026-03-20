@@ -105,18 +105,57 @@
               <h2>Expression <span id="expBtnCount">0</span></h2>
             </div>
 
-            <!-- Current Expression Display -->
-            <div class="current-expression-display" id="currentExpressionDisplay">
-              <div class="current-expression-icon" id="currentExpressionIcon">
-                <img src="asset/svg/expression/default.svg" alt="Current Expression" id="currentExpressionImg">
-                <span class="current-expression-placeholder" id="currentExpressionPlaceholder" style="display: none;">Idle</span>
+            <!-- Dual Status Display (also acts as mode switcher) -->
+            <div class="dual-status-container">
+              <div class="status-item eye-status active" onclick="switchControlMode('eye')">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="status-icon">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <div class="status-content">
+                  <span class="status-label">Eye</span>
+                  <span class="status-value" id="currentEyeState">Idle</span>
+                </div>
               </div>
-              <div class="current-expression-name" id="currentExpressionName">Idle</div>
+              <div class="status-item mouth-status" onclick="switchControlMode('mouth')">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="status-icon">
+                  <path d="M12 19c-4 0-7-2-7-5h14c0 3-3 5-7 5z"></path>
+                  <circle cx="9" cy="10" r="1"></circle>
+                  <circle cx="15" cy="10" r="1"></circle>
+                </svg>
+                <div class="status-content">
+                  <span class="status-label">Mouth</span>
+                  <span class="status-value" id="currentMouthState">IDLE</span>
+                </div>
+              </div>
             </div>
 
             <div class="expression-container">
-              <!-- Grid layout for expression buttons -->
-              <div id="exp-btn" class="expression-grid">
+              <!-- Eye Control Section -->
+              <div id="eyeControlSection" class="control-section active">
+                <div id="exp-btn" class="expression-grid">
+                </div>
+              </div>
+
+              <!-- Mouth Control Section -->
+              <div id="mouthControlSection" class="control-section">
+                <div class="mouth-state-buttons">
+                  <button class="mouth-state-btn placeholder active" data-state="0" onclick="setMouthState(0)" title="Default idle mouth state">
+                    <span class="placeholder-text">IDLE<br><small>Default</small></span>
+                  </button>
+                  <button class="mouth-state-btn placeholder" data-state="1" onclick="setMouthState(1)" title="Wah mouth animation">
+                    <span class="placeholder-text">WAH<br><small>Bouncy</small></span>
+                  </button>
+                  <button class="mouth-state-btn placeholder" data-state="2" onclick="setMouthState(2)" title="Eh mouth expression">
+                    <span class="placeholder-text">EH<br><small>Meh</small></span>
+                  </button>
+                  <button class="mouth-state-btn placeholder" data-state="3" onclick="setMouthState(3)" title="Pout mouth expression">
+                    <span class="placeholder-text">POUT<br><small>Sad</small></span>
+                  </button>
+                  <button class="mouth-state-btn placeholder" data-state="4" onclick="setMouthState(4)" title="Drooling mouth animation">
+                    <span class="placeholder-text">DROOL<br><small>Blep</small></span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -358,6 +397,13 @@
                   <span class="ble-char-value" id="ble-viseme">-</span>
                 </div>
                 <span class="ble-char-uuid">UUID: 493d06f3-0fa0-4a90-88f1-ebaed0da9b80</span>
+              </div>
+              <div class="ble-char-item">
+                <div class="ble-char-header">
+                  <span class="ble-char-name">Mouth State</span>
+                  <span class="ble-char-value" id="ble-mouthstate">-</span>
+                </div>
+                <span class="ble-char-uuid">UUID: f6a7b8c9-d0e1-4f5a-b1c2-3d4e5f6a7b8c</span>
               </div>
               <div class="ble-char-item">
                 <div class="ble-char-header">
