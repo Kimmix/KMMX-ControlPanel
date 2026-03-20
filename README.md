@@ -1,34 +1,22 @@
 # KMMX Control Panel
 
-A Progressive Web App (PWA) for controlling KMMX devices via Bluetooth Low Energy (BLE). This web-based control panel provides an intuitive interface for managing device expressions, viseme animations, and display settings.
+A Progressive Web App (PWA) for controlling the [KMMX-Fursuit](https://github.com/Kimmix/KMMX-Fursuit) protogen via Bluetooth Low Energy (BLE). This web-based control panel provides an intuitive interface for managing facial expressions, viseme animations, and display settings on the fursuit in real-time.
 
-![Version](https://img.shields.io/badge/version-0.4-blue)
-![License](https://img.shields.io/badge/license-Authorized_Use_Only-red)
-
-## 🌟 Features
-
-- **Bluetooth Low Energy (BLE) Connectivity**: Seamless wireless connection to KMMX devices
-- **Expression Control**: Select and manage different facial expressions
-- **Viseme Animation**: Control mouth movements and animations with adjustable settings
-- **Display Brightness**: Adjust device display brightness with a visual slider interface
-- **Real-time Status**: Live connection status indicator and session timer
-- **Progressive Web App**: Install on mobile devices for a native app-like experience
-- **Gyroscope Integration**: Dynamic UI elements that respond to device orientation
-- **Responsive Design**: Optimized for mobile devices with fullscreen support
+> **Related Project**: This controller is designed for the [KMMX-Fursuit](https://github.com/Kimmix/KMMX-Fursuit) - an ESP32-based protogen fursuit with animated LED matrix displays, audio-reactive visemes, and interactive features.
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
 - A modern web browser with Web Bluetooth API support (Chrome, Edge, or Opera recommended)
-- A KMMX-BLE compatible device
+- A [KMMX-Fursuit](https://github.com/Kimmix/KMMX-Fursuit) device running the ESP32 firmware
 - HTTPS connection (required for Web Bluetooth API)
 
 ### Installation
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/KMMX-ControlPanel.git
+   git clone https://github.com/Kimmix/KMMX-ControlPanel.git
    cd KMMX-ControlPanel
    ```
 
@@ -61,20 +49,21 @@ A Progressive Web App (PWA) for controlling KMMX devices via Bluetooth Low Energ
 
 1. **Connect to Device**
    - Tap the splash screen to initiate BLE pairing
-   - Select your KMMX device from the browser's Bluetooth pairing dialog
+   - Select your KMMX-Fursuit device from the browser's Bluetooth pairing dialog
    - Wait for the connection to establish
 
 2. **Control Expressions**
-   - Browse available expressions in the Expression section
-   - Tap an expression button to activate it
+   - Browse available facial expressions in the Expression section
+   - Tap an expression button to activate it on the fursuit
    - The current expression is displayed at the top
 
 3. **Manage Viseme**
-   - Toggle viseme animation on/off using the dedicated button
+   - Toggle viseme (mouth) animation on/off using the dedicated button
    - Adjust viseme intensity using the slider (when enabled)
+   - Viseme animations respond to audio input on the fursuit
 
 4. **Adjust Brightness**
-   - Use the brightness slider at the bottom to control display brightness
+   - Use the brightness slider at the bottom to control LED matrix brightness
    - Visual dots indicate the current brightness level
 
 5. **Monitor Connection**
@@ -110,11 +99,13 @@ KMMX-ControlPanel/
 
 ### BLE Service Configuration
 
+The control panel communicates with the KMMX-Fursuit using the following BLE service:
+
 - **Service UUID**: `c1449275-bf34-40ab-979d-e34a1fdbb129`
 - **Characteristics**:
   - Display Brightness: `9fdfd124-966b-44f7-8331-778c4d1512fc`
-  - Eye State: `49a36bb2-1c66-4e5c-8ff3-28e55a64beb3`
-  - Viseme: `493d06f3-0fa0-4a90-88f1-ebaed0da9b80`
+  - Eye State (Expressions): `49a36bb2-1c66-4e5c-8ff3-28e55a64beb3`
+  - Viseme (Mouth Animation): `493d06f3-0fa0-4a90-88f1-ebaed0da9b80`
 
 ### Browser Compatibility
 
@@ -139,6 +130,14 @@ This application is designed for **authorized use only**. The Web Bluetooth API 
 - User gesture to initiate pairing
 - HTTPS connection (except localhost)
 - Explicit user permission for device access
+
+## 🦊 Related Projects
+
+- **[KMMX-Fursuit](https://github.com/Kimmix/KMMX-Fursuit)** - The main ESP32 firmware for the protogen fursuit
+  - Animated LED matrix displays for eyes and mouth
+  - Audio-reactive visemes
+  - Proximity sensing and accelerometer integration
+  - Bluetooth connectivity
 
 ## 📄 License
 
