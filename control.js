@@ -40,7 +40,7 @@ const expression = [
     {
         id: 6,
         buttonId: 'button6',
-        name: 'Boop',
+        name: 'Arrow',
         src: null, // Placeholder - add icon later
     },
     {
