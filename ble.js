@@ -156,6 +156,10 @@ function onDisconnected(event) {
 }
 
 async function setEyeStateCharacteristic(value) {
+  if (!eyeStateCharacteristic) {
+    console.log('Not connected - eye state change skipped');
+    return;
+  }
   eyeStateCharacteristic.writeValue(Uint8Array.of(value))
     .then(_ => {
       console.log('> Characteristic eye state changed to: ' + Uint8Array.of(value));
@@ -167,6 +171,10 @@ async function setEyeStateCharacteristic(value) {
 }
 
 function setVisemeCharacteristic(value) {
+  if (!visemeCharacteristic) {
+    console.log('Not connected - viseme change skipped');
+    return;
+  }
   visemeCharacteristic.writeValue(Uint8Array.of(value))
     .then(_ => {
       console.log('> Characteristic viseme changed to: ' + Uint8Array.of(value));
@@ -178,6 +186,10 @@ function setVisemeCharacteristic(value) {
 }
 
 function setMouthStateCharacteristic(value) {
+  if (!mouthStateCharacteristic) {
+    console.log('Not connected - mouth state change skipped');
+    return;
+  }
   mouthStateCharacteristic.writeValue(Uint8Array.of(value))
     .then(_ => {
       console.log('> Characteristic mouth state changed to: ' + Uint8Array.of(value));
@@ -190,6 +202,10 @@ function setMouthStateCharacteristic(value) {
 
 let prevBrightnessValue = -1;
 function setdisplayBrightnessCharacteristic(value) {
+  if (!displayBrightnessCharacteristic) {
+    console.log('Not connected - display brightness change skipped');
+    return;
+  }
   if (value !== prevBrightnessValue) {
     displayBrightnessCharacteristic.writeValue(Uint8Array.of(value))
       .then(_ => {
@@ -205,6 +221,10 @@ function setdisplayBrightnessCharacteristic(value) {
 
 let prevHornLedBrightnessValue = -1;
 function setHornLedBrightnessCharacteristic(value) {
+  if (!hornLedBrightnessCharacteristic) {
+    console.log('Not connected - horn LED brightness change skipped');
+    return;
+  }
   if (value !== prevHornLedBrightnessValue) {
     hornLedBrightnessCharacteristic.writeValue(Uint8Array.of(value))
       .then(_ => {
@@ -220,6 +240,10 @@ function setHornLedBrightnessCharacteristic(value) {
 
 let prevCheekPanelBrightnessValue = -1;
 function setCheekPanelBrightnessCharacteristic(value) {
+  if (!cheekPanelBrightnessCharacteristic) {
+    console.log('Not connected - cheek panel brightness change skipped');
+    return;
+  }
   if (value !== prevCheekPanelBrightnessValue) {
     cheekPanelBrightnessCharacteristic.writeValue(Uint8Array.of(value))
       .then(_ => {
@@ -235,6 +259,10 @@ function setCheekPanelBrightnessCharacteristic(value) {
 
 let prevCheekBgColor = null;
 function setCheekBgColorCharacteristic(r, g, b) {
+  if (!cheekBgColorCharacteristic) {
+    console.log('Not connected - cheek BG color change skipped');
+    return;
+  }
   const colorKey = `${r},${g},${b}`;
   if (colorKey !== prevCheekBgColor) {
     cheekBgColorCharacteristic.writeValue(Uint8Array.of(r, g, b))
@@ -251,6 +279,10 @@ function setCheekBgColorCharacteristic(r, g, b) {
 
 let prevCheekFadeColor = null;
 function setCheekFadeColorCharacteristic(r, g, b) {
+  if (!cheekFadeColorCharacteristic) {
+    console.log('Not connected - cheek fade color change skipped');
+    return;
+  }
   const colorKey = `${r},${g},${b}`;
   if (colorKey !== prevCheekFadeColor) {
     cheekFadeColorCharacteristic.writeValue(Uint8Array.of(r, g, b))

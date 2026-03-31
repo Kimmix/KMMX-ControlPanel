@@ -120,18 +120,14 @@ expression.forEach(exp => {
 let activeButton = null;
 async function toggleButton(btnId) {
     const button = document.getElementById(btnId);
-    if (activeButton !== null) {
+    if (activeButton !== null && activeButton !== button) {
         activeButton.classList.remove('active');
     }
-    if (activeButton !== button) {
-        button.classList.add('active');
-        activeButton = button;
-        let selected = expression.find(({ buttonId }) => buttonId === btnId);
-        setEyeStateCharacteristic(selected.id);
-        setCurrentExpression(selected);
-    } else {
-        activeButton = null;
-    }
+    button.classList.add('active');
+    activeButton = button;
+    let selected = expression.find(({ buttonId }) => buttonId === btnId);
+    setEyeStateCharacteristic(selected.id);
+    setCurrentExpression(selected);
 }
 
 function setExpression(i) {
@@ -159,7 +155,11 @@ function setCurrentExpression(btn) {
 let currentControlMode = 'eye'; // 'eye' or 'mouth'
 
 function switchControlMode(mode) {
-    if (currentControlMode === mode) return;
+    // If clicking the same mode, just provide feedback and keep it active
+    if (currentControlMode === mode) {
+        vibrateDevice();
+        return;
+    }
 
     currentControlMode = mode;
 
