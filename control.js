@@ -564,6 +564,8 @@ const displayColorModeRadial = document.getElementById('displayColorModeRadial')
 const displayColorModeDualSpiral = document.getElementById('displayColorModeDualSpiral');
 const dualSpiralThicknessControl = document.getElementById('dualSpiralThicknessControl');
 const dualSpiralThicknessSlider = document.getElementById('dualSpiralThicknessSlider');
+const gradientBottomColorContainer = document.getElementById('gradientBottomColorContainer');
+const gradientPreviewContainer = document.getElementById('gradientPreviewContainer');
 
 // Display mode names for reference
 const displayModeNames = ['Gradient', 'Spiral/Vortex', 'Plasma Effect', 'Radial Pulse', 'DualSpiral'];
@@ -602,17 +604,24 @@ function setDisplayColorMode(mode) {
         dualSpiralThicknessControl.style.display = (mode === 4) ? 'block' : 'none';
     }
 
+    // Show/hide second color picker and preview based on mode
+    if (gradientBottomColorContainer) {
+        gradientBottomColorContainer.style.display = (mode === 4) ? 'none' : 'block';
+    }
+    if (gradientPreviewContainer) {
+        gradientPreviewContainer.style.display = (mode === 4) ? 'none' : 'block';
+    }
+
     // Update color picker labels based on mode
     if (mode === 4) {
-        if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Spiral Color 1';
-        if (gradientBottomColorLabel) gradientBottomColorLabel.textContent = 'Spiral Color 2';
+        if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Spiral Color';
     } else {
         if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Top Gradient Color';
         if (gradientBottomColorLabel) gradientBottomColorLabel.textContent = 'Bottom Gradient Color';
     }
 
-    // Update preview when mode changes
-    if (mode === 0 || mode === 4) {
+    // Update preview when mode changes (only for Gradient mode)
+    if (mode === 0) {
         updateGradientPreview(gradientTopColorPicker.value, gradientBottomColorPicker.value, mode);
     }
 
@@ -651,17 +660,24 @@ function setDisplayColorModeValue(mode) {
         dualSpiralThicknessControl.style.display = (mode === 4) ? 'block' : 'none';
     }
 
+    // Show/hide second color picker and preview based on mode
+    if (gradientBottomColorContainer) {
+        gradientBottomColorContainer.style.display = (mode === 4) ? 'none' : 'block';
+    }
+    if (gradientPreviewContainer) {
+        gradientPreviewContainer.style.display = (mode === 4) ? 'none' : 'block';
+    }
+
     // Update color picker labels based on mode
     if (mode === 4) {
-        if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Spiral Color 1';
-        if (gradientBottomColorLabel) gradientBottomColorLabel.textContent = 'Spiral Color 2';
+        if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Spiral Color';
     } else {
         if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Top Gradient Color';
         if (gradientBottomColorLabel) gradientBottomColorLabel.textContent = 'Bottom Gradient Color';
     }
 
-    // Update preview when mode changes
-    if (mode === 0 || mode === 4) {
+    // Update preview when mode changes (only for Gradient mode)
+    if (mode === 0) {
         updateGradientPreview(gradientTopColorPicker.value, gradientBottomColorPicker.value, mode);
     }
 }
@@ -806,17 +822,18 @@ function setDualSpiralThicknessValue(value) {
 
 // Update slider display for DualSpiral thickness
 function updateDualSpiralThicknessSlider(value) {
-    const sliderContainer = dualSpiralThicknessSlider?.parentElement;
-    if (!sliderContainer) return;
+    const valueDisplay = document.getElementById('spiralThicknessValue');
+    if (valueDisplay) {
+        valueDisplay.textContent = value;
+    }
 
-    const sliderNumbers = sliderContainer.querySelectorAll('.sliderNumber');
-    sliderNumbers.forEach((num, index) => {
-        if (index + 1 === parseInt(value)) {
-            num.classList.add('active');
-        } else {
-            num.classList.remove('active');
-        }
-    });
+    // Update slider fill
+    if (dualSpiralThicknessSlider) {
+        const min = parseInt(dualSpiralThicknessSlider.min) || 0;
+        const max = parseInt(dualSpiralThicknessSlider.max) || 255;
+        const percentage = ((value - min) / (max - min)) * 100;
+        dualSpiralThicknessSlider.style.background = `linear-gradient(to right, white 0%, white ${percentage}%, rgba(255, 255, 255, 0.1) ${percentage}%, rgba(255, 255, 255, 0.1) 100%)`;
+    }
 }
 
 // DualSpiral thickness slider event listener

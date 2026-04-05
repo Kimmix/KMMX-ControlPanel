@@ -14,7 +14,7 @@ const bleUUID = {
     displayColorMode: "f5a6b7c8-d9e0-4f5a-b0c1-2d3e4f5a6b7c",
     gradientTopColor: "a6b7c8d9-e0f1-4a5b-c1d2-3e4f5a6b7c8d",
     gradientBottomColor: "b7c8d9e0-f1a2-4b5c-d2e3-4f5a6b7c8d9e",
-    dualSpiralThickness: "e0f1a2b3-c4d5-4e5f-a5b6-7c8d9e0f1a2b"
+    dualSpiralThickness: "c7d8e9f0-a1b2-4c5d-e2f3-4a5b6c7d8e9f"
   }
 };
 

@@ -1223,3 +1223,56 @@ input[type="color"]::-moz-color-swatch {
   border-color: var(--acc1-color) !important;
   box-shadow: 0 0 12px rgba(249, 130, 108, 0.3);
 }
+
+/* Spiral Thickness Slider */
+.spiral-thickness-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  outline: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.spiral-thickness-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.spiral-thickness-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+.spiral-thickness-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: white;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.spiral-thickness-slider::-moz-range-thumb:hover {
+  transform: scale(1.15);
+}
+
+.spiral-thickness-slider::-moz-range-track {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+
+.spiral-thickness-slider::-moz-range-progress {
+  height: 4px;
+  background: white;
+  border-radius: 2px;
+}
