@@ -333,7 +333,14 @@
                     <path d="M12 12c1.5 1.5 3.5 2.5 5.5 2.5 2.5 0 4.5-2 4.5-4.5S20 5.5 17.5 5.5c-2 0-4 1-5.5 2.5"></path>
                     <circle cx="12" cy="12" r="1"></circle>
                   </svg>
-                  DualSpiral
+                  Dual Spiral
+                </button>
+                <button id="displayColorModeDualCircle" class="display-color-mode-btn" onclick="setDisplayColorMode(5)">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; margin-right: 6px;">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <circle cx="12" cy="12" r="7"></circle>
+                  </svg>
+                  Dual Circle
                 </button>
               </div>
             </div>
@@ -385,15 +392,26 @@
               </div>
             </div>
 
-            <!-- DualSpiral Thickness Control (shown only when DualSpiral mode is selected) -->
+            <!-- Effect Option 1: Thickness Control (shown for modes 4 and 5) -->
             <div id="dualSpiralThicknessControl" style="display: none; margin-top: 20px; padding: 15px; background-color: var(--black3-color); border-radius: 12px;">
               <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                <h3 style="margin: 0;">Spiral Thickness</h3>
+                <h3 id="effectOption1Label" style="margin: 0;">Thickness</h3>
                 <div class="value-display">
                   <span id="spiralThicknessValue">128</span>
                 </div>
               </div>
               <input class="spiral-thickness-slider" type="range" min="0" max="255" value="128" id="dualSpiralThicknessSlider" style="width: 100%;">
+            </div>
+
+            <!-- Effect Option 2: Speed Control (shown for modes 4 and 5) -->
+            <div id="dualCircleThicknessControl" style="display: none; margin-top: 20px; padding: 15px; background-color: var(--black3-color); border-radius: 12px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                <h3 id="effectOption2Label" style="margin: 0;">Speed</h3>
+                <div class="value-display">
+                  <span id="circleThicknessValue">128</span>
+                </div>
+              </div>
+              <input class="spiral-thickness-slider" type="range" min="0" max="255" value="128" id="dualCircleThicknessSlider" style="width: 100%;">
             </div>
           </div>
 
@@ -427,7 +445,7 @@
             </div>
 
             <!-- Fade/Sparkle Color -->
-            <div class="color-picker-container">
+            <!-- <div class="color-picker-container">
               <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
                 <h3 style="margin: 0;">Sparkle Color</h3>
                 <span id="fadeColorHex" class="fade" style="font-size: 0.9rem;">#F9826C</span>
@@ -442,7 +460,7 @@
                   <button class="color-preset-btn" data-color="#FFD66C" data-target="fade" style="background: #FFD66C;" title="Yellow"></button>
                 </div>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
         </div>
@@ -566,24 +584,31 @@
               </div>
               <div class="ble-char-item">
                 <div class="ble-char-header">
-                  <span class="ble-char-name">Gradient Top Color</span>
-                  <span class="ble-char-value" id="ble-gradienttopcolor">-</span>
+                  <span class="ble-char-name">Display Effect Color 1</span>
+                  <span class="ble-char-value" id="ble-displayeffectcolor1">-</span>
                 </div>
                 <span class="ble-char-uuid">UUID: a6b7c8d9-e0f1-4a5b-c1d2-3e4f5a6b7c8d</span>
               </div>
               <div class="ble-char-item">
                 <div class="ble-char-header">
-                  <span class="ble-char-name">Gradient Bottom Color</span>
-                  <span class="ble-char-value" id="ble-gradientbottomcolor">-</span>
+                  <span class="ble-char-name">Display Effect Color 2</span>
+                  <span class="ble-char-value" id="ble-displayeffectcolor2">-</span>
                 </div>
                 <span class="ble-char-uuid">UUID: b7c8d9e0-f1a2-4b5c-d2e3-4f5a6b7c8d9e</span>
               </div>
               <div class="ble-char-item">
                 <div class="ble-char-header">
-                  <span class="ble-char-name">Spiral Thickness</span>
-                  <span class="ble-char-value" id="ble-dualspiralthickness">-</span>
+                  <span class="ble-char-name">Display Effect Option 1</span>
+                  <span class="ble-char-value" id="ble-displayeffectoption1">-</span>
                 </div>
                 <span class="ble-char-uuid">UUID: c7d8e9f0-a1b2-4c5d-e2f3-4a5b6c7d8e9f</span>
+              </div>
+              <div class="ble-char-item">
+                <div class="ble-char-header">
+                  <span class="ble-char-name">Display Effect Option 2</span>
+                  <span class="ble-char-value" id="ble-displayeffectoption2">-</span>
+                </div>
+                <span class="ble-char-uuid">UUID: d8e9f0a1-b2c3-4d5e-f3a4-5b6c7d8e9f0a</span>
               </div>
               </div>
               <button id="refreshBleBtn" class="refresh-ble-button" onclick="refreshBLECharacteristics()" disabled>

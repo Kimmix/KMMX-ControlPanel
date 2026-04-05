@@ -463,26 +463,30 @@ function rgbToHex(r, g, b) {
 }
 
 // Background color picker handler
-bgColorPicker.addEventListener('input', (e) => {
-    const color = e.target.value;
-    bgColorHex.textContent = color.toUpperCase();
-    const rgb = hexToRgb(color);
-    if (rgb) {
-        throttledAndDebouncedSetCheekBgColor(rgb.r, rgb.g, rgb.b);
-        vibrateDevice();
-    }
-});
+if (bgColorPicker) {
+    bgColorPicker.addEventListener('input', (e) => {
+        const color = e.target.value;
+        if (bgColorHex) bgColorHex.textContent = color.toUpperCase();
+        const rgb = hexToRgb(color);
+        if (rgb) {
+            throttledAndDebouncedSetCheekBgColor(rgb.r, rgb.g, rgb.b);
+            vibrateDevice();
+        }
+    });
+}
 
 // Fade color picker handler
-fadeColorPicker.addEventListener('input', (e) => {
-    const color = e.target.value;
-    fadeColorHex.textContent = color.toUpperCase();
-    const rgb = hexToRgb(color);
-    if (rgb) {
-        throttledAndDebouncedSetCheekFadeColor(rgb.r, rgb.g, rgb.b);
-        vibrateDevice();
-    }
-});
+if (fadeColorPicker) {
+    fadeColorPicker.addEventListener('input', (e) => {
+        const color = e.target.value;
+        if (fadeColorHex) fadeColorHex.textContent = color.toUpperCase();
+        const rgb = hexToRgb(color);
+        if (rgb) {
+            throttledAndDebouncedSetCheekFadeColor(rgb.r, rgb.g, rgb.b);
+            vibrateDevice();
+        }
+    });
+}
 
 // Color preset buttons handler
 document.querySelectorAll('.color-preset-btn').forEach(btn => {
@@ -490,16 +494,16 @@ document.querySelectorAll('.color-preset-btn').forEach(btn => {
         const color = btn.getAttribute('data-color');
         const target = btn.getAttribute('data-target');
 
-        if (target === 'bg') {
+        if (target === 'bg' && bgColorPicker) {
             bgColorPicker.value = color;
-            bgColorHex.textContent = color.toUpperCase();
+            if (bgColorHex) bgColorHex.textContent = color.toUpperCase();
             const rgb = hexToRgb(color);
             if (rgb) {
                 throttledAndDebouncedSetCheekBgColor(rgb.r, rgb.g, rgb.b);
             }
-        } else if (target === 'fade') {
+        } else if (target === 'fade' && fadeColorPicker) {
             fadeColorPicker.value = color;
-            fadeColorHex.textContent = color.toUpperCase();
+            if (fadeColorHex) fadeColorHex.textContent = color.toUpperCase();
             const rgb = hexToRgb(color);
             if (rgb) {
                 throttledAndDebouncedSetCheekFadeColor(rgb.r, rgb.g, rgb.b);
@@ -512,14 +516,14 @@ document.querySelectorAll('.color-preset-btn').forEach(btn => {
 // Set color values from BLE (called when connecting to device)
 function setCheekBgColorValue(r, g, b) {
     const hex = rgbToHex(r, g, b);
-    bgColorPicker.value = hex;
-    bgColorHex.textContent = hex;
+    if (bgColorPicker) bgColorPicker.value = hex;
+    if (bgColorHex) bgColorHex.textContent = hex;
 }
 
 function setCheekFadeColorValue(r, g, b) {
     const hex = rgbToHex(r, g, b);
-    fadeColorPicker.value = hex;
-    fadeColorHex.textContent = hex;
+    if (fadeColorPicker) fadeColorPicker.value = hex;
+    if (fadeColorHex) fadeColorHex.textContent = hex;
 }
 
 // Reset colors to default values
@@ -528,16 +532,16 @@ function resetCheekColors() {
     const defaultFadeColor = '#F9826C';  // Default coral
 
     // Update background color
-    bgColorPicker.value = defaultBgColor;
-    bgColorHex.textContent = defaultBgColor;
+    if (bgColorPicker) bgColorPicker.value = defaultBgColor;
+    if (bgColorHex) bgColorHex.textContent = defaultBgColor;
     const bgRgb = hexToRgb(defaultBgColor);
     if (bgRgb) {
         throttledAndDebouncedSetCheekBgColor(bgRgb.r, bgRgb.g, bgRgb.b);
     }
 
     // Update fade color
-    fadeColorPicker.value = defaultFadeColor;
-    fadeColorHex.textContent = defaultFadeColor;
+    if (fadeColorPicker) fadeColorPicker.value = defaultFadeColor;
+    if (fadeColorHex) fadeColorHex.textContent = defaultFadeColor;
     const fadeRgb = hexToRgb(defaultFadeColor);
     if (fadeRgb) {
         throttledAndDebouncedSetCheekFadeColor(fadeRgb.r, fadeRgb.g, fadeRgb.b);
@@ -562,13 +566,16 @@ const displayColorModeSpiral = document.getElementById('displayColorModeSpiral')
 const displayColorModePlasma = document.getElementById('displayColorModePlasma');
 const displayColorModeRadial = document.getElementById('displayColorModeRadial');
 const displayColorModeDualSpiral = document.getElementById('displayColorModeDualSpiral');
+const displayColorModeDualCircle = document.getElementById('displayColorModeDualCircle');
 const dualSpiralThicknessControl = document.getElementById('dualSpiralThicknessControl');
 const dualSpiralThicknessSlider = document.getElementById('dualSpiralThicknessSlider');
+const dualCircleThicknessControl = document.getElementById('dualCircleThicknessControl');
+const dualCircleThicknessSlider = document.getElementById('dualCircleThicknessSlider');
 const gradientBottomColorContainer = document.getElementById('gradientBottomColorContainer');
 const gradientPreviewContainer = document.getElementById('gradientPreviewContainer');
 
 // Display mode names for reference
-const displayModeNames = ['Gradient', 'Spiral/Vortex', 'Plasma Effect', 'Radial Pulse', 'DualSpiral'];
+const displayModeNames = ['Gradient', 'Spiral Vortex', 'Plasma Effect', 'Radial Pulse', 'Dual Spiral', 'Dual Circle'];
 
 // Set display color mode (called when connecting to device or changing mode)
 function setDisplayColorMode(mode) {
@@ -581,7 +588,8 @@ function setDisplayColorMode(mode) {
         displayColorModeSpiral,
         displayColorModePlasma,
         displayColorModeRadial,
-        displayColorModeDualSpiral
+        displayColorModeDualSpiral,
+        displayColorModeDualCircle
     ];
 
     // Remove active class from all mode buttons
@@ -594,31 +602,48 @@ function setDisplayColorMode(mode) {
         modeButtons[mode].classList.add('active');
     }
 
-    // Show/hide custom gradient colors for mode 0 (Gradient) and mode 4 (DualSpiral)
+    // Show/hide color controls based on mode
+    // Mode 0: Gradient - shows Color1 (top) and Color2 (bottom)
+    // Mode 1-3: Rainbow effects - no color controls
+    // Mode 4: Dual Spiral - shows Color1 only, Option1 (Thickness), Option2 (Speed)
+    // Mode 5: Dual Circle - shows Color1 only, Option1 (Thickness), Option2 (Speed)
+    const showColorControls = (mode === 0 || mode === 4 || mode === 5);
     if (customGradientColors) {
-        customGradientColors.style.display = (mode === 0 || mode === 4) ? 'block' : 'none';
+        customGradientColors.style.display = showColorControls ? 'block' : 'none';
     }
 
-    // Show/hide DualSpiral thickness control only for mode 4 (DualSpiral)
-    if (dualSpiralThicknessControl) {
-        dualSpiralThicknessControl.style.display = (mode === 4) ? 'block' : 'none';
-    }
-
-    // Show/hide second color picker and preview based on mode
+    // Show/hide second color picker (Color2) - only for mode 0 (Gradient)
     if (gradientBottomColorContainer) {
-        gradientBottomColorContainer.style.display = (mode === 4) ? 'none' : 'block';
+        gradientBottomColorContainer.style.display = (mode === 0) ? 'block' : 'none';
     }
+
+    // Show/hide gradient preview - only for mode 0 (Gradient)
     if (gradientPreviewContainer) {
-        gradientPreviewContainer.style.display = (mode === 4) ? 'none' : 'block';
+        gradientPreviewContainer.style.display = (mode === 0) ? 'block' : 'none';
+    }
+
+    // Show/hide thickness control (Option1) - for modes 4 and 5
+    if (dualSpiralThicknessControl) {
+        dualSpiralThicknessControl.style.display = (mode === 4 || mode === 5) ? 'block' : 'none';
+    }
+
+    // Show/hide speed control (Option2) - for modes 4 and 5
+    if (dualCircleThicknessControl) {
+        dualCircleThicknessControl.style.display = (mode === 4 || mode === 5) ? 'block' : 'none';
     }
 
     // Update color picker labels based on mode
-    if (mode === 4) {
-        if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Spiral Color';
-    } else {
+    if (mode === 0) {
         if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Top Gradient Color';
         if (gradientBottomColorLabel) gradientBottomColorLabel.textContent = 'Bottom Gradient Color';
+    } else if (mode === 4) {
+        if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Spiral Color';
+    } else if (mode === 5) {
+        if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Circle Color';
     }
+
+    // Update option control labels based on mode
+    updateEffectOptionLabels(mode);
 
     // Update preview when mode changes (only for Gradient mode)
     if (mode === 0) {
@@ -637,7 +662,8 @@ function setDisplayColorModeValue(mode) {
         displayColorModeSpiral,
         displayColorModePlasma,
         displayColorModeRadial,
-        displayColorModeDualSpiral
+        displayColorModeDualSpiral,
+        displayColorModeDualCircle
     ];
 
     // Remove active class from all mode buttons
@@ -650,31 +676,44 @@ function setDisplayColorModeValue(mode) {
         modeButtons[mode].classList.add('active');
     }
 
-    // Show/hide custom gradient colors for mode 0 (Gradient) and mode 4 (DualSpiral)
+    // Show/hide color controls based on mode
+    const showColorControls = (mode === 0 || mode === 4 || mode === 5);
     if (customGradientColors) {
-        customGradientColors.style.display = (mode === 0 || mode === 4) ? 'block' : 'none';
+        customGradientColors.style.display = showColorControls ? 'block' : 'none';
     }
 
-    // Show/hide DualSpiral thickness control only for mode 4 (DualSpiral)
-    if (dualSpiralThicknessControl) {
-        dualSpiralThicknessControl.style.display = (mode === 4) ? 'block' : 'none';
-    }
-
-    // Show/hide second color picker and preview based on mode
+    // Show/hide second color picker (Color2) - only for mode 0 (Gradient)
     if (gradientBottomColorContainer) {
-        gradientBottomColorContainer.style.display = (mode === 4) ? 'none' : 'block';
+        gradientBottomColorContainer.style.display = (mode === 0) ? 'block' : 'none';
     }
+
+    // Show/hide gradient preview - only for mode 0 (Gradient)
     if (gradientPreviewContainer) {
-        gradientPreviewContainer.style.display = (mode === 4) ? 'none' : 'block';
+        gradientPreviewContainer.style.display = (mode === 0) ? 'block' : 'none';
+    }
+
+    // Show/hide thickness control (Option1) - for modes 4 and 5
+    if (dualSpiralThicknessControl) {
+        dualSpiralThicknessControl.style.display = (mode === 4 || mode === 5) ? 'block' : 'none';
+    }
+
+    // Show/hide speed control (Option2) - for modes 4 and 5
+    if (dualCircleThicknessControl) {
+        dualCircleThicknessControl.style.display = (mode === 4 || mode === 5) ? 'block' : 'none';
     }
 
     // Update color picker labels based on mode
-    if (mode === 4) {
-        if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Spiral Color';
-    } else {
+    if (mode === 0) {
         if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Top Gradient Color';
         if (gradientBottomColorLabel) gradientBottomColorLabel.textContent = 'Bottom Gradient Color';
+    } else if (mode === 4) {
+        if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Spiral Color';
+    } else if (mode === 5) {
+        if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Circle Color';
     }
+
+    // Update option control labels based on mode
+    updateEffectOptionLabels(mode);
 
     // Update preview when mode changes (only for Gradient mode)
     if (mode === 0) {
@@ -692,7 +731,8 @@ function updateGradientPreview(topColor, bottomColor, mode = null) {
                 displayColorModeSpiral,
                 displayColorModePlasma,
                 displayColorModeRadial,
-                displayColorModeDualSpiral
+                displayColorModeDualSpiral,
+                displayColorModeDualCircle
             ];
             mode = modeButtons.findIndex(btn => btn && btn.classList.contains('active'));
         }
@@ -713,31 +753,43 @@ function updateGradientPreview(topColor, bottomColor, mode = null) {
     }
 }
 
-// Gradient top color picker handler
+// Update effect option labels based on mode
+function updateEffectOptionLabels(mode) {
+    const option1Label = document.getElementById('effectOption1Label');
+    const option2Label = document.getElementById('effectOption2Label');
+
+    // For modes 4 and 5, both use Thickness and Speed
+    if (mode === 4 || mode === 5) {
+        if (option1Label) option1Label.textContent = 'Thickness';
+        if (option2Label) option2Label.textContent = 'Speed';
+    }
+}
+
+// Effect Color 1 (top/gradient/spiral/circle color) picker handler
 gradientTopColorPicker.addEventListener('input', (e) => {
     const color = e.target.value;
     gradientTopColorHex.textContent = color.toUpperCase();
     const rgb = hexToRgb(color);
     if (rgb) {
-        throttledAndDebouncedSetGradientTopColor(rgb.r, rgb.g, rgb.b);
+        throttledAndDebouncedSetDisplayEffectColor1(rgb.r, rgb.g, rgb.b);
         updateGradientPreview(color, gradientBottomColorPicker.value);
         vibrateDevice();
     }
 });
 
-// Gradient bottom color picker handler
+// Effect Color 2 (bottom gradient color) picker handler
 gradientBottomColorPicker.addEventListener('input', (e) => {
     const color = e.target.value;
     gradientBottomColorHex.textContent = color.toUpperCase();
     const rgb = hexToRgb(color);
     if (rgb) {
-        throttledAndDebouncedSetGradientBottomColor(rgb.r, rgb.g, rgb.b);
+        throttledAndDebouncedSetDisplayEffectColor2(rgb.r, rgb.g, rgb.b);
         updateGradientPreview(gradientTopColorPicker.value, color);
         vibrateDevice();
     }
 });
 
-// Color preset buttons handler for gradient colors
+// Color preset buttons handler for display effect colors
 document.querySelectorAll('.color-preset-btn[data-target^="gradient"]').forEach(btn => {
     btn.addEventListener('click', () => {
         const color = btn.getAttribute('data-color');
@@ -748,7 +800,7 @@ document.querySelectorAll('.color-preset-btn[data-target^="gradient"]').forEach(
             gradientTopColorHex.textContent = color.toUpperCase();
             const rgb = hexToRgb(color);
             if (rgb) {
-                throttledAndDebouncedSetGradientTopColor(rgb.r, rgb.g, rgb.b);
+                throttledAndDebouncedSetDisplayEffectColor1(rgb.r, rgb.g, rgb.b);
                 updateGradientPreview(color, gradientBottomColorPicker.value);
             }
         } else if (target === 'gradientBottom') {
@@ -756,7 +808,7 @@ document.querySelectorAll('.color-preset-btn[data-target^="gradient"]').forEach(
             gradientBottomColorHex.textContent = color.toUpperCase();
             const rgb = hexToRgb(color);
             if (rgb) {
-                throttledAndDebouncedSetGradientBottomColor(rgb.r, rgb.g, rgb.b);
+                throttledAndDebouncedSetDisplayEffectColor2(rgb.r, rgb.g, rgb.b);
                 updateGradientPreview(gradientTopColorPicker.value, color);
             }
         }
@@ -764,15 +816,15 @@ document.querySelectorAll('.color-preset-btn[data-target^="gradient"]').forEach(
     });
 });
 
-// Set gradient color values from BLE (called when connecting to device)
-function setGradientTopColorValue(r, g, b) {
+// Set display effect color values from BLE (called when connecting to device)
+function setDisplayEffectColor1Value(r, g, b) {
     const hex = rgbToHex(r, g, b);
     gradientTopColorPicker.value = hex;
     gradientTopColorHex.textContent = hex;
     updateGradientPreview(hex, gradientBottomColorPicker.value);
 }
 
-function setGradientBottomColorValue(r, g, b) {
+function setDisplayEffectColor2Value(r, g, b) {
     const hex = rgbToHex(r, g, b);
     gradientBottomColorPicker.value = hex;
     gradientBottomColorHex.textContent = hex;
@@ -788,20 +840,20 @@ function resetDisplayColors() {
     // Reset to default mode
     setDisplayColorMode(defaultMode);
 
-    // Update gradient top color
+    // Update effect color 1 (top gradient color)
     gradientTopColorPicker.value = defaultTopColor;
     gradientTopColorHex.textContent = defaultTopColor;
     const topRgb = hexToRgb(defaultTopColor);
     if (topRgb) {
-        throttledAndDebouncedSetGradientTopColor(topRgb.r, topRgb.g, topRgb.b);
+        throttledAndDebouncedSetDisplayEffectColor1(topRgb.r, topRgb.g, topRgb.b);
     }
 
-    // Update gradient bottom color
+    // Update effect color 2 (bottom gradient color)
     gradientBottomColorPicker.value = defaultBottomColor;
     gradientBottomColorHex.textContent = defaultBottomColor;
     const bottomRgb = hexToRgb(defaultBottomColor);
     if (bottomRgb) {
-        throttledAndDebouncedSetGradientBottomColor(bottomRgb.r, bottomRgb.g, bottomRgb.b);
+        throttledAndDebouncedSetDisplayEffectColor2(bottomRgb.r, bottomRgb.g, bottomRgb.b);
     }
 
     // Update preview
@@ -811,17 +863,18 @@ function resetDisplayColors() {
     vibrateDevice();
 }
 
-//* --------- DualSpiral Thickness Controls ---------
-// Set DualSpiral thickness value from BLE (called when connecting to device)
-function setDualSpiralThicknessValue(value) {
+//* --------- Display Effect Option Controls ---------
+// Set Display Effect Option 1 value from BLE (called when connecting to device)
+// Option1 is used for Thickness in modes 4 (Dual Spiral) and 5 (Dual Circle)
+function setDisplayEffectOption1Value(value) {
     if (dualSpiralThicknessSlider) {
         dualSpiralThicknessSlider.value = value;
-        updateDualSpiralThicknessSlider(value);
+        updateDisplayEffectOption1Slider(value);
     }
 }
 
-// Update slider display for DualSpiral thickness
-function updateDualSpiralThicknessSlider(value) {
+// Update slider display for Effect Option 1 (Thickness)
+function updateDisplayEffectOption1Slider(value) {
     const valueDisplay = document.getElementById('spiralThicknessValue');
     if (valueDisplay) {
         valueDisplay.textContent = value;
@@ -836,12 +889,47 @@ function updateDualSpiralThicknessSlider(value) {
     }
 }
 
-// DualSpiral thickness slider event listener
+// Effect Option 1 (Thickness) slider event listener
 if (dualSpiralThicknessSlider) {
     dualSpiralThicknessSlider.addEventListener('input', (e) => {
         const value = parseInt(e.target.value);
-        updateDualSpiralThicknessSlider(value);
-        throttledAndDebouncedSetDualSpiralThickness(value);
+        updateDisplayEffectOption1Slider(value);
+        throttledAndDebouncedSetDisplayEffectOption1(value);
+        vibrateDevice();
+    });
+}
+
+// Set Display Effect Option 2 value from BLE (called when connecting to device)
+// Option2 is used for Speed in modes 4 (Dual Spiral) and 5 (Dual Circle)
+function setDisplayEffectOption2Value(value) {
+    if (dualCircleThicknessSlider) {
+        dualCircleThicknessSlider.value = value;
+        updateDisplayEffectOption2Slider(value);
+    }
+}
+
+// Update slider display for Effect Option 2 (Speed)
+function updateDisplayEffectOption2Slider(value) {
+    const valueDisplay = document.getElementById('circleThicknessValue');
+    if (valueDisplay) {
+        valueDisplay.textContent = value;
+    }
+
+    // Update slider fill
+    if (dualCircleThicknessSlider) {
+        const min = parseInt(dualCircleThicknessSlider.min) || 0;
+        const max = parseInt(dualCircleThicknessSlider.max) || 255;
+        const percentage = ((value - min) / (max - min)) * 100;
+        dualCircleThicknessSlider.style.background = `linear-gradient(to right, white 0%, white ${percentage}%, rgba(255, 255, 255, 0.1) ${percentage}%, rgba(255, 255, 255, 0.1) 100%)`;
+    }
+}
+
+// Effect Option 2 (Speed) slider event listener
+if (dualCircleThicknessSlider) {
+    dualCircleThicknessSlider.addEventListener('input', (e) => {
+        const value = parseInt(e.target.value);
+        updateDisplayEffectOption2Slider(value);
+        throttledAndDebouncedSetDisplayEffectOption2(value);
         vibrateDevice();
     });
 }

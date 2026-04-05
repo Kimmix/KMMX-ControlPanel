@@ -12,9 +12,10 @@ const bleUUID = {
     cheekFadeColor: "d4e5f6a7-b8c9-4d5e-9f0a-1b2c3d4e5f6a",
     reboot: "e5f6a7b8-c9d0-4e5f-a0b1-2c3d4e5f6a7b",
     displayColorMode: "f5a6b7c8-d9e0-4f5a-b0c1-2d3e4f5a6b7c",
-    gradientTopColor: "a6b7c8d9-e0f1-4a5b-c1d2-3e4f5a6b7c8d",
-    gradientBottomColor: "b7c8d9e0-f1a2-4b5c-d2e3-4f5a6b7c8d9e",
-    dualSpiralThickness: "c7d8e9f0-a1b2-4c5d-e2f3-4a5b6c7d8e9f"
+    displayEffectColor1: "a6b7c8d9-e0f1-4a5b-c1d2-3e4f5a6b7c8d",
+    displayEffectColor2: "b7c8d9e0-f1a2-4b5c-d2e3-4f5a6b7c8d9e",
+    displayEffectOption1: "c7d8e9f0-a1b2-4c5d-e2f3-4a5b6c7d8e9f",
+    displayEffectOption2: "e7f8a9b0-c1d2-4e5f-a2b3-4c5d6e7f8a9b"
   }
 };
 
@@ -28,9 +29,10 @@ let cheekBgColorCharacteristic;
 let cheekFadeColorCharacteristic;
 let rebootCharacteristic;
 let displayColorModeCharacteristic;
-let gradientTopColorCharacteristic;
-let gradientBottomColorCharacteristic;
-let dualSpiralThicknessCharacteristic;
+let displayEffectColor1Characteristic;
+let displayEffectColor2Characteristic;
+let displayEffectOption1Characteristic;
+let displayEffectOption2Characteristic;
 let bleDevice; // Store the connected device
 
 // BLE Write Queue to prevent "GATT operation already in progress" errors
@@ -119,27 +121,35 @@ async function connectToDevice(device, isReconnect = false) {
   }
 
   try {
-    gradientTopColorCharacteristic = await service.getCharacteristic(bleUUID.characteristic.gradientTopColor);
-    console.log('Hub75 Gradient Top Color characteristic found');
+    displayEffectColor1Characteristic = await service.getCharacteristic(bleUUID.characteristic.displayEffectColor1);
+    console.log('Hub75 Display Effect Color 1 characteristic found');
   } catch (error) {
-    console.warn('Hub75 Gradient Top Color characteristic not available on this device');
-    gradientTopColorCharacteristic = null;
+    console.warn('Hub75 Display Effect Color 1 characteristic not available on this device');
+    displayEffectColor1Characteristic = null;
   }
 
   try {
-    gradientBottomColorCharacteristic = await service.getCharacteristic(bleUUID.characteristic.gradientBottomColor);
-    console.log('Hub75 Gradient Bottom Color characteristic found');
+    displayEffectColor2Characteristic = await service.getCharacteristic(bleUUID.characteristic.displayEffectColor2);
+    console.log('Hub75 Display Effect Color 2 characteristic found');
   } catch (error) {
-    console.warn('Hub75 Gradient Bottom Color characteristic not available on this device');
-    gradientBottomColorCharacteristic = null;
+    console.warn('Hub75 Display Effect Color 2 characteristic not available on this device');
+    displayEffectColor2Characteristic = null;
   }
 
   try {
-    dualSpiralThicknessCharacteristic = await service.getCharacteristic(bleUUID.characteristic.dualSpiralThickness);
-    console.log('DualSpiral Thickness characteristic found');
+    displayEffectOption1Characteristic = await service.getCharacteristic(bleUUID.characteristic.displayEffectOption1);
+    console.log('Hub75 Display Effect Option 1 characteristic found');
   } catch (error) {
-    console.warn('DualSpiral Thickness characteristic not available on this device');
-    dualSpiralThicknessCharacteristic = null;
+    console.warn('Hub75 Display Effect Option 1 characteristic not available on this device');
+    displayEffectOption1Characteristic = null;
+  }
+
+  try {
+    displayEffectOption2Characteristic = await service.getCharacteristic(bleUUID.characteristic.displayEffectOption2);
+    console.log('Hub75 Display Effect Option 2 characteristic found');
+  } catch (error) {
+    console.warn('Hub75 Display Effect Option 2 characteristic not available on this device');
+    displayEffectOption2Characteristic = null;
   }
 
   console.log('Reading value...');
@@ -158,21 +168,25 @@ async function connectToDevice(device, isReconnect = false) {
 
   // Read new Hub75 characteristics only if they exist
   let displayColorModeValue = null;
-  let gradientTopColorValue = null;
-  let gradientBottomColorValue = null;
-  let dualSpiralThicknessValue = null;
+  let displayEffectColor1Value = null;
+  let displayEffectColor2Value = null;
+  let displayEffectOption1Value = null;
+  let displayEffectOption2Value = null;
 
   if (displayColorModeCharacteristic) {
     displayColorModeValue = await displayColorModeCharacteristic.readValue();
   }
-  if (gradientTopColorCharacteristic) {
-    gradientTopColorValue = await gradientTopColorCharacteristic.readValue();
+  if (displayEffectColor1Characteristic) {
+    displayEffectColor1Value = await displayEffectColor1Characteristic.readValue();
   }
-  if (gradientBottomColorCharacteristic) {
-    gradientBottomColorValue = await gradientBottomColorCharacteristic.readValue();
+  if (displayEffectColor2Characteristic) {
+    displayEffectColor2Value = await displayEffectColor2Characteristic.readValue();
   }
-  if (dualSpiralThicknessCharacteristic) {
-    dualSpiralThicknessValue = await dualSpiralThicknessCharacteristic.readValue();
+  if (displayEffectOption1Characteristic) {
+    displayEffectOption1Value = await displayEffectOption1Characteristic.readValue();
+  }
+  if (displayEffectOption2Characteristic) {
+    displayEffectOption2Value = await displayEffectOption2Characteristic.readValue();
   }
 
   console.log(`Eye state is ${eyeStateValue.getUint8(0)}`);
@@ -187,14 +201,17 @@ async function connectToDevice(device, isReconnect = false) {
   if (displayColorModeValue) {
     console.log(`Display Color Mode: ${displayColorModeValue.getUint8(0)}`);
   }
-  if (gradientTopColorValue) {
-    console.log(`Gradient Top Color: R=${gradientTopColorValue.getUint8(0)} G=${gradientTopColorValue.getUint8(1)} B=${gradientTopColorValue.getUint8(2)}`);
+  if (displayEffectColor1Value) {
+    console.log(`Display Effect Color 1: R=${displayEffectColor1Value.getUint8(0)} G=${displayEffectColor1Value.getUint8(1)} B=${displayEffectColor1Value.getUint8(2)}`);
   }
-  if (gradientBottomColorValue) {
-    console.log(`Gradient Bottom Color: R=${gradientBottomColorValue.getUint8(0)} G=${gradientBottomColorValue.getUint8(1)} B=${gradientBottomColorValue.getUint8(2)}`);
+  if (displayEffectColor2Value) {
+    console.log(`Display Effect Color 2: R=${displayEffectColor2Value.getUint8(0)} G=${displayEffectColor2Value.getUint8(1)} B=${displayEffectColor2Value.getUint8(2)}`);
   }
-  if (dualSpiralThicknessValue) {
-    console.log(`DualSpiral Thickness: ${dualSpiralThicknessValue.getUint8(0)}`);
+  if (displayEffectOption1Value) {
+    console.log(`Display Effect Option 1: ${displayEffectOption1Value.getUint8(0)}`);
+  }
+  if (displayEffectOption2Value) {
+    console.log(`Display Effect Option 2: ${displayEffectOption2Value.getUint8(0)}`);
   }
 
   if (!isReconnect) {
@@ -219,14 +236,17 @@ async function connectToDevice(device, isReconnect = false) {
   if (displayColorModeValue) {
     setDisplayColorModeValue(displayColorModeValue.getUint8(0));
   }
-  if (gradientTopColorValue) {
-    setGradientTopColorValue(gradientTopColorValue.getUint8(0), gradientTopColorValue.getUint8(1), gradientTopColorValue.getUint8(2));
+  if (displayEffectColor1Value) {
+    setDisplayEffectColor1Value(displayEffectColor1Value.getUint8(0), displayEffectColor1Value.getUint8(1), displayEffectColor1Value.getUint8(2));
   }
-  if (gradientBottomColorValue) {
-    setGradientBottomColorValue(gradientBottomColorValue.getUint8(0), gradientBottomColorValue.getUint8(1), gradientBottomColorValue.getUint8(2));
+  if (displayEffectColor2Value) {
+    setDisplayEffectColor2Value(displayEffectColor2Value.getUint8(0), displayEffectColor2Value.getUint8(1), displayEffectColor2Value.getUint8(2));
   }
-  if (dualSpiralThicknessValue) {
-    setDualSpiralThicknessValue(dualSpiralThicknessValue.getUint8(0));
+  if (displayEffectOption1Value) {
+    setDisplayEffectOption1Value(displayEffectOption1Value.getUint8(0));
+  }
+  if (displayEffectOption2Value) {
+    setDisplayEffectOption2Value(displayEffectOption2Value.getUint8(0));
   }
 
   updateBLECharacteristicsDisplay(eyeStateValue.getUint8(0), displayBrightnessValue.getUint8(0), visemeValue.getUint8(0), mouthStateValue.getUint8(0), hornLedBrightnessValue.getUint8(0), cheekPanelBrightnessValue.getUint8(0), cheekBgColorValue, cheekFadeColorValue);
@@ -430,52 +450,68 @@ function setDisplayColorModeCharacteristic(mode) {
   }
 }
 
-let prevGradientTopColor = null;
-function setGradientTopColorCharacteristic(r, g, b) {
-  if (!gradientTopColorCharacteristic) {
-    console.log('Not connected - gradient top color change skipped');
+let prevDisplayEffectColor1 = null;
+function setDisplayEffectColor1Characteristic(r, g, b) {
+  if (!displayEffectColor1Characteristic) {
+    console.log('Not connected - display effect color 1 change skipped');
     return;
   }
   const colorKey = `${r},${g},${b}`;
-  if (colorKey !== prevGradientTopColor) {
-    prevGradientTopColor = colorKey;
+  if (colorKey !== prevDisplayEffectColor1) {
+    prevDisplayEffectColor1 = colorKey;
     queueBleWrite(async () => {
-      await gradientTopColorCharacteristic.writeValue(Uint8Array.of(r, g, b));
-      console.log(`> Characteristic gradient top color changed to: R=${r} G=${g} B=${b}`);
-      updateBLECharColorValue('ble-gradienttopcolor', r, g, b);
+      await displayEffectColor1Characteristic.writeValue(Uint8Array.of(r, g, b));
+      console.log(`> Characteristic display effect color 1 changed to: R=${r} G=${g} B=${b}`);
+      updateBLECharColorValue('ble-displayeffectcolor1', r, g, b);
     });
   }
 }
 
-let prevGradientBottomColor = null;
-function setGradientBottomColorCharacteristic(r, g, b) {
-  if (!gradientBottomColorCharacteristic) {
-    console.log('Not connected - gradient bottom color change skipped');
+let prevDisplayEffectColor2 = null;
+function setDisplayEffectColor2Characteristic(r, g, b) {
+  if (!displayEffectColor2Characteristic) {
+    console.log('Not connected - display effect color 2 change skipped');
     return;
   }
   const colorKey = `${r},${g},${b}`;
-  if (colorKey !== prevGradientBottomColor) {
-    prevGradientBottomColor = colorKey;
+  if (colorKey !== prevDisplayEffectColor2) {
+    prevDisplayEffectColor2 = colorKey;
     queueBleWrite(async () => {
-      await gradientBottomColorCharacteristic.writeValue(Uint8Array.of(r, g, b));
-      console.log(`> Characteristic gradient bottom color changed to: R=${r} G=${g} B=${b}`);
-      updateBLECharColorValue('ble-gradientbottomcolor', r, g, b);
+      await displayEffectColor2Characteristic.writeValue(Uint8Array.of(r, g, b));
+      console.log(`> Characteristic display effect color 2 changed to: R=${r} G=${g} B=${b}`);
+      updateBLECharColorValue('ble-displayeffectcolor2', r, g, b);
     });
   }
 }
 
-let prevDualSpiralThickness = -1;
-function setDualSpiralThicknessCharacteristic(value) {
-  if (!dualSpiralThicknessCharacteristic) {
-    console.log('Not connected - dual spiral thickness change skipped');
+let prevDisplayEffectOption1 = -1;
+function setDisplayEffectOption1Characteristic(value) {
+  if (!displayEffectOption1Characteristic) {
+    console.log('Not connected - display effect option 1 change skipped');
     return;
   }
-  if (value !== prevDualSpiralThickness) {
-    prevDualSpiralThickness = value;
+  if (value !== prevDisplayEffectOption1) {
+    prevDisplayEffectOption1 = value;
     queueBleWrite(async () => {
-      await dualSpiralThicknessCharacteristic.writeValue(Uint8Array.of(value));
-      console.log(`> Characteristic dual spiral thickness changed to: ${value}`);
-      updateBLECharValue('ble-dualspiralthickness', value);
+      await displayEffectOption1Characteristic.writeValue(Uint8Array.of(value));
+      console.log(`> Characteristic display effect option 1 changed to: ${value}`);
+      updateBLECharValue('ble-displayeffectoption1', value);
+    });
+  }
+}
+
+let prevDisplayEffectOption2 = -1;
+function setDisplayEffectOption2Characteristic(value) {
+  if (!displayEffectOption2Characteristic) {
+    console.log('Not connected - display effect option 2 change skipped');
+    return;
+  }
+  if (value !== prevDisplayEffectOption2) {
+    prevDisplayEffectOption2 = value;
+    queueBleWrite(async () => {
+      await displayEffectOption2Characteristic.writeValue(Uint8Array.of(value));
+      console.log(`> Characteristic display effect option 2 changed to: ${value}`);
+      updateBLECharValue('ble-displayeffectoption2', value);
     });
   }
 }
@@ -486,9 +522,10 @@ const throttledAndDebouncedSetHornLedBrightness = throttleAndDebounce(setHornLed
 const throttledAndDebouncedSetCheekPanelBrightness = throttleAndDebounce(setCheekPanelBrightnessCharacteristic, 100, 50);
 const throttledAndDebouncedSetCheekBgColor = throttleAndDebounce(setCheekBgColorCharacteristic, 150, 100);
 const throttledAndDebouncedSetCheekFadeColor = throttleAndDebounce(setCheekFadeColorCharacteristic, 150, 100);
-const throttledAndDebouncedSetGradientTopColor = throttleAndDebounce(setGradientTopColorCharacteristic, 150, 100);
-const throttledAndDebouncedSetGradientBottomColor = throttleAndDebounce(setGradientBottomColorCharacteristic, 150, 100);
-const throttledAndDebouncedSetDualSpiralThickness = throttleAndDebounce(setDualSpiralThicknessCharacteristic, 100, 50);
+const throttledAndDebouncedSetDisplayEffectColor1 = throttleAndDebounce(setDisplayEffectColor1Characteristic, 150, 100);
+const throttledAndDebouncedSetDisplayEffectColor2 = throttleAndDebounce(setDisplayEffectColor2Characteristic, 150, 100);
+const throttledAndDebouncedSetDisplayEffectOption1 = throttleAndDebounce(setDisplayEffectOption1Characteristic, 100, 50);
+const throttledAndDebouncedSetDisplayEffectOption2 = throttleAndDebounce(setDisplayEffectOption2Characteristic, 100, 50);
 
 // Throttle and debounce function
 function throttleAndDebounce(func, throttleDelay, debounceDelay) {
@@ -585,21 +622,25 @@ async function refreshBLECharacteristics() {
 
     // Read Hub75 characteristics only if available
     let displayColorModeValue = null;
-    let gradientTopColorValue = null;
-    let gradientBottomColorValue = null;
-    let dualSpiralThicknessValue = null;
+    let displayEffectColor1Value = null;
+    let displayEffectColor2Value = null;
+    let displayEffectOption1Value = null;
+    let displayEffectOption2Value = null;
 
     if (displayColorModeCharacteristic) {
       displayColorModeValue = await displayColorModeCharacteristic.readValue();
     }
-    if (gradientTopColorCharacteristic) {
-      gradientTopColorValue = await gradientTopColorCharacteristic.readValue();
+    if (displayEffectColor1Characteristic) {
+      displayEffectColor1Value = await displayEffectColor1Characteristic.readValue();
     }
-    if (gradientBottomColorCharacteristic) {
-      gradientBottomColorValue = await gradientBottomColorCharacteristic.readValue();
+    if (displayEffectColor2Characteristic) {
+      displayEffectColor2Value = await displayEffectColor2Characteristic.readValue();
     }
-    if (dualSpiralThicknessCharacteristic) {
-      dualSpiralThicknessValue = await dualSpiralThicknessCharacteristic.readValue();
+    if (displayEffectOption1Characteristic) {
+      displayEffectOption1Value = await displayEffectOption1Characteristic.readValue();
+    }
+    if (displayEffectOption2Characteristic) {
+      displayEffectOption2Value = await displayEffectOption2Characteristic.readValue();
     }
 
     updateBLECharacteristicsDisplay(
@@ -617,14 +658,17 @@ async function refreshBLECharacteristics() {
     if (displayColorModeValue) {
       updateBLECharValue('ble-displaycolormode', displayColorModeValue.getUint8(0));
     }
-    if (gradientTopColorValue) {
-      updateBLECharColorValue('ble-gradienttopcolor', gradientTopColorValue.getUint8(0), gradientTopColorValue.getUint8(1), gradientTopColorValue.getUint8(2));
+    if (displayEffectColor1Value) {
+      updateBLECharColorValue('ble-displayeffectcolor1', displayEffectColor1Value.getUint8(0), displayEffectColor1Value.getUint8(1), displayEffectColor1Value.getUint8(2));
     }
-    if (gradientBottomColorValue) {
-      updateBLECharColorValue('ble-gradientbottomcolor', gradientBottomColorValue.getUint8(0), gradientBottomColorValue.getUint8(1), gradientBottomColorValue.getUint8(2));
+    if (displayEffectColor2Value) {
+      updateBLECharColorValue('ble-displayeffectcolor2', displayEffectColor2Value.getUint8(0), displayEffectColor2Value.getUint8(1), displayEffectColor2Value.getUint8(2));
     }
-    if (dualSpiralThicknessValue) {
-      updateBLECharValue('ble-dualspiralthickness', dualSpiralThicknessValue.getUint8(0));
+    if (displayEffectOption1Value) {
+      updateBLECharValue('ble-displayeffectoption1', displayEffectOption1Value.getUint8(0));
+    }
+    if (displayEffectOption2Value) {
+      updateBLECharValue('ble-displayeffectoption2', displayEffectOption2Value.getUint8(0));
     }
 
     console.log('BLE characteristics refreshed');
