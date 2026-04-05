@@ -380,7 +380,7 @@
                     <button class="color-preset-btn" data-color="#8800FF" data-target="gradientBottom" style="background: #8800FF;" title="Purple"></button>
                     <button class="color-preset-btn" data-color="#FF00FF" data-target="gradientBottom" style="background: #FF00FF;" title="Magenta"></button>
                     <button class="color-preset-btn" data-color="#FF0088" data-target="gradientBottom" style="background: #FF0088;" title="Pink"></button>
-                    <button class="color-preset-btn" data-color="#FFFFFF" data-target="gradientBottom" style="background: #FFFFFF;" title="White"></button>
+                    <button class="color-preset-btn" data-color="#000000" data-target="gradientBottom" style="background: #000000;" title="White"></button>
                   </div>
                 </div>
               </div>
@@ -412,6 +412,20 @@
                 </div>
               </div>
               <input class="spiral-thickness-slider" type="range" min="0" max="255" value="128" id="dualCircleThicknessSlider" style="width: 100%;">
+            </div>
+
+            <!-- Effect Option 3: Direction/Invert Control (shown for modes 4 and 5) -->
+            <div id="directionInvertControl" style="display: none; margin-top: 20px; padding: 15px; background-color: var(--black3-color); border-radius: 12px;">
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                  <h3 id="effectOption3Label" style="margin: 0;">Direction</h3>
+                  <span id="directionInvertText" style="font-size: 0.8rem; color: var(--white2-color); margin-top: 4px; display: block;">Normal</span>
+                </div>
+                <label class="direction-toggle-switch">
+                  <input type="checkbox" id="directionInvertToggle" onchange="toggleDirectionInvert()">
+                  <span class="direction-toggle-slider"></span>
+                </label>
+              </div>
             </div>
           </div>
 
@@ -609,6 +623,13 @@
                   <span class="ble-char-value" id="ble-displayeffectoption2">-</span>
                 </div>
                 <span class="ble-char-uuid">UUID: d8e9f0a1-b2c3-4d5e-f3a4-5b6c7d8e9f0a</span>
+              </div>
+              <div class="ble-char-item">
+                <div class="ble-char-header">
+                  <span class="ble-char-name">Display Effect Option 3</span>
+                  <span class="ble-char-value" id="ble-displayeffectoption3">-</span>
+                </div>
+                <span class="ble-char-uuid">UUID: f7a8b9c0-d1e2-4f5a-b2c3-4d5e6f7a8b9c</span>
               </div>
               </div>
               <button id="refreshBleBtn" class="refresh-ble-button" onclick="refreshBLECharacteristics()" disabled>

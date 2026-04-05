@@ -15,7 +15,8 @@ const bleUUID = {
     displayEffectColor1: "a6b7c8d9-e0f1-4a5b-c1d2-3e4f5a6b7c8d",
     displayEffectColor2: "b7c8d9e0-f1a2-4b5c-d2e3-4f5a6b7c8d9e",
     displayEffectOption1: "c7d8e9f0-a1b2-4c5d-e2f3-4a5b6c7d8e9f",
-    displayEffectOption2: "e7f8a9b0-c1d2-4e5f-a2b3-4c5d6e7f8a9b"
+    displayEffectOption2: "e7f8a9b0-c1d2-4e5f-a2b3-4c5d6e7f8a9b",
+    displayEffectOption3: "f7a8b9c0-d1e2-4f5a-b2c3-4d5e6f7a8b9c"
   }
 };
 
@@ -33,6 +34,7 @@ let displayEffectColor1Characteristic;
 let displayEffectColor2Characteristic;
 let displayEffectOption1Characteristic;
 let displayEffectOption2Characteristic;
+let displayEffectOption3Characteristic;
 let bleDevice; // Store the connected device
 
 // BLE Write Queue to prevent "GATT operation already in progress" errors
@@ -152,6 +154,14 @@ async function connectToDevice(device, isReconnect = false) {
     displayEffectOption2Characteristic = null;
   }
 
+  try {
+    displayEffectOption3Characteristic = await service.getCharacteristic(bleUUID.characteristic.displayEffectOption3);
+    console.log('Hub75 Display Effect Option 3 characteristic found');
+  } catch (error) {
+    console.warn('Hub75 Display Effect Option 3 characteristic not available on this device');
+    displayEffectOption3Characteristic = null;
+  }
+
   console.log('Reading value...');
   if (!isReconnect) {
     updateBLEProgress(90, 'Reading...');
@@ -172,6 +182,7 @@ async function connectToDevice(device, isReconnect = false) {
   let displayEffectColor2Value = null;
   let displayEffectOption1Value = null;
   let displayEffectOption2Value = null;
+  let displayEffectOption3Value = null;
 
   if (displayColorModeCharacteristic) {
     displayColorModeValue = await displayColorModeCharacteristic.readValue();
@@ -187,6 +198,9 @@ async function connectToDevice(device, isReconnect = false) {
   }
   if (displayEffectOption2Characteristic) {
     displayEffectOption2Value = await displayEffectOption2Characteristic.readValue();
+  }
+  if (displayEffectOption3Characteristic) {
+    displayEffectOption3Value = await displayEffectOption3Characteristic.readValue();
   }
 
   console.log(`Eye state is ${eyeStateValue.getUint8(0)}`);
@@ -247,6 +261,9 @@ async function connectToDevice(device, isReconnect = false) {
   }
   if (displayEffectOption2Value) {
     setDisplayEffectOption2Value(displayEffectOption2Value.getUint8(0));
+  }
+  if (displayEffectOption3Value) {
+    setDisplayEffectOption3Value(displayEffectOption3Value.getUint8(0));
   }
 
   updateBLECharacteristicsDisplay(eyeStateValue.getUint8(0), displayBrightnessValue.getUint8(0), visemeValue.getUint8(0), mouthStateValue.getUint8(0), hornLedBrightnessValue.getUint8(0), cheekPanelBrightnessValue.getUint8(0), cheekBgColorValue, cheekFadeColorValue);
@@ -516,6 +533,22 @@ function setDisplayEffectOption2Characteristic(value) {
   }
 }
 
+let prevDisplayEffectOption3 = -1;
+function setDisplayEffectOption3Characteristic(value) {
+  if (!displayEffectOption3Characteristic) {
+    console.log('Not connected - display effect option 3 change skipped');
+    return;
+  }
+  if (value !== prevDisplayEffectOption3) {
+    prevDisplayEffectOption3 = value;
+    queueBleWrite(async () => {
+      await displayEffectOption3Characteristic.writeValue(Uint8Array.of(value));
+      console.log(`> Characteristic display effect option 3 changed to: ${value}`);
+      updateBLECharValue('ble-displayeffectoption3', value);
+    });
+  }
+}
+
 const throttledAndDebouncedsetVisemeCharacteristic = throttleAndDebounce(setVisemeCharacteristic, 100, 50);
 const throttledAndDebouncedSetDisplayBrightness = throttleAndDebounce(setdisplayBrightnessCharacteristic, 100, 50);
 const throttledAndDebouncedSetHornLedBrightness = throttleAndDebounce(setHornLedBrightnessCharacteristic, 100, 50);
@@ -526,6 +559,7 @@ const throttledAndDebouncedSetDisplayEffectColor1 = throttleAndDebounce(setDispl
 const throttledAndDebouncedSetDisplayEffectColor2 = throttleAndDebounce(setDisplayEffectColor2Characteristic, 150, 100);
 const throttledAndDebouncedSetDisplayEffectOption1 = throttleAndDebounce(setDisplayEffectOption1Characteristic, 100, 50);
 const throttledAndDebouncedSetDisplayEffectOption2 = throttleAndDebounce(setDisplayEffectOption2Characteristic, 100, 50);
+const throttledAndDebouncedSetDisplayEffectOption3 = throttleAndDebounce(setDisplayEffectOption3Characteristic, 100, 50);
 
 // Throttle and debounce function
 function throttleAndDebounce(func, throttleDelay, debounceDelay) {
@@ -626,6 +660,7 @@ async function refreshBLECharacteristics() {
     let displayEffectColor2Value = null;
     let displayEffectOption1Value = null;
     let displayEffectOption2Value = null;
+    let displayEffectOption3Value = null;
 
     if (displayColorModeCharacteristic) {
       displayColorModeValue = await displayColorModeCharacteristic.readValue();
@@ -641,6 +676,9 @@ async function refreshBLECharacteristics() {
     }
     if (displayEffectOption2Characteristic) {
       displayEffectOption2Value = await displayEffectOption2Characteristic.readValue();
+    }
+    if (displayEffectOption3Characteristic) {
+      displayEffectOption3Value = await displayEffectOption3Characteristic.readValue();
     }
 
     updateBLECharacteristicsDisplay(
@@ -669,6 +707,9 @@ async function refreshBLECharacteristics() {
     }
     if (displayEffectOption2Value) {
       updateBLECharValue('ble-displayeffectoption2', displayEffectOption2Value.getUint8(0));
+    }
+    if (displayEffectOption3Value) {
+      updateBLECharValue('ble-displayeffectoption3', displayEffectOption3Value.getUint8(0));
     }
 
     console.log('BLE characteristics refreshed');

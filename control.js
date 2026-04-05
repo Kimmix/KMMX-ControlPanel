@@ -571,6 +571,9 @@ const dualSpiralThicknessControl = document.getElementById('dualSpiralThicknessC
 const dualSpiralThicknessSlider = document.getElementById('dualSpiralThicknessSlider');
 const dualCircleThicknessControl = document.getElementById('dualCircleThicknessControl');
 const dualCircleThicknessSlider = document.getElementById('dualCircleThicknessSlider');
+const directionInvertControl = document.getElementById('directionInvertControl');
+const directionInvertToggle = document.getElementById('directionInvertToggle');
+const directionInvertText = document.getElementById('directionInvertText');
 const gradientBottomColorContainer = document.getElementById('gradientBottomColorContainer');
 const gradientPreviewContainer = document.getElementById('gradientPreviewContainer');
 
@@ -612,9 +615,9 @@ function setDisplayColorMode(mode) {
         customGradientColors.style.display = showColorControls ? 'block' : 'none';
     }
 
-    // Show/hide second color picker (Color2) - only for mode 0 (Gradient)
+    // Show/hide second color picker (Color2) - for modes 0, 4, and 5
     if (gradientBottomColorContainer) {
-        gradientBottomColorContainer.style.display = (mode === 0) ? 'block' : 'none';
+        gradientBottomColorContainer.style.display = (mode === 0 || mode === 4 || mode === 5) ? 'block' : 'none';
     }
 
     // Show/hide gradient preview - only for mode 0 (Gradient)
@@ -632,14 +635,21 @@ function setDisplayColorMode(mode) {
         dualCircleThicknessControl.style.display = (mode === 4 || mode === 5) ? 'block' : 'none';
     }
 
+    // Show/hide direction control (Option3) - for modes 4 and 5
+    if (directionInvertControl) {
+        directionInvertControl.style.display = (mode === 4 || mode === 5) ? 'block' : 'none';
+    }
+
     // Update color picker labels based on mode
     if (mode === 0) {
         if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Top Gradient Color';
         if (gradientBottomColorLabel) gradientBottomColorLabel.textContent = 'Bottom Gradient Color';
     } else if (mode === 4) {
-        if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Spiral Color';
+        if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Primary Spiral Color';
+        if (gradientBottomColorLabel) gradientBottomColorLabel.textContent = 'Secondary Spiral Color';
     } else if (mode === 5) {
-        if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Circle Color';
+        if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Primary Circle Color';
+        if (gradientBottomColorLabel) gradientBottomColorLabel.textContent = 'Secondary Circle Color';
     }
 
     // Update option control labels based on mode
@@ -682,9 +692,9 @@ function setDisplayColorModeValue(mode) {
         customGradientColors.style.display = showColorControls ? 'block' : 'none';
     }
 
-    // Show/hide second color picker (Color2) - only for mode 0 (Gradient)
+    // Show/hide second color picker (Color2) - for modes 0, 4, and 5
     if (gradientBottomColorContainer) {
-        gradientBottomColorContainer.style.display = (mode === 0) ? 'block' : 'none';
+        gradientBottomColorContainer.style.display = (mode === 0 || mode === 4 || mode === 5) ? 'block' : 'none';
     }
 
     // Show/hide gradient preview - only for mode 0 (Gradient)
@@ -702,14 +712,21 @@ function setDisplayColorModeValue(mode) {
         dualCircleThicknessControl.style.display = (mode === 4 || mode === 5) ? 'block' : 'none';
     }
 
+    // Show/hide direction control (Option3) - for modes 4 and 5
+    if (directionInvertControl) {
+        directionInvertControl.style.display = (mode === 4 || mode === 5) ? 'block' : 'none';
+    }
+
     // Update color picker labels based on mode
     if (mode === 0) {
         if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Top Gradient Color';
         if (gradientBottomColorLabel) gradientBottomColorLabel.textContent = 'Bottom Gradient Color';
     } else if (mode === 4) {
-        if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Spiral Color';
+        if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Primary Spiral Color';
+        if (gradientBottomColorLabel) gradientBottomColorLabel.textContent = 'Secondary Spiral Color';
     } else if (mode === 5) {
-        if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Circle Color';
+        if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Primary Circle Color';
+        if (gradientBottomColorLabel) gradientBottomColorLabel.textContent = 'Secondary Circle Color';
     }
 
     // Update option control labels based on mode
@@ -932,4 +949,30 @@ if (dualCircleThicknessSlider) {
         throttledAndDebouncedSetDisplayEffectOption2(value);
         vibrateDevice();
     });
+}
+
+// Effect Option 3 (Direction/Invert) toggle function
+function toggleDirectionInvert() {
+    const checkbox = document.getElementById('directionInvertToggle');
+    const isInverted = checkbox.checked;
+    const value = isInverted ? 1 : 0;
+
+    // Update text label
+    if (directionInvertText) {
+        directionInvertText.textContent = isInverted ? 'Inverted' : 'Normal';
+    }
+
+    // Send to BLE
+    setDisplayEffectOption3Characteristic(value);
+    vibrateDevice();
+}
+
+// Set Display Effect Option 3 value from BLE (called when connecting to device)
+// Option3 is used for Direction/Invert in modes 4 (Dual Spiral) and 5 (Dual Circle)
+function setDisplayEffectOption3Value(value) {
+    const checkbox = document.getElementById('directionInvertToggle');
+    if (checkbox && directionInvertText) {
+        checkbox.checked = (value === 1);
+        directionInvertText.textContent = (value === 1) ? 'Inverted' : 'Normal';
+    }
 }
