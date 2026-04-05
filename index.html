@@ -285,21 +285,21 @@
             </button>
 
             <!-- Color Mode Selector -->
-            <div style="margin-bottom: 20px; padding: 15px; background-color: var(--black3-color); border-radius: 12px;">
-              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                <h3 style="margin: 0; font-size: 1rem;">Display Mode</h3>
+            <div class="display-mode-section">
+              <div class="display-mode-header">
+                <h3>Display Mode</h3>
               </div>
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <button id="displayColorModeGradient" class="display-color-mode-btn active" onclick="setDisplayColorMode(0)" style="padding: 12px; background: rgba(255, 255, 255, 0.1); border: 2px solid var(--acc1-color); border-radius: 8px; color: var(--white-color); font-size: 0.9rem; cursor: pointer; transition: all 200ms ease;">
+              <div class="display-mode-grid">
+                <button id="displayColorModeGradient" class="display-color-mode-btn active" onclick="setDisplayColorMode(0)">
                   Gradient
                 </button>
-                <button id="displayColorModeSpiral" class="display-color-mode-btn" onclick="setDisplayColorMode(1)" style="padding: 12px; background: rgba(255, 255, 255, 0.05); border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: var(--white-color); font-size: 0.9rem; cursor: pointer; transition: all 200ms ease;">
+                <button id="displayColorModeSpiral" class="display-color-mode-btn" onclick="setDisplayColorMode(1)">
                   Spiral/Vortex
                 </button>
-                <button id="displayColorModePlasma" class="display-color-mode-btn" onclick="setDisplayColorMode(2)" style="padding: 12px; background: rgba(255, 255, 255, 0.05); border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: var(--white-color); font-size: 0.9rem; cursor: pointer; transition: all 200ms ease;">
+                <button id="displayColorModePlasma" class="display-color-mode-btn" onclick="setDisplayColorMode(2)">
                   Plasma Effect
                 </button>
-                <button id="displayColorModeRadial" class="display-color-mode-btn" onclick="setDisplayColorMode(3)" style="padding: 12px; background: rgba(255, 255, 255, 0.05); border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: var(--white-color); font-size: 0.9rem; cursor: pointer; transition: all 200ms ease;">
+                <button id="displayColorModeRadial" class="display-color-mode-btn" onclick="setDisplayColorMode(3)">
                   Radial Pulse
                 </button>
               </div>

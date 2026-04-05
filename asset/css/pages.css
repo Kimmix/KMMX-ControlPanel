@@ -12,6 +12,59 @@
   }
 }
 
+/* Display Mode Section - styled like dual-status-container */
+.display-mode-section {
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: var(--black3-color);
+  border-radius: 12px;
+}
+
+.display-mode-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.display-mode-header h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.display-mode-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.display-color-mode-btn {
+  padding: 10px 12px;
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 10px;
+  color: var(--white-color);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 250ms ease;
+  font-family: "Montserrat", sans-serif;
+  height: auto;
+}
+
+/* Hover state */
+.display-color-mode-btn:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Active state - Clean white minimal (matching dual-status-container) */
+.display-color-mode-btn.active {
+  background: var(--white-color) !important;
+  border-color: var(--white-color) !important;
+  color: var(--black-color);
+}
+
 /* BLE Characteristics Card */
 .ble-char-grid {
   display: flex;
