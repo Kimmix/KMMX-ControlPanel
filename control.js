@@ -552,15 +552,21 @@ const gradientTopColorPicker = document.getElementById('gradientTopColorPicker')
 const gradientBottomColorPicker = document.getElementById('gradientBottomColorPicker');
 const gradientTopColorHex = document.getElementById('gradientTopColorHex');
 const gradientBottomColorHex = document.getElementById('gradientBottomColorHex');
+const gradientTopColorLabel = document.getElementById('gradientTopColorLabel');
+const gradientBottomColorLabel = document.getElementById('gradientBottomColorLabel');
 const gradientPreview = document.getElementById('gradientPreview');
+const gradientPreviewTitle = document.getElementById('gradientPreviewTitle');
 const customGradientColors = document.getElementById('customGradientColors');
 const displayColorModeGradient = document.getElementById('displayColorModeGradient');
 const displayColorModeSpiral = document.getElementById('displayColorModeSpiral');
 const displayColorModePlasma = document.getElementById('displayColorModePlasma');
 const displayColorModeRadial = document.getElementById('displayColorModeRadial');
+const displayColorModeDualSpiral = document.getElementById('displayColorModeDualSpiral');
+const dualSpiralThicknessControl = document.getElementById('dualSpiralThicknessControl');
+const dualSpiralThicknessSlider = document.getElementById('dualSpiralThicknessSlider');
 
 // Display mode names for reference
-const displayModeNames = ['Gradient', 'Spiral/Vortex', 'Plasma Effect', 'Radial Pulse'];
+const displayModeNames = ['Gradient', 'Spiral/Vortex', 'Plasma Effect', 'Radial Pulse', 'DualSpiral'];
 
 // Set display color mode (called when connecting to device or changing mode)
 function setDisplayColorMode(mode) {
@@ -572,7 +578,8 @@ function setDisplayColorMode(mode) {
         displayColorModeGradient,
         displayColorModeSpiral,
         displayColorModePlasma,
-        displayColorModeRadial
+        displayColorModeRadial,
+        displayColorModeDualSpiral
     ];
 
     // Remove active class from all mode buttons
@@ -585,9 +592,28 @@ function setDisplayColorMode(mode) {
         modeButtons[mode].classList.add('active');
     }
 
-    // Show/hide custom gradient colors only for mode 0 (Gradient)
+    // Show/hide custom gradient colors for mode 0 (Gradient) and mode 4 (DualSpiral)
     if (customGradientColors) {
-        customGradientColors.style.display = (mode === 0) ? 'block' : 'none';
+        customGradientColors.style.display = (mode === 0 || mode === 4) ? 'block' : 'none';
+    }
+
+    // Show/hide DualSpiral thickness control only for mode 4 (DualSpiral)
+    if (dualSpiralThicknessControl) {
+        dualSpiralThicknessControl.style.display = (mode === 4) ? 'block' : 'none';
+    }
+
+    // Update color picker labels based on mode
+    if (mode === 4) {
+        if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Spiral Color 1';
+        if (gradientBottomColorLabel) gradientBottomColorLabel.textContent = 'Spiral Color 2';
+    } else {
+        if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Top Gradient Color';
+        if (gradientBottomColorLabel) gradientBottomColorLabel.textContent = 'Bottom Gradient Color';
+    }
+
+    // Update preview when mode changes
+    if (mode === 0 || mode === 4) {
+        updateGradientPreview(gradientTopColorPicker.value, gradientBottomColorPicker.value, mode);
     }
 
     // Provide haptic feedback
@@ -601,7 +627,8 @@ function setDisplayColorModeValue(mode) {
         displayColorModeGradient,
         displayColorModeSpiral,
         displayColorModePlasma,
-        displayColorModeRadial
+        displayColorModeRadial,
+        displayColorModeDualSpiral
     ];
 
     // Remove active class from all mode buttons
@@ -614,16 +641,59 @@ function setDisplayColorModeValue(mode) {
         modeButtons[mode].classList.add('active');
     }
 
-    // Show/hide custom gradient colors only for mode 0 (Gradient)
+    // Show/hide custom gradient colors for mode 0 (Gradient) and mode 4 (DualSpiral)
     if (customGradientColors) {
-        customGradientColors.style.display = (mode === 0) ? 'block' : 'none';
+        customGradientColors.style.display = (mode === 0 || mode === 4) ? 'block' : 'none';
+    }
+
+    // Show/hide DualSpiral thickness control only for mode 4 (DualSpiral)
+    if (dualSpiralThicknessControl) {
+        dualSpiralThicknessControl.style.display = (mode === 4) ? 'block' : 'none';
+    }
+
+    // Update color picker labels based on mode
+    if (mode === 4) {
+        if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Spiral Color 1';
+        if (gradientBottomColorLabel) gradientBottomColorLabel.textContent = 'Spiral Color 2';
+    } else {
+        if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Top Gradient Color';
+        if (gradientBottomColorLabel) gradientBottomColorLabel.textContent = 'Bottom Gradient Color';
+    }
+
+    // Update preview when mode changes
+    if (mode === 0 || mode === 4) {
+        updateGradientPreview(gradientTopColorPicker.value, gradientBottomColorPicker.value, mode);
     }
 }
 
 // Update gradient preview
-function updateGradientPreview(topColor, bottomColor) {
+function updateGradientPreview(topColor, bottomColor, mode = null) {
     if (gradientPreview) {
-        gradientPreview.style.background = `linear-gradient(to bottom, ${topColor}, ${bottomColor})`;
+        // If mode is not provided, try to get current active mode
+        if (mode === null) {
+            const modeButtons = [
+                displayColorModeGradient,
+                displayColorModeSpiral,
+                displayColorModePlasma,
+                displayColorModeRadial,
+                displayColorModeDualSpiral
+            ];
+            mode = modeButtons.findIndex(btn => btn && btn.classList.contains('active'));
+        }
+
+        // DualSpiral mode (mode 4) - show dual spiral preview
+        if (mode === 4) {
+            gradientPreview.style.background = `conic-gradient(from 45deg, ${topColor} 0deg 45deg, ${bottomColor} 45deg 90deg, ${topColor} 90deg 135deg, ${bottomColor} 135deg 180deg, ${topColor} 180deg 225deg, ${bottomColor} 225deg 270deg, ${topColor} 270deg 315deg, ${bottomColor} 315deg 360deg)`;
+            if (gradientPreviewTitle) {
+                gradientPreviewTitle.textContent = 'DualSpiral Preview';
+            }
+        } else {
+            // Default gradient preview for mode 0
+            gradientPreview.style.background = `linear-gradient(to bottom, ${topColor}, ${bottomColor})`;
+            if (gradientPreviewTitle) {
+                gradientPreviewTitle.textContent = 'Preview';
+            }
+        }
     }
 }
 
@@ -723,4 +793,38 @@ function resetDisplayColors() {
 
     // Haptic feedback
     vibrateDevice();
+}
+
+//* --------- DualSpiral Thickness Controls ---------
+// Set DualSpiral thickness value from BLE (called when connecting to device)
+function setDualSpiralThicknessValue(value) {
+    if (dualSpiralThicknessSlider) {
+        dualSpiralThicknessSlider.value = value;
+        updateDualSpiralThicknessSlider(value);
+    }
+}
+
+// Update slider display for DualSpiral thickness
+function updateDualSpiralThicknessSlider(value) {
+    const sliderContainer = dualSpiralThicknessSlider?.parentElement;
+    if (!sliderContainer) return;
+
+    const sliderNumbers = sliderContainer.querySelectorAll('.sliderNumber');
+    sliderNumbers.forEach((num, index) => {
+        if (index + 1 === parseInt(value)) {
+            num.classList.add('active');
+        } else {
+            num.classList.remove('active');
+        }
+    });
+}
+
+// DualSpiral thickness slider event listener
+if (dualSpiralThicknessSlider) {
+    dualSpiralThicknessSlider.addEventListener('input', (e) => {
+        const value = parseInt(e.target.value);
+        updateDualSpiralThicknessSlider(value);
+        throttledAndDebouncedSetDualSpiralThickness(value);
+        vibrateDevice();
+    });
 }

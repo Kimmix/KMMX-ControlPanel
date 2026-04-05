@@ -13,7 +13,8 @@ const bleUUID = {
     reboot: "e5f6a7b8-c9d0-4e5f-a0b1-2c3d4e5f6a7b",
     displayColorMode: "f5a6b7c8-d9e0-4f5a-b0c1-2d3e4f5a6b7c",
     gradientTopColor: "a6b7c8d9-e0f1-4a5b-c1d2-3e4f5a6b7c8d",
-    gradientBottomColor: "b7c8d9e0-f1a2-4b5c-d2e3-4f5a6b7c8d9e"
+    gradientBottomColor: "b7c8d9e0-f1a2-4b5c-d2e3-4f5a6b7c8d9e",
+    dualSpiralThickness: "e0f1a2b3-c4d5-4e5f-a5b6-7c8d9e0f1a2b"
   }
 };
 
@@ -29,6 +30,7 @@ let rebootCharacteristic;
 let displayColorModeCharacteristic;
 let gradientTopColorCharacteristic;
 let gradientBottomColorCharacteristic;
+let dualSpiralThicknessCharacteristic;
 let bleDevice; // Store the connected device
 
 // BLE Write Queue to prevent "GATT operation already in progress" errors
@@ -132,6 +134,14 @@ async function connectToDevice(device, isReconnect = false) {
     gradientBottomColorCharacteristic = null;
   }
 
+  try {
+    dualSpiralThicknessCharacteristic = await service.getCharacteristic(bleUUID.characteristic.dualSpiralThickness);
+    console.log('DualSpiral Thickness characteristic found');
+  } catch (error) {
+    console.warn('DualSpiral Thickness characteristic not available on this device');
+    dualSpiralThicknessCharacteristic = null;
+  }
+
   console.log('Reading value...');
   if (!isReconnect) {
     updateBLEProgress(90, 'Reading...');
@@ -150,6 +160,7 @@ async function connectToDevice(device, isReconnect = false) {
   let displayColorModeValue = null;
   let gradientTopColorValue = null;
   let gradientBottomColorValue = null;
+  let dualSpiralThicknessValue = null;
 
   if (displayColorModeCharacteristic) {
     displayColorModeValue = await displayColorModeCharacteristic.readValue();
@@ -159,6 +170,9 @@ async function connectToDevice(device, isReconnect = false) {
   }
   if (gradientBottomColorCharacteristic) {
     gradientBottomColorValue = await gradientBottomColorCharacteristic.readValue();
+  }
+  if (dualSpiralThicknessCharacteristic) {
+    dualSpiralThicknessValue = await dualSpiralThicknessCharacteristic.readValue();
   }
 
   console.log(`Eye state is ${eyeStateValue.getUint8(0)}`);
@@ -178,6 +192,9 @@ async function connectToDevice(device, isReconnect = false) {
   }
   if (gradientBottomColorValue) {
     console.log(`Gradient Bottom Color: R=${gradientBottomColorValue.getUint8(0)} G=${gradientBottomColorValue.getUint8(1)} B=${gradientBottomColorValue.getUint8(2)}`);
+  }
+  if (dualSpiralThicknessValue) {
+    console.log(`DualSpiral Thickness: ${dualSpiralThicknessValue.getUint8(0)}`);
   }
 
   if (!isReconnect) {
@@ -207,6 +224,9 @@ async function connectToDevice(device, isReconnect = false) {
   }
   if (gradientBottomColorValue) {
     setGradientBottomColorValue(gradientBottomColorValue.getUint8(0), gradientBottomColorValue.getUint8(1), gradientBottomColorValue.getUint8(2));
+  }
+  if (dualSpiralThicknessValue) {
+    setDualSpiralThicknessValue(dualSpiralThicknessValue.getUint8(0));
   }
 
   updateBLECharacteristicsDisplay(eyeStateValue.getUint8(0), displayBrightnessValue.getUint8(0), visemeValue.getUint8(0), mouthStateValue.getUint8(0), hornLedBrightnessValue.getUint8(0), cheekPanelBrightnessValue.getUint8(0), cheekBgColorValue, cheekFadeColorValue);
@@ -444,6 +464,22 @@ function setGradientBottomColorCharacteristic(r, g, b) {
   }
 }
 
+let prevDualSpiralThickness = -1;
+function setDualSpiralThicknessCharacteristic(value) {
+  if (!dualSpiralThicknessCharacteristic) {
+    console.log('Not connected - dual spiral thickness change skipped');
+    return;
+  }
+  if (value !== prevDualSpiralThickness) {
+    prevDualSpiralThickness = value;
+    queueBleWrite(async () => {
+      await dualSpiralThicknessCharacteristic.writeValue(Uint8Array.of(value));
+      console.log(`> Characteristic dual spiral thickness changed to: ${value}`);
+      updateBLECharValue('ble-dualspiralthickness', value);
+    });
+  }
+}
+
 const throttledAndDebouncedsetVisemeCharacteristic = throttleAndDebounce(setVisemeCharacteristic, 100, 50);
 const throttledAndDebouncedSetDisplayBrightness = throttleAndDebounce(setdisplayBrightnessCharacteristic, 100, 50);
 const throttledAndDebouncedSetHornLedBrightness = throttleAndDebounce(setHornLedBrightnessCharacteristic, 100, 50);
@@ -452,6 +488,7 @@ const throttledAndDebouncedSetCheekBgColor = throttleAndDebounce(setCheekBgColor
 const throttledAndDebouncedSetCheekFadeColor = throttleAndDebounce(setCheekFadeColorCharacteristic, 150, 100);
 const throttledAndDebouncedSetGradientTopColor = throttleAndDebounce(setGradientTopColorCharacteristic, 150, 100);
 const throttledAndDebouncedSetGradientBottomColor = throttleAndDebounce(setGradientBottomColorCharacteristic, 150, 100);
+const throttledAndDebouncedSetDualSpiralThickness = throttleAndDebounce(setDualSpiralThicknessCharacteristic, 100, 50);
 
 // Throttle and debounce function
 function throttleAndDebounce(func, throttleDelay, debounceDelay) {
@@ -550,6 +587,7 @@ async function refreshBLECharacteristics() {
     let displayColorModeValue = null;
     let gradientTopColorValue = null;
     let gradientBottomColorValue = null;
+    let dualSpiralThicknessValue = null;
 
     if (displayColorModeCharacteristic) {
       displayColorModeValue = await displayColorModeCharacteristic.readValue();
@@ -559,6 +597,9 @@ async function refreshBLECharacteristics() {
     }
     if (gradientBottomColorCharacteristic) {
       gradientBottomColorValue = await gradientBottomColorCharacteristic.readValue();
+    }
+    if (dualSpiralThicknessCharacteristic) {
+      dualSpiralThicknessValue = await dualSpiralThicknessCharacteristic.readValue();
     }
 
     updateBLECharacteristicsDisplay(
@@ -581,6 +622,9 @@ async function refreshBLECharacteristics() {
     }
     if (gradientBottomColorValue) {
       updateBLECharColorValue('ble-gradientbottomcolor', gradientBottomColorValue.getUint8(0), gradientBottomColorValue.getUint8(1), gradientBottomColorValue.getUint8(2));
+    }
+    if (dualSpiralThicknessValue) {
+      updateBLECharValue('ble-dualspiralthickness', dualSpiralThicknessValue.getUint8(0));
     }
 
     console.log('BLE characteristics refreshed');

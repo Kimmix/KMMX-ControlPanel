@@ -291,16 +291,49 @@
               </div>
               <div class="display-mode-grid">
                 <button id="displayColorModeGradient" class="display-color-mode-btn active" onclick="setDisplayColorMode(0)">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0" style="width: 18px; height: 18px; margin-right: 6px;">
+                    <rect x="4" y="4" width="16" height="3" fill="currentColor" opacity="1"></rect>
+                    <rect x="4" y="7" width="16" height="3" fill="currentColor" opacity="0.75"></rect>
+                    <rect x="4" y="10" width="16" height="3" fill="currentColor" opacity="0.5"></rect>
+                    <rect x="4" y="13" width="16" height="3" fill="currentColor" opacity="0.35"></rect>
+                    <rect x="4" y="16" width="16" height="4" fill="currentColor" opacity="0.2"></rect>
+                  </svg>
                   Gradient
                 </button>
                 <button id="displayColorModeSpiral" class="display-color-mode-btn" onclick="setDisplayColorMode(1)">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; margin-right: 6px;">
+                    <path d="M12 3a9 9 0 0 1 9 9"></path>
+                    <path d="M12 7a5 5 0 0 1 5 5"></path>
+                    <path d="M12 11a1 1 0 0 1 1 1"></path>
+                    <path d="M12 21a9 9 0 0 1-9-9"></path>
+                    <path d="M12 17a5 5 0 0 1-5-5"></path>
+                    <path d="M12 13a1 1 0 0 1-1-1"></path>
+                  </svg>
                   Spiral/Vortex
                 </button>
                 <button id="displayColorModePlasma" class="display-color-mode-btn" onclick="setDisplayColorMode(2)">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; margin-right: 6px;">
+                    <path d="M3 8 Q 8 5, 13 8 T 21 8"></path>
+                    <path d="M3 12 Q 8 15, 13 12 T 21 12"></path>
+                    <path d="M3 16 Q 8 13, 13 16 T 21 16"></path>
+                  </svg>
                   Plasma Effect
                 </button>
                 <button id="displayColorModeRadial" class="display-color-mode-btn" onclick="setDisplayColorMode(3)">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; margin-right: 6px;">
+                    <circle cx="12" cy="12" r="2"></circle>
+                    <circle cx="12" cy="12" r="6"></circle>
+                    <circle cx="12" cy="12" r="10"></circle>
+                  </svg>
                   Radial Pulse
+                </button>
+                <button id="displayColorModeDualSpiral" class="display-color-mode-btn" onclick="setDisplayColorMode(4)">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; margin-right: 6px;">
+                    <path d="M12 12c-1.5-1.5-3.5-2.5-5.5-2.5C4 9.5 2 11.5 2 14s2 4.5 4.5 4.5c2 0 4-1 5.5-2.5"></path>
+                    <path d="M12 12c1.5 1.5 3.5 2.5 5.5 2.5 2.5 0 4.5-2 4.5-4.5S20 5.5 17.5 5.5c-2 0-4 1-5.5 2.5"></path>
+                    <circle cx="12" cy="12" r="1"></circle>
+                  </svg>
+                  DualSpiral
                 </button>
               </div>
             </div>
@@ -310,7 +343,7 @@
               <!-- Top Gradient Color -->
               <div class="color-picker-container" style="margin-bottom: 20px;">
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                  <h3 style="margin: 0;">Top Gradient Color</h3>
+                  <h3 id="gradientTopColorLabel" style="margin: 0;">Top Gradient Color</h3>
                   <span id="gradientTopColorHex" class="fade" style="font-size: 0.9rem;">#FFA393</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 15px;">
@@ -329,7 +362,7 @@
               <!-- Bottom Gradient Color -->
               <div class="color-picker-container">
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                  <h3 style="margin: 0;">Bottom Gradient Color</h3>
+                  <h3 id="gradientBottomColorLabel" style="margin: 0;">Bottom Gradient Color</h3>
                   <span id="gradientBottomColorHex" class="fade" style="font-size: 0.9rem;">#FF2B5B</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 15px;">
@@ -347,8 +380,26 @@
 
               <!-- Gradient Preview -->
               <div style="margin-top: 20px; padding: 15px; background-color: var(--black3-color); border-radius: 12px;">
-                <h3 style="margin: 0 0 10px 0; font-size: 0.9rem; color: var(--white2-color);">Preview</h3>
+                <h3 id="gradientPreviewTitle" style="margin: 0 0 10px 0; font-size: 0.9rem; color: var(--white2-color);">Preview</h3>
                 <div id="gradientPreview" style="height: 80px; border-radius: 8px; background: linear-gradient(to bottom, #FFA393, #FF2B5B); border: 2px solid rgba(255, 255, 255, 0.2);"></div>
+              </div>
+            </div>
+
+            <!-- DualSpiral Thickness Control (shown only when DualSpiral mode is selected) -->
+            <div id="dualSpiralThicknessControl" style="display: none; margin-top: 20px;">
+              <h3 style="margin-bottom: 10px;">Spiral Thickness</h3>
+              <div class="number-slider" style="margin-bottom: 10px;">
+                <span class="sliderNumber">1</span>
+                <span class="sliderNumber">2</span>
+                <span class="sliderNumber">3</span>
+                <span class="sliderNumber default-dot active">4</span>
+                <span class="sliderNumber">5</span>
+                <span class="sliderNumber">6</span>
+                <span class="sliderNumber">7</span>
+                <span class="sliderNumber">8</span>
+                <span class="sliderNumber">9</span>
+                <span class="sliderNumber">10</span>
+                <input class="vsm-slider" type="range" min="1" max="10" value="4" id="dualSpiralThicknessSlider">
               </div>
             </div>
           </div>
@@ -533,6 +584,13 @@
                   <span class="ble-char-value" id="ble-gradientbottomcolor">-</span>
                 </div>
                 <span class="ble-char-uuid">UUID: b7c8d9e0-f1a2-4b5c-d2e3-4f5a6b7c8d9e</span>
+              </div>
+              <div class="ble-char-item">
+                <div class="ble-char-header">
+                  <span class="ble-char-name">DualSpiral Thickness</span>
+                  <span class="ble-char-value" id="ble-dualspiralthickness">-</span>
+                </div>
+                <span class="ble-char-uuid">UUID: e0f1a2b3-c4d5-4e5f-a5b6-7c8d9e0f1a2b</span>
               </div>
               </div>
               <button id="refreshBleBtn" class="refresh-ble-button" onclick="refreshBLECharacteristics()" disabled>
