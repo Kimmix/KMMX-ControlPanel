@@ -546,3 +546,181 @@ function resetCheekColors() {
     // Haptic feedback
     vibrateDevice();
 }
+
+//* --------- Hub75 Display Color Controls ---------
+const gradientTopColorPicker = document.getElementById('gradientTopColorPicker');
+const gradientBottomColorPicker = document.getElementById('gradientBottomColorPicker');
+const gradientTopColorHex = document.getElementById('gradientTopColorHex');
+const gradientBottomColorHex = document.getElementById('gradientBottomColorHex');
+const gradientPreview = document.getElementById('gradientPreview');
+const customGradientColors = document.getElementById('customGradientColors');
+const displayColorModeGradient = document.getElementById('displayColorModeGradient');
+const displayColorModeSpiral = document.getElementById('displayColorModeSpiral');
+const displayColorModePlasma = document.getElementById('displayColorModePlasma');
+const displayColorModeRadial = document.getElementById('displayColorModeRadial');
+
+// Display mode names for reference
+const displayModeNames = ['Gradient', 'Spiral/Vortex', 'Plasma Effect', 'Radial Pulse'];
+
+// Set display color mode (called when connecting to device or changing mode)
+function setDisplayColorMode(mode) {
+    // Update BLE characteristic
+    setDisplayColorModeCharacteristic(mode);
+
+    // Update UI - toggle button states
+    const modeButtons = [
+        displayColorModeGradient,
+        displayColorModeSpiral,
+        displayColorModePlasma,
+        displayColorModeRadial
+    ];
+
+    // Remove active class from all mode buttons
+    modeButtons.forEach(btn => {
+        if (btn) btn.classList.remove('active');
+    });
+
+    // Add active class to selected mode button
+    if (mode >= 0 && mode < modeButtons.length && modeButtons[mode]) {
+        modeButtons[mode].classList.add('active');
+    }
+
+    // Show/hide custom gradient colors only for mode 0 (Gradient)
+    if (customGradientColors) {
+        customGradientColors.style.display = (mode === 0) ? 'block' : 'none';
+    }
+
+    // Provide haptic feedback
+    vibrateDevice();
+}
+
+// Set color mode value from BLE (called when connecting to device)
+function setDisplayColorModeValue(mode) {
+    // Update UI - toggle button states
+    const modeButtons = [
+        displayColorModeGradient,
+        displayColorModeSpiral,
+        displayColorModePlasma,
+        displayColorModeRadial
+    ];
+
+    // Remove active class from all mode buttons
+    modeButtons.forEach(btn => {
+        if (btn) btn.classList.remove('active');
+    });
+
+    // Add active class to selected mode button
+    if (mode >= 0 && mode < modeButtons.length && modeButtons[mode]) {
+        modeButtons[mode].classList.add('active');
+    }
+
+    // Show/hide custom gradient colors only for mode 0 (Gradient)
+    if (customGradientColors) {
+        customGradientColors.style.display = (mode === 0) ? 'block' : 'none';
+    }
+}
+
+// Update gradient preview
+function updateGradientPreview(topColor, bottomColor) {
+    if (gradientPreview) {
+        gradientPreview.style.background = `linear-gradient(to bottom, ${topColor}, ${bottomColor})`;
+    }
+}
+
+// Gradient top color picker handler
+gradientTopColorPicker.addEventListener('input', (e) => {
+    const color = e.target.value;
+    gradientTopColorHex.textContent = color.toUpperCase();
+    const rgb = hexToRgb(color);
+    if (rgb) {
+        throttledAndDebouncedSetGradientTopColor(rgb.r, rgb.g, rgb.b);
+        updateGradientPreview(color, gradientBottomColorPicker.value);
+        vibrateDevice();
+    }
+});
+
+// Gradient bottom color picker handler
+gradientBottomColorPicker.addEventListener('input', (e) => {
+    const color = e.target.value;
+    gradientBottomColorHex.textContent = color.toUpperCase();
+    const rgb = hexToRgb(color);
+    if (rgb) {
+        throttledAndDebouncedSetGradientBottomColor(rgb.r, rgb.g, rgb.b);
+        updateGradientPreview(gradientTopColorPicker.value, color);
+        vibrateDevice();
+    }
+});
+
+// Color preset buttons handler for gradient colors
+document.querySelectorAll('.color-preset-btn[data-target^="gradient"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const color = btn.getAttribute('data-color');
+        const target = btn.getAttribute('data-target');
+
+        if (target === 'gradientTop') {
+            gradientTopColorPicker.value = color;
+            gradientTopColorHex.textContent = color.toUpperCase();
+            const rgb = hexToRgb(color);
+            if (rgb) {
+                throttledAndDebouncedSetGradientTopColor(rgb.r, rgb.g, rgb.b);
+                updateGradientPreview(color, gradientBottomColorPicker.value);
+            }
+        } else if (target === 'gradientBottom') {
+            gradientBottomColorPicker.value = color;
+            gradientBottomColorHex.textContent = color.toUpperCase();
+            const rgb = hexToRgb(color);
+            if (rgb) {
+                throttledAndDebouncedSetGradientBottomColor(rgb.r, rgb.g, rgb.b);
+                updateGradientPreview(gradientTopColorPicker.value, color);
+            }
+        }
+        vibrateDevice();
+    });
+});
+
+// Set gradient color values from BLE (called when connecting to device)
+function setGradientTopColorValue(r, g, b) {
+    const hex = rgbToHex(r, g, b);
+    gradientTopColorPicker.value = hex;
+    gradientTopColorHex.textContent = hex;
+    updateGradientPreview(hex, gradientBottomColorPicker.value);
+}
+
+function setGradientBottomColorValue(r, g, b) {
+    const hex = rgbToHex(r, g, b);
+    gradientBottomColorPicker.value = hex;
+    gradientBottomColorHex.textContent = hex;
+    updateGradientPreview(gradientTopColorPicker.value, hex);
+}
+
+// Reset display colors to default values
+function resetDisplayColors() {
+    const defaultTopColor = '#FFA393';  // Light peachy pink (RGB: 255, 163, 147)
+    const defaultBottomColor = '#FF2B5B';  // Deep pink/red (RGB: 255, 43, 91)
+    const defaultMode = 0;  // Gradient mode
+
+    // Reset to default mode
+    setDisplayColorMode(defaultMode);
+
+    // Update gradient top color
+    gradientTopColorPicker.value = defaultTopColor;
+    gradientTopColorHex.textContent = defaultTopColor;
+    const topRgb = hexToRgb(defaultTopColor);
+    if (topRgb) {
+        throttledAndDebouncedSetGradientTopColor(topRgb.r, topRgb.g, topRgb.b);
+    }
+
+    // Update gradient bottom color
+    gradientBottomColorPicker.value = defaultBottomColor;
+    gradientBottomColorHex.textContent = defaultBottomColor;
+    const bottomRgb = hexToRgb(defaultBottomColor);
+    if (bottomRgb) {
+        throttledAndDebouncedSetGradientBottomColor(bottomRgb.r, bottomRgb.g, bottomRgb.b);
+    }
+
+    // Update preview
+    updateGradientPreview(defaultTopColor, defaultBottomColor);
+
+    // Haptic feedback
+    vibrateDevice();
+}

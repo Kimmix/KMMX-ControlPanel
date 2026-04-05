@@ -1203,3 +1203,23 @@ input[type="color"]::-moz-color-swatch {
 .reset-colors-btn svg {
   stroke: currentColor;
 }
+
+/* Display Color Mode Buttons */
+.display-color-mode-btn {
+  transition: all 200ms ease;
+}
+
+.display-color-mode-btn:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  transform: translateY(-1px);
+}
+
+.display-color-mode-btn:active {
+  transform: translateY(0);
+}
+
+.display-color-mode-btn.active {
+  background: rgba(249, 130, 108, 0.2) !important;
+  border-color: var(--acc1-color) !important;
+  box-shadow: 0 0 12px rgba(249, 130, 108, 0.3);
+}

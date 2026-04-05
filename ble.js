@@ -10,7 +10,10 @@ const bleUUID = {
     cheekPanelBrightness: "b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e",
     cheekBgColor: "c3d4e5f6-a7b8-4c5d-9e0f-1a2b3c4d5e6f",
     cheekFadeColor: "d4e5f6a7-b8c9-4d5e-9f0a-1b2c3d4e5f6a",
-    reboot: "e5f6a7b8-c9d0-4e5f-a0b1-2c3d4e5f6a7b"
+    reboot: "e5f6a7b8-c9d0-4e5f-a0b1-2c3d4e5f6a7b",
+    displayColorMode: "f5a6b7c8-d9e0-4f5a-b0c1-2d3e4f5a6b7c",
+    gradientTopColor: "a6b7c8d9-e0f1-4a5b-c1d2-3e4f5a6b7c8d",
+    gradientBottomColor: "b7c8d9e0-f1a2-4b5c-d2e3-4f5a6b7c8d9e"
   }
 };
 
@@ -23,7 +26,40 @@ let cheekPanelBrightnessCharacteristic;
 let cheekBgColorCharacteristic;
 let cheekFadeColorCharacteristic;
 let rebootCharacteristic;
+let displayColorModeCharacteristic;
+let gradientTopColorCharacteristic;
+let gradientBottomColorCharacteristic;
 let bleDevice; // Store the connected device
+
+// BLE Write Queue to prevent "GATT operation already in progress" errors
+let bleWriteQueue = [];
+let isProcessingBleWrite = false;
+
+async function processBleWriteQueue() {
+  if (isProcessingBleWrite || bleWriteQueue.length === 0) {
+    return;
+  }
+
+  isProcessingBleWrite = true;
+
+  while (bleWriteQueue.length > 0) {
+    const writeOperation = bleWriteQueue.shift();
+    try {
+      await writeOperation();
+    } catch (error) {
+      console.error('BLE write error:', error);
+    }
+    // Delay between operations to prevent GATT conflicts
+    await new Promise(resolve => setTimeout(resolve, 50));
+  }
+
+  isProcessingBleWrite = false;
+}
+
+function queueBleWrite(writeFunction) {
+  bleWriteQueue.push(writeFunction);
+  processBleWriteQueue();
+}
 
 //? Connect to a BLE device (new or existing)
 async function connectToDevice(device, isReconnect = false) {
@@ -71,6 +107,31 @@ async function connectToDevice(device, isReconnect = false) {
   cheekFadeColorCharacteristic = await service.getCharacteristic(bleUUID.characteristic.cheekFadeColor);
   rebootCharacteristic = await service.getCharacteristic(bleUUID.characteristic.reboot);
 
+  // Try to get new Hub75 display color characteristics (may not exist on older firmware)
+  try {
+    displayColorModeCharacteristic = await service.getCharacteristic(bleUUID.characteristic.displayColorMode);
+    console.log('Hub75 Display Color Mode characteristic found');
+  } catch (error) {
+    console.warn('Hub75 Display Color Mode characteristic not available on this device');
+    displayColorModeCharacteristic = null;
+  }
+
+  try {
+    gradientTopColorCharacteristic = await service.getCharacteristic(bleUUID.characteristic.gradientTopColor);
+    console.log('Hub75 Gradient Top Color characteristic found');
+  } catch (error) {
+    console.warn('Hub75 Gradient Top Color characteristic not available on this device');
+    gradientTopColorCharacteristic = null;
+  }
+
+  try {
+    gradientBottomColorCharacteristic = await service.getCharacteristic(bleUUID.characteristic.gradientBottomColor);
+    console.log('Hub75 Gradient Bottom Color characteristic found');
+  } catch (error) {
+    console.warn('Hub75 Gradient Bottom Color characteristic not available on this device');
+    gradientBottomColorCharacteristic = null;
+  }
+
   console.log('Reading value...');
   if (!isReconnect) {
     updateBLEProgress(90, 'Reading...');
@@ -85,6 +146,21 @@ async function connectToDevice(device, isReconnect = false) {
   let cheekBgColorValue = await cheekBgColorCharacteristic.readValue();
   let cheekFadeColorValue = await cheekFadeColorCharacteristic.readValue();
 
+  // Read new Hub75 characteristics only if they exist
+  let displayColorModeValue = null;
+  let gradientTopColorValue = null;
+  let gradientBottomColorValue = null;
+
+  if (displayColorModeCharacteristic) {
+    displayColorModeValue = await displayColorModeCharacteristic.readValue();
+  }
+  if (gradientTopColorCharacteristic) {
+    gradientTopColorValue = await gradientTopColorCharacteristic.readValue();
+  }
+  if (gradientBottomColorCharacteristic) {
+    gradientBottomColorValue = await gradientBottomColorCharacteristic.readValue();
+  }
+
   console.log(`Eye state is ${eyeStateValue.getUint8(0)}`);
   console.log(`Display brightness is ${displayBrightnessValue.getUint8(0)}`);
   console.log(`Viseme value is ${visemeValue.getUint8(0)}`);
@@ -93,6 +169,16 @@ async function connectToDevice(device, isReconnect = false) {
   console.log(`Cheek Panel brightness is ${cheekPanelBrightnessValue.getUint8(0)}`);
   console.log(`Cheek BG Color: R=${cheekBgColorValue.getUint8(0)} G=${cheekBgColorValue.getUint8(1)} B=${cheekBgColorValue.getUint8(2)}`);
   console.log(`Cheek Fade Color: R=${cheekFadeColorValue.getUint8(0)} G=${cheekFadeColorValue.getUint8(1)} B=${cheekFadeColorValue.getUint8(2)}`);
+
+  if (displayColorModeValue) {
+    console.log(`Display Color Mode: ${displayColorModeValue.getUint8(0)}`);
+  }
+  if (gradientTopColorValue) {
+    console.log(`Gradient Top Color: R=${gradientTopColorValue.getUint8(0)} G=${gradientTopColorValue.getUint8(1)} B=${gradientTopColorValue.getUint8(2)}`);
+  }
+  if (gradientBottomColorValue) {
+    console.log(`Gradient Bottom Color: R=${gradientBottomColorValue.getUint8(0)} G=${gradientBottomColorValue.getUint8(1)} B=${gradientBottomColorValue.getUint8(2)}`);
+  }
 
   if (!isReconnect) {
     updateBLEProgress(100, 'Connected!');
@@ -111,6 +197,18 @@ async function connectToDevice(device, isReconnect = false) {
   setCheekPanelBrightnessValue(cheekPanelBrightnessValue.getUint8(0));
   setCheekBgColorValue(cheekBgColorValue.getUint8(0), cheekBgColorValue.getUint8(1), cheekBgColorValue.getUint8(2));
   setCheekFadeColorValue(cheekFadeColorValue.getUint8(0), cheekFadeColorValue.getUint8(1), cheekFadeColorValue.getUint8(2));
+
+  // Set Hub75 display color values only if available
+  if (displayColorModeValue) {
+    setDisplayColorModeValue(displayColorModeValue.getUint8(0));
+  }
+  if (gradientTopColorValue) {
+    setGradientTopColorValue(gradientTopColorValue.getUint8(0), gradientTopColorValue.getUint8(1), gradientTopColorValue.getUint8(2));
+  }
+  if (gradientBottomColorValue) {
+    setGradientBottomColorValue(gradientBottomColorValue.getUint8(0), gradientBottomColorValue.getUint8(1), gradientBottomColorValue.getUint8(2));
+  }
+
   updateBLECharacteristicsDisplay(eyeStateValue.getUint8(0), displayBrightnessValue.getUint8(0), visemeValue.getUint8(0), mouthStateValue.getUint8(0), hornLedBrightnessValue.getUint8(0), cheekPanelBrightnessValue.getUint8(0), cheekBgColorValue, cheekFadeColorValue);
 }
 
@@ -150,6 +248,11 @@ async function startBLE() {
 function onDisconnected(event) {
   const device = event.target;
   console.log(`Device ${device.name} is disconnected.`);
+
+  // Clear BLE write queue on disconnect
+  bleWriteQueue = [];
+  isProcessingBleWrite = false;
+
   isStatusConnected(false);
   updateBLECharacteristicsDisplay('-', '-', '-', '-', '-', '-', null, null);
   showDisconnectPopup();
@@ -265,15 +368,12 @@ function setCheekBgColorCharacteristic(r, g, b) {
   }
   const colorKey = `${r},${g},${b}`;
   if (colorKey !== prevCheekBgColor) {
-    cheekBgColorCharacteristic.writeValue(Uint8Array.of(r, g, b))
-      .then(_ => {
-        console.log(`> Characteristic cheek BG color changed to: R=${r} G=${g} B=${b}`);
-        prevCheekBgColor = colorKey;
-        updateBLECharColorValue('ble-cheekbgcolor', r, g, b);
-      })
-      .catch(error => {
-        console.error('Argh! ' + error);
-      });
+    prevCheekBgColor = colorKey;
+    queueBleWrite(async () => {
+      await cheekBgColorCharacteristic.writeValue(Uint8Array.of(r, g, b));
+      console.log(`> Characteristic cheek BG color changed to: R=${r} G=${g} B=${b}`);
+      updateBLECharColorValue('ble-cheekbgcolor', r, g, b);
+    });
   }
 }
 
@@ -285,15 +385,62 @@ function setCheekFadeColorCharacteristic(r, g, b) {
   }
   const colorKey = `${r},${g},${b}`;
   if (colorKey !== prevCheekFadeColor) {
-    cheekFadeColorCharacteristic.writeValue(Uint8Array.of(r, g, b))
-      .then(_ => {
-        console.log(`> Characteristic cheek fade color changed to: R=${r} G=${g} B=${b}`);
-        prevCheekFadeColor = colorKey;
-        updateBLECharColorValue('ble-cheekfadecolor', r, g, b);
-      })
-      .catch(error => {
-        console.error('Argh! ' + error);
-      });
+    prevCheekFadeColor = colorKey;
+    queueBleWrite(async () => {
+      await cheekFadeColorCharacteristic.writeValue(Uint8Array.of(r, g, b));
+      console.log(`> Characteristic cheek fade color changed to: R=${r} G=${g} B=${b}`);
+      updateBLECharColorValue('ble-cheekfadecolor', r, g, b);
+    });
+  }
+}
+
+let prevDisplayColorMode = -1;
+function setDisplayColorModeCharacteristic(mode) {
+  if (!displayColorModeCharacteristic) {
+    console.log('Not connected - display color mode change skipped');
+    return;
+  }
+  if (mode !== prevDisplayColorMode) {
+    prevDisplayColorMode = mode;
+    queueBleWrite(async () => {
+      await displayColorModeCharacteristic.writeValue(Uint8Array.of(mode));
+      console.log(`> Characteristic display color mode changed to: ${mode}`);
+      updateBLECharValue('ble-displaycolormode', mode);
+    });
+  }
+}
+
+let prevGradientTopColor = null;
+function setGradientTopColorCharacteristic(r, g, b) {
+  if (!gradientTopColorCharacteristic) {
+    console.log('Not connected - gradient top color change skipped');
+    return;
+  }
+  const colorKey = `${r},${g},${b}`;
+  if (colorKey !== prevGradientTopColor) {
+    prevGradientTopColor = colorKey;
+    queueBleWrite(async () => {
+      await gradientTopColorCharacteristic.writeValue(Uint8Array.of(r, g, b));
+      console.log(`> Characteristic gradient top color changed to: R=${r} G=${g} B=${b}`);
+      updateBLECharColorValue('ble-gradienttopcolor', r, g, b);
+    });
+  }
+}
+
+let prevGradientBottomColor = null;
+function setGradientBottomColorCharacteristic(r, g, b) {
+  if (!gradientBottomColorCharacteristic) {
+    console.log('Not connected - gradient bottom color change skipped');
+    return;
+  }
+  const colorKey = `${r},${g},${b}`;
+  if (colorKey !== prevGradientBottomColor) {
+    prevGradientBottomColor = colorKey;
+    queueBleWrite(async () => {
+      await gradientBottomColorCharacteristic.writeValue(Uint8Array.of(r, g, b));
+      console.log(`> Characteristic gradient bottom color changed to: R=${r} G=${g} B=${b}`);
+      updateBLECharColorValue('ble-gradientbottomcolor', r, g, b);
+    });
   }
 }
 
@@ -301,8 +448,10 @@ const throttledAndDebouncedsetVisemeCharacteristic = throttleAndDebounce(setVise
 const throttledAndDebouncedSetDisplayBrightness = throttleAndDebounce(setdisplayBrightnessCharacteristic, 100, 50);
 const throttledAndDebouncedSetHornLedBrightness = throttleAndDebounce(setHornLedBrightnessCharacteristic, 100, 50);
 const throttledAndDebouncedSetCheekPanelBrightness = throttleAndDebounce(setCheekPanelBrightnessCharacteristic, 100, 50);
-const throttledAndDebouncedSetCheekBgColor = throttleAndDebounce(setCheekBgColorCharacteristic, 100, 50);
-const throttledAndDebouncedSetCheekFadeColor = throttleAndDebounce(setCheekFadeColorCharacteristic, 100, 50);
+const throttledAndDebouncedSetCheekBgColor = throttleAndDebounce(setCheekBgColorCharacteristic, 150, 100);
+const throttledAndDebouncedSetCheekFadeColor = throttleAndDebounce(setCheekFadeColorCharacteristic, 150, 100);
+const throttledAndDebouncedSetGradientTopColor = throttleAndDebounce(setGradientTopColorCharacteristic, 150, 100);
+const throttledAndDebouncedSetGradientBottomColor = throttleAndDebounce(setGradientBottomColorCharacteristic, 150, 100);
 
 // Throttle and debounce function
 function throttleAndDebounce(func, throttleDelay, debounceDelay) {
@@ -397,6 +546,21 @@ async function refreshBLECharacteristics() {
     const cheekBgColorValue = await cheekBgColorCharacteristic.readValue();
     const cheekFadeColorValue = await cheekFadeColorCharacteristic.readValue();
 
+    // Read Hub75 characteristics only if available
+    let displayColorModeValue = null;
+    let gradientTopColorValue = null;
+    let gradientBottomColorValue = null;
+
+    if (displayColorModeCharacteristic) {
+      displayColorModeValue = await displayColorModeCharacteristic.readValue();
+    }
+    if (gradientTopColorCharacteristic) {
+      gradientTopColorValue = await gradientTopColorCharacteristic.readValue();
+    }
+    if (gradientBottomColorCharacteristic) {
+      gradientBottomColorValue = await gradientBottomColorCharacteristic.readValue();
+    }
+
     updateBLECharacteristicsDisplay(
       eyeStateValue.getUint8(0),
       displayBrightnessValue.getUint8(0),
@@ -407,6 +571,17 @@ async function refreshBLECharacteristics() {
       cheekBgColorValue,
       cheekFadeColorValue
     );
+
+    // Update display color characteristics in the UI only if available
+    if (displayColorModeValue) {
+      updateBLECharValue('ble-displaycolormode', displayColorModeValue.getUint8(0));
+    }
+    if (gradientTopColorValue) {
+      updateBLECharColorValue('ble-gradienttopcolor', gradientTopColorValue.getUint8(0), gradientTopColorValue.getUint8(1), gradientTopColorValue.getUint8(2));
+    }
+    if (gradientBottomColorValue) {
+      updateBLECharColorValue('ble-gradientbottomcolor', gradientBottomColorValue.getUint8(0), gradientBottomColorValue.getUint8(1), gradientBottomColorValue.getUint8(2));
+    }
 
     console.log('BLE characteristics refreshed');
     vibrateDevice();
