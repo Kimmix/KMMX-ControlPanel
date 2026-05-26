@@ -16,7 +16,11 @@ const bleUUID = {
     displayEffectColor2: "b7c8d9e0-f1a2-4b5c-d2e3-4f5a6b7c8d9e",
     displayEffectOption1: "c7d8e9f0-a1b2-4c5d-e2f3-4a5b6c7d8e9f",
     displayEffectOption2: "e7f8a9b0-c1d2-4e5f-a2b3-4c5d6e7f8a9b",
-    displayEffectOption3: "f7a8b9c0-d1e2-4f5a-b2c3-4d5e6f7a8b9c"
+    displayEffectOption3: "f7a8b9c0-d1e2-4f5a-b2c3-4d5e6f7a8b9c",
+    glitchTrigger: "a1a2a3a4-b1b2-4c1c-d1d2-e1e2e3e4e5f1",
+    motionEnableFlags: "a1a2a3a4-b1b2-4c1c-d1d2-e1e2e3e4e5f2",
+    tapSensitivity: "a1a2a3a4-b1b2-4c1c-d1d2-e1e2e3e4e5f3",
+    glitchIntensity: "a1a2a3a4-b1b2-4c1c-d1d2-e1e2e3e4e5f4"
   }
 };
 
@@ -35,6 +39,10 @@ let displayEffectColor2Characteristic;
 let displayEffectOption1Characteristic;
 let displayEffectOption2Characteristic;
 let displayEffectOption3Characteristic;
+let glitchTriggerCharacteristic;
+let motionEnableFlagsCharacteristic;
+let tapSensitivityCharacteristic;
+let glitchIntensityCharacteristic;
 let bleDevice; // Store the connected device
 
 // BLE Write Queue to prevent "GATT operation already in progress" errors
@@ -162,6 +170,39 @@ async function connectToDevice(device, isReconnect = false) {
     displayEffectOption3Characteristic = null;
   }
 
+  // Try to get new Motion Detection & Glitch Control characteristics (may not exist on older firmware)
+  try {
+    glitchTriggerCharacteristic = await service.getCharacteristic(bleUUID.characteristic.glitchTrigger);
+    console.log('Glitch Trigger characteristic found');
+  } catch (error) {
+    console.warn('Glitch Trigger characteristic not available on this device');
+    glitchTriggerCharacteristic = null;
+  }
+
+  try {
+    motionEnableFlagsCharacteristic = await service.getCharacteristic(bleUUID.characteristic.motionEnableFlags);
+    console.log('Motion Enable Flags characteristic found');
+  } catch (error) {
+    console.warn('Motion Enable Flags characteristic not available on this device');
+    motionEnableFlagsCharacteristic = null;
+  }
+
+  try {
+    tapSensitivityCharacteristic = await service.getCharacteristic(bleUUID.characteristic.tapSensitivity);
+    console.log('Tap Sensitivity characteristic found');
+  } catch (error) {
+    console.warn('Tap Sensitivity characteristic not available on this device');
+    tapSensitivityCharacteristic = null;
+  }
+
+  try {
+    glitchIntensityCharacteristic = await service.getCharacteristic(bleUUID.characteristic.glitchIntensity);
+    console.log('Glitch Intensity characteristic found');
+  } catch (error) {
+    console.warn('Glitch Intensity characteristic not available on this device');
+    glitchIntensityCharacteristic = null;
+  }
+
   console.log('Reading value...');
   if (!isReconnect) {
     updateBLEProgress(90, 'Reading...');
@@ -203,6 +244,21 @@ async function connectToDevice(device, isReconnect = false) {
     displayEffectOption3Value = await displayEffectOption3Characteristic.readValue();
   }
 
+  // Read new Motion Detection & Glitch Control characteristics only if they exist
+  let motionEnableFlagsValue = null;
+  let tapSensitivityValue = null;
+  let glitchIntensityValue = null;
+
+  if (motionEnableFlagsCharacteristic) {
+    motionEnableFlagsValue = await motionEnableFlagsCharacteristic.readValue();
+  }
+  if (tapSensitivityCharacteristic) {
+    tapSensitivityValue = await tapSensitivityCharacteristic.readValue();
+  }
+  if (glitchIntensityCharacteristic) {
+    glitchIntensityValue = await glitchIntensityCharacteristic.readValue();
+  }
+
   console.log(`Eye state is ${eyeStateValue.getUint8(0)}`);
   console.log(`Display brightness is ${displayBrightnessValue.getUint8(0)}`);
   console.log(`Viseme value is ${visemeValue.getUint8(0)}`);
@@ -226,6 +282,15 @@ async function connectToDevice(device, isReconnect = false) {
   }
   if (displayEffectOption2Value) {
     console.log(`Display Effect Option 2: ${displayEffectOption2Value.getUint8(0)}`);
+  }
+  if (motionEnableFlagsValue) {
+    console.log(`Motion Enable Flags: 0x${motionEnableFlagsValue.getUint8(0).toString(16)}`);
+  }
+  if (tapSensitivityValue) {
+    console.log(`Tap Sensitivity: ${tapSensitivityValue.getUint8(0)}`);
+  }
+  if (glitchIntensityValue) {
+    console.log(`Glitch Intensity: ${glitchIntensityValue.getUint8(0)}`);
   }
 
   if (!isReconnect) {
@@ -264,6 +329,17 @@ async function connectToDevice(device, isReconnect = false) {
   }
   if (displayEffectOption3Value) {
     setDisplayEffectOption3Value(displayEffectOption3Value.getUint8(0));
+  }
+
+  // Set Motion Detection & Glitch Control values only if available
+  if (motionEnableFlagsValue) {
+    setMotionEnableFlagsValue(motionEnableFlagsValue.getUint8(0));
+  }
+  if (tapSensitivityValue) {
+    setTapSensitivityValue(tapSensitivityValue.getUint8(0));
+  }
+  if (glitchIntensityValue) {
+    setGlitchIntensityValue(glitchIntensityValue.getUint8(0));
   }
 
   updateBLECharacteristicsDisplay(eyeStateValue.getUint8(0), displayBrightnessValue.getUint8(0), visemeValue.getUint8(0), mouthStateValue.getUint8(0), hornLedBrightnessValue.getUint8(0), cheekPanelBrightnessValue.getUint8(0), cheekBgColorValue, cheekFadeColorValue);
@@ -549,6 +625,66 @@ function setDisplayEffectOption3Characteristic(value) {
   }
 }
 
+// Motion Detection & Glitch Control Characteristics
+function setGlitchTriggerCharacteristic(intensity) {
+  if (!glitchTriggerCharacteristic) {
+    console.log('Not connected - glitch trigger skipped');
+    return;
+  }
+  queueBleWrite(async () => {
+    await glitchTriggerCharacteristic.writeValue(Uint8Array.of(intensity));
+    console.log(`> Glitch triggered with intensity: ${intensity}`);
+  });
+}
+
+let prevMotionEnableFlags = -1;
+function setMotionEnableFlagsCharacteristic(flags) {
+  if (!motionEnableFlagsCharacteristic) {
+    console.log('Not connected - motion enable flags change skipped');
+    return;
+  }
+  if (flags !== prevMotionEnableFlags) {
+    prevMotionEnableFlags = flags;
+    queueBleWrite(async () => {
+      await motionEnableFlagsCharacteristic.writeValue(Uint8Array.of(flags));
+      console.log(`> Motion enable flags changed to: 0x${flags.toString(16)}`);
+      updateBLECharValue('ble-motionenableflags', flags);
+    });
+  }
+}
+
+let prevTapSensitivity = -1;
+function setTapSensitivityCharacteristic(value) {
+  if (!tapSensitivityCharacteristic) {
+    console.log('Not connected - tap sensitivity change skipped');
+    return;
+  }
+  if (value !== prevTapSensitivity) {
+    prevTapSensitivity = value;
+    queueBleWrite(async () => {
+      await tapSensitivityCharacteristic.writeValue(Uint8Array.of(value));
+      console.log(`> Tap sensitivity changed to: ${value}`);
+      updateBLECharValue('ble-tapsensitivity', value);
+    });
+  }
+}
+
+let prevGlitchIntensity = -1;
+function setGlitchIntensityCharacteristic(value) {
+  if (!glitchIntensityCharacteristic) {
+    console.log('Not connected - glitch intensity change skipped');
+    return;
+  }
+  if (value !== prevGlitchIntensity) {
+    prevGlitchIntensity = value;
+    queueBleWrite(async () => {
+      await glitchIntensityCharacteristic.writeValue(Uint8Array.of(value));
+      console.log(`> Glitch intensity changed to: ${value}`);
+      updateBLECharValue('ble-glitchintensity', value);
+    });
+  }
+}
+
 const throttledAndDebouncedsetVisemeCharacteristic = throttleAndDebounce(setVisemeCharacteristic, 100, 50);
 const throttledAndDebouncedSetDisplayBrightness = throttleAndDebounce(setdisplayBrightnessCharacteristic, 100, 50);
 const throttledAndDebouncedSetHornLedBrightness = throttleAndDebounce(setHornLedBrightnessCharacteristic, 100, 50);
@@ -560,6 +696,8 @@ const throttledAndDebouncedSetDisplayEffectColor2 = throttleAndDebounce(setDispl
 const throttledAndDebouncedSetDisplayEffectOption1 = throttleAndDebounce(setDisplayEffectOption1Characteristic, 100, 50);
 const throttledAndDebouncedSetDisplayEffectOption2 = throttleAndDebounce(setDisplayEffectOption2Characteristic, 100, 50);
 const throttledAndDebouncedSetDisplayEffectOption3 = throttleAndDebounce(setDisplayEffectOption3Characteristic, 100, 50);
+const throttledAndDebouncedSetTapSensitivity = throttleAndDebounce(setTapSensitivityCharacteristic, 100, 50);
+const throttledAndDebouncedSetGlitchIntensity = throttleAndDebounce(setGlitchIntensityCharacteristic, 100, 50);
 
 // Throttle and debounce function
 function throttleAndDebounce(func, throttleDelay, debounceDelay) {

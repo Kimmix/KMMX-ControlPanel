@@ -49,7 +49,8 @@
 
   <!-- Skip Pairing Button -->
   <button class="skip-pairing-btn" id="skipPairingBtn" onclick="skipPairing(event)">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round">
       <line x1="5" y1="12" x2="19" y2="12"></line>
       <polyline points="12 5 19 12 12 19"></polyline>
     </svg>
@@ -62,7 +63,8 @@
   <div class="disconnect-popup-content">
     <p>Device Disconnected</p>
     <button id="refreshPageBtn" class="btn-refresh" onclick="location.reload()">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
         <polyline points="23 4 23 10 17 10"></polyline>
         <polyline points="1 20 1 14 7 14"></polyline>
         <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
@@ -108,7 +110,8 @@
             <!-- Dual Status Display (also acts as mode switcher) -->
             <div class="dual-status-container">
               <div class="status-item eye-status active" onclick="switchControlMode('eye')">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="status-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="status-icon">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                   <circle cx="12" cy="12" r="3"></circle>
                 </svg>
@@ -118,7 +121,8 @@
                 </div>
               </div>
               <div class="status-item mouth-status" onclick="switchControlMode('mouth')">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="status-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="status-icon">
                   <path d="M12 19c-4 0-7-2-7-5h14c0 3-3 5-7 5z"></path>
                   <circle cx="9" cy="10" r="1"></circle>
                   <circle cx="15" cy="10" r="1"></circle>
@@ -140,19 +144,24 @@
               <!-- Mouth Control Section -->
               <div id="mouthControlSection" class="control-section">
                 <div class="mouth-state-buttons">
-                  <button class="mouth-state-btn placeholder active" data-state="0" onclick="setMouthState(0)" title="Default idle mouth state">
+                  <button class="mouth-state-btn placeholder active" data-state="0" onclick="setMouthState(0)"
+                    title="Default idle mouth state">
                     <span class="placeholder-text">IDLE<br><small>Default</small></span>
                   </button>
-                  <button class="mouth-state-btn placeholder" data-state="1" onclick="setMouthState(1)" title="Wah mouth animation">
+                  <button class="mouth-state-btn placeholder" data-state="1" onclick="setMouthState(1)"
+                    title="Wah mouth animation">
                     <span class="placeholder-text">WAH<br><small>Bouncy</small></span>
                   </button>
-                  <button class="mouth-state-btn placeholder" data-state="2" onclick="setMouthState(2)" title="Eh mouth expression">
+                  <button class="mouth-state-btn placeholder" data-state="2" onclick="setMouthState(2)"
+                    title="Eh mouth expression">
                     <span class="placeholder-text">EH<br><small>Meh</small></span>
                   </button>
-                  <button class="mouth-state-btn placeholder" data-state="3" onclick="setMouthState(3)" title="Pout mouth expression">
+                  <button class="mouth-state-btn placeholder" data-state="3" onclick="setMouthState(3)"
+                    title="Pout mouth expression">
                     <span class="placeholder-text">POUT<br><small>Sad</small></span>
                   </button>
-                  <button class="mouth-state-btn placeholder" data-state="4" onclick="setMouthState(4)" title="Drooling mouth animation">
+                  <button class="mouth-state-btn placeholder" data-state="4" onclick="setMouthState(4)"
+                    title="Drooling mouth animation">
                     <span class="placeholder-text">DROOL<br><small>Blep</small></span>
                   </button>
                 </div>
@@ -172,46 +181,46 @@
         <!-- Page Content Container (Scrollable) -->
         <div class="page-content-container">
           <!-- Settings Section: Audio -->
-        <div class="settings-section">
-          <h3 class="section-title">Audio Processing</h3>
-          <div class="viseme">
-            <button id="visemeBtn" onclick="toggleViseme()" class="viseme-btn active">
-              <div class="bitrate">
-                <p>I<span class="superscript">2</span>S 16bit / 8KHz<br><span class="fade">256 sample</span></p>
-              </div>
-              <div class="viseme-title">
-                <div class="viseme-title-container">
-                  <img class="inline-icn" src="asset/svg/wave-icon.svg" alt="Wave icon">
-                  <h2>Viseme</h2>
+          <div class="settings-section">
+            <h3 class="section-title">Audio Processing</h3>
+            <div class="viseme">
+              <button id="visemeBtn" onclick="toggleViseme()" class="viseme-btn active">
+                <div class="bitrate">
+                  <p>I<span class="superscript">2</span>S 16bit / 8KHz<br><span class="fade">256 sample</span></p>
                 </div>
-                <div class="viseme-toggle">
-                  <span id="visemeOn" class="active">on</span>&nbsp;|&nbsp;<span id="visemeOff">off</span>
+                <div class="viseme-title">
+                  <div class="viseme-title-container">
+                    <img class="inline-icn" src="asset/svg/wave-icon.svg" alt="Wave icon">
+                    <h2>Viseme</h2>
+                  </div>
+                  <div class="viseme-toggle">
+                    <span id="visemeOn" class="active">on</span>&nbsp;|&nbsp;<span id="visemeOff">off</span>
+                  </div>
                 </div>
-              </div>
-            </button>
-            <div id="vsmSlider" class="viseme-value-slider">
-              <h3>Noise threshold</h3>
-              <div class="number-slider">
-                <span class="sliderNumber">1</span>
-                <span class="sliderNumber default-dot active">2</span>
-                <span class="sliderNumber">3</span>
-                <span class="sliderNumber">4</span>
-                <span class="sliderNumber">5</span>
-                <span class="sliderNumber">6</span>
-                <span class="sliderNumber">7</span>
-                <span class="sliderNumber">8</span>
-                <span class="sliderNumber">9</span>
-                <input class="vsm-slider" type="range" min="1" max="9" value="1" id="vsmValue">
+              </button>
+              <div id="vsmSlider" class="viseme-value-slider">
+                <h3>Noise threshold</h3>
+                <div class="number-slider">
+                  <span class="sliderNumber">1</span>
+                  <span class="sliderNumber default-dot active">2</span>
+                  <span class="sliderNumber">3</span>
+                  <span class="sliderNumber">4</span>
+                  <span class="sliderNumber">5</span>
+                  <span class="sliderNumber">6</span>
+                  <span class="sliderNumber">7</span>
+                  <span class="sliderNumber">8</span>
+                  <span class="sliderNumber">9</span>
+                  <input class="vsm-slider" type="range" min="1" max="9" value="1" id="vsmValue">
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Settings Section: Display -->
-        <div class="settings-section">
-          <h3 class="section-title">Display</h3>
-          <!-- Matrix brightness - Commented out for now -->
-          <!-- <div class="matrix">
+          <!-- Settings Section: Display -->
+          <div class="settings-section">
+            <h3 class="section-title">Display</h3>
+            <!-- Matrix brightness - Commented out for now -->
+            <!-- <div class="matrix">
             <div class="matrix-container">
               <div class="blub-icon">
                 <img src="asset/svg/bulb.svg" alt="Light bulb" style="width: 30px;">
@@ -231,252 +240,432 @@
             <input class="bn-slider" type="range" min="0" max="100" value="0" id="dotValue">
           </div> -->
 
-          <!-- Horn LED Brightness -->
-          <div class="matrix" style="margin-top: 20px;">
-            <div class="matrix-container">
-              <div class="blub-icon">
-                <img src="asset/svg/bulb.svg" alt="Light bulb" style="width: 30px;">
-              </div>
-              <div class="matrix-bncontrol">
-                <div class="matrix-silder-header">
-                  <h3>Horn LED brightness</h3>
-                  <div class="value-display">
-                    <span id="hornLedSliderValue">15</span>
-                    <span class="fade" style="font-size: 1.2rem;margin-left: -6px;">%</span>
+            <!-- Horn LED Brightness -->
+            <div class="matrix" style="margin-top: 20px;">
+              <div class="matrix-container">
+                <div class="blub-icon">
+                  <img src="asset/svg/bulb.svg" alt="Light bulb" style="width: 30px;">
+                </div>
+                <div class="matrix-bncontrol">
+                  <div class="matrix-silder-header">
+                    <h3>Horn LED brightness</h3>
+                    <div class="value-display">
+                      <span id="hornLedSliderValue">15</span>
+                      <span class="fade" style="font-size: 1.2rem;margin-left: -6px;">%</span>
+                    </div>
+                  </div>
+                  <div id="horn-dots-container" class="dots-container">
                   </div>
                 </div>
-                <div id="horn-dots-container" class="dots-container">
-                </div>
               </div>
+              <input class="bn-slider" type="range" min="0" max="100" value="15" id="hornLedValue">
             </div>
-            <input class="bn-slider" type="range" min="0" max="100" value="15" id="hornLedValue">
-          </div>
 
-          <!-- Cheek Panel Brightness -->
-          <div class="matrix" style="margin-top: 20px;">
-            <div class="matrix-container">
-              <div class="blub-icon">
-                <img src="asset/svg/bulb.svg" alt="Light bulb" style="width: 30px;">
-              </div>
-              <div class="matrix-bncontrol">
-                <div class="matrix-silder-header">
-                  <h3>Cheek Panel brightness</h3>
-                  <div class="value-display">
-                    <span id="cheekPanelSliderValue">100</span>
-                    <span class="fade" style="font-size: 1.2rem;margin-left: -6px;">%</span>
+            <!-- Cheek Panel Brightness -->
+            <div class="matrix" style="margin-top: 20px;">
+              <div class="matrix-container">
+                <div class="blub-icon">
+                  <img src="asset/svg/bulb.svg" alt="Light bulb" style="width: 30px;">
+                </div>
+                <div class="matrix-bncontrol">
+                  <div class="matrix-silder-header">
+                    <h3>Cheek Panel brightness</h3>
+                    <div class="value-display">
+                      <span id="cheekPanelSliderValue">100</span>
+                      <span class="fade" style="font-size: 1.2rem;margin-left: -6px;">%</span>
+                    </div>
+                  </div>
+                  <div id="cheek-dots-container" class="dots-container">
                   </div>
                 </div>
-                <div id="cheek-dots-container" class="dots-container">
+              </div>
+              <input class="bn-slider" type="range" min="0" max="255" value="255" id="cheekPanelValue">
+            </div>
+
+            <!-- Hub75 Display Colors -->
+            <div class="settings-section" style="margin-top: 30px; position: relative;">
+              <h3 class="section-title">Hub75 Display Colors</h3>
+              <button id="resetDisplayColorsBtn" class="reset-colors-btn" onclick="resetDisplayColors()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  style="width: 14px; height: 14px; margin-right: 4px;">
+                  <polyline points="1 4 1 10 7 10"></polyline>
+                  <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                </svg>
+                Reset
+              </button>
+
+              <!-- Color Mode Selector -->
+              <div class="display-mode-section">
+                <div class="display-mode-header">
+                  <h3>Display Mode</h3>
+                </div>
+                <div class="display-mode-grid">
+                  <button id="displayColorModeGradient" class="display-color-mode-btn active"
+                    onclick="setDisplayColorMode(0)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="0" style="width: 18px; height: 18px; margin-right: 6px;">
+                      <rect x="4" y="4" width="16" height="3" fill="currentColor" opacity="1"></rect>
+                      <rect x="4" y="7" width="16" height="3" fill="currentColor" opacity="0.75"></rect>
+                      <rect x="4" y="10" width="16" height="3" fill="currentColor" opacity="0.5"></rect>
+                      <rect x="4" y="13" width="16" height="3" fill="currentColor" opacity="0.35"></rect>
+                      <rect x="4" y="16" width="16" height="4" fill="currentColor" opacity="0.2"></rect>
+                    </svg>
+                    Gradient
+                  </button>
+                  <button id="displayColorModeSpiral" class="display-color-mode-btn" onclick="setDisplayColorMode(1)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                      style="width: 18px; height: 18px; margin-right: 6px;">
+                      <path d="M12 3a9 9 0 0 1 9 9"></path>
+                      <path d="M12 7a5 5 0 0 1 5 5"></path>
+                      <path d="M12 11a1 1 0 0 1 1 1"></path>
+                      <path d="M12 21a9 9 0 0 1-9-9"></path>
+                      <path d="M12 17a5 5 0 0 1-5-5"></path>
+                      <path d="M12 13a1 1 0 0 1-1-1"></path>
+                    </svg>
+                    Spiral/Vortex
+                  </button>
+                  <button id="displayColorModePlasma" class="display-color-mode-btn" onclick="setDisplayColorMode(2)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                      style="width: 18px; height: 18px; margin-right: 6px;">
+                      <path d="M3 8 Q 8 5, 13 8 T 21 8"></path>
+                      <path d="M3 12 Q 8 15, 13 12 T 21 12"></path>
+                      <path d="M3 16 Q 8 13, 13 16 T 21 16"></path>
+                    </svg>
+                    Plasma Effect
+                  </button>
+                  <button id="displayColorModeRadial" class="display-color-mode-btn" onclick="setDisplayColorMode(3)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                      style="width: 18px; height: 18px; margin-right: 6px;">
+                      <circle cx="12" cy="12" r="2"></circle>
+                      <circle cx="12" cy="12" r="6"></circle>
+                      <circle cx="12" cy="12" r="10"></circle>
+                    </svg>
+                    Radial Pulse
+                  </button>
+                  <button id="displayColorModeDualSpiral" class="display-color-mode-btn"
+                    onclick="setDisplayColorMode(4)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                      style="width: 18px; height: 18px; margin-right: 6px;">
+                      <path d="M12 12c-1.5-1.5-3.5-2.5-5.5-2.5C4 9.5 2 11.5 2 14s2 4.5 4.5 4.5c2 0 4-1 5.5-2.5"></path>
+                      <path d="M12 12c1.5 1.5 3.5 2.5 5.5 2.5 2.5 0 4.5-2 4.5-4.5S20 5.5 17.5 5.5c-2 0-4 1-5.5 2.5">
+                      </path>
+                      <circle cx="12" cy="12" r="1"></circle>
+                    </svg>
+                    Dual Spiral
+                  </button>
+                  <button id="displayColorModeDualCircle" class="display-color-mode-btn"
+                    onclick="setDisplayColorMode(5)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                      style="width: 18px; height: 18px; margin-right: 6px;">
+                      <circle cx="12" cy="12" r="3"></circle>
+                      <circle cx="12" cy="12" r="7"></circle>
+                    </svg>
+                    Dual Circle
+                  </button>
+                </div>
+              </div>
+
+              <!-- Gradient Colors (shown only when Gradient mode is selected) -->
+              <div id="customGradientColors" style="display: block;">
+                <!-- Top Gradient Color -->
+                <div class="color-picker-container" style="margin-bottom: 20px;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                    <h3 id="gradientTopColorLabel" style="margin: 0;">Top Gradient Color</h3>
+                    <span id="gradientTopColorHex" class="fade" style="font-size: 0.9rem;">#FFA393</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 15px;">
+                    <input type="color" id="gradientTopColorPicker" value="#FFA393"
+                      style="width: 60px; height: 40px; border: 2px solid var(--acc1-color); border-radius: 8px; cursor: pointer; background: transparent;">
+                    <div style="flex: 1; display: flex; gap: 8px; flex-wrap: wrap;">
+                      <button class="color-preset-btn" data-color="#FFA393" data-target="gradientTop"
+                        style="background: #FFA393;" title="Light Peachy Pink"></button>
+                      <button class="color-preset-btn" data-color="#FF0000" data-target="gradientTop"
+                        style="background: #FF0000;" title="Red"></button>
+                      <button class="color-preset-btn" data-color="#FF8800" data-target="gradientTop"
+                        style="background: #FF8800;" title="Orange"></button>
+                      <button class="color-preset-btn" data-color="#FFFF00" data-target="gradientTop"
+                        style="background: #FFFF00;" title="Yellow"></button>
+                      <button class="color-preset-btn" data-color="#00FF00" data-target="gradientTop"
+                        style="background: #00FF00;" title="Green"></button>
+                      <button class="color-preset-btn" data-color="#000000" data-target="gradientTop"
+                        style="background: #000000;" title="Cyan"></button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Bottom Gradient Color -->
+                <div id="gradientBottomColorContainer" class="color-picker-container">
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                    <h3 id="gradientBottomColorLabel" style="margin: 0;">Bottom Gradient Color</h3>
+                    <span id="gradientBottomColorHex" class="fade" style="font-size: 0.9rem;">#FF2B5B</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 15px;">
+                    <input type="color" id="gradientBottomColorPicker" value="#FF2B5B"
+                      style="width: 60px; height: 40px; border: 2px solid var(--acc1-color); border-radius: 8px; cursor: pointer; background: transparent;">
+                    <div style="flex: 1; display: flex; gap: 8px; flex-wrap: wrap;">
+                      <button class="color-preset-btn" data-color="#FF2B5B" data-target="gradientBottom"
+                        style="background: #FF2B5B;" title="Deep Pink/Red"></button>
+                      <button class="color-preset-btn" data-color="#0000FF" data-target="gradientBottom"
+                        style="background: #0000FF;" title="Blue"></button>
+                      <button class="color-preset-btn" data-color="#8800FF" data-target="gradientBottom"
+                        style="background: #8800FF;" title="Purple"></button>
+                      <button class="color-preset-btn" data-color="#FF00FF" data-target="gradientBottom"
+                        style="background: #FF00FF;" title="Magenta"></button>
+                      <button class="color-preset-btn" data-color="#FF0088" data-target="gradientBottom"
+                        style="background: #FF0088;" title="Pink"></button>
+                      <button class="color-preset-btn" data-color="#ffffff" data-target="gradientBottom"
+                        style="background: #ffffff;" title="White"></button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Gradient Preview -->
+                <div id="gradientPreviewContainer"
+                  style="margin-top: 20px; padding: 15px; background-color: var(--black3-color); border-radius: 12px;">
+                  <h3 id="gradientPreviewTitle"
+                    style="margin: 0 0 10px 0; font-size: 0.9rem; color: var(--white2-color);">Preview</h3>
+                  <div id="gradientPreview"
+                    style="height: 80px; border-radius: 8px; background: linear-gradient(to bottom, #FFA393, #FF2B5B); border: 2px solid rgba(255, 255, 255, 0.2);">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Effect Option 1: Thickness Control (shown for modes 4 and 5) -->
+              <div id="dualSpiralThicknessControl"
+                style="display: none; margin-top: 20px; padding: 15px; background-color: var(--black3-color); border-radius: 12px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                  <h3 id="effectOption1Label" style="margin: 0;">Thickness</h3>
+                  <div class="value-display">
+                    <span id="spiralThicknessValue">128</span>
+                  </div>
+                </div>
+                <input class="spiral-thickness-slider" type="range" min="0" max="255" value="128"
+                  id="dualSpiralThicknessSlider" style="width: 100%;">
+              </div>
+
+              <!-- Effect Option 2: Speed Control (shown for modes 4 and 5) -->
+              <div id="dualCircleThicknessControl"
+                style="display: none; margin-top: 20px; padding: 15px; background-color: var(--black3-color); border-radius: 12px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                  <h3 id="effectOption2Label" style="margin: 0;">Speed</h3>
+                  <div class="value-display">
+                    <span id="circleThicknessValue">128</span>
+                  </div>
+                </div>
+                <input class="spiral-thickness-slider" type="range" min="0" max="255" value="128"
+                  id="dualCircleThicknessSlider" style="width: 100%;">
+              </div>
+
+              <!-- Effect Option 3: Direction/Invert Control (shown for modes 4 and 5) -->
+              <div id="directionInvertControl"
+                style="display: none; margin-top: 20px; padding: 15px; background-color: var(--black3-color); border-radius: 12px;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <div>
+                    <h3 id="effectOption3Label" style="margin: 0;">Direction</h3>
+                    <span id="directionInvertText"
+                      style="font-size: 0.8rem; color: var(--white2-color); margin-top: 4px; display: block;">Normal</span>
+                  </div>
+                  <label class="direction-toggle-switch">
+                    <input type="checkbox" id="directionInvertToggle" onchange="toggleDirectionInvert()">
+                    <span class="direction-toggle-slider"></span>
+                  </label>
                 </div>
               </div>
             </div>
-            <input class="bn-slider" type="range" min="0" max="255" value="255" id="cheekPanelValue">
-          </div>
 
-          <!-- Hub75 Display Colors -->
-          <div class="settings-section" style="margin-top: 30px; position: relative;">
-            <h3 class="section-title">Hub75 Display Colors</h3>
-            <button id="resetDisplayColorsBtn" class="reset-colors-btn" onclick="resetDisplayColors()">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; margin-right: 4px;">
-                <polyline points="1 4 1 10 7 10"></polyline>
-                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
-              </svg>
-              Reset
-            </button>
+            <!-- Cheek Panel Colors -->
+            <div class="settings-section" style="margin-top: 30px; position: relative;">
+              <h3 class="section-title">Cheek Panel Colors</h3>
+              <button id="resetColorsBtn" class="reset-colors-btn" onclick="resetCheekColors()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  style="width: 14px; height: 14px; margin-right: 4px;">
+                  <polyline points="1 4 1 10 7 10"></polyline>
+                  <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                </svg>
+                Reset
+              </button>
 
-            <!-- Color Mode Selector -->
-            <div class="display-mode-section">
-              <div class="display-mode-header">
-                <h3>Display Mode</h3>
-              </div>
-              <div class="display-mode-grid">
-                <button id="displayColorModeGradient" class="display-color-mode-btn active" onclick="setDisplayColorMode(0)">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0" style="width: 18px; height: 18px; margin-right: 6px;">
-                    <rect x="4" y="4" width="16" height="3" fill="currentColor" opacity="1"></rect>
-                    <rect x="4" y="7" width="16" height="3" fill="currentColor" opacity="0.75"></rect>
-                    <rect x="4" y="10" width="16" height="3" fill="currentColor" opacity="0.5"></rect>
-                    <rect x="4" y="13" width="16" height="3" fill="currentColor" opacity="0.35"></rect>
-                    <rect x="4" y="16" width="16" height="4" fill="currentColor" opacity="0.2"></rect>
-                  </svg>
-                  Gradient
-                </button>
-                <button id="displayColorModeSpiral" class="display-color-mode-btn" onclick="setDisplayColorMode(1)">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; margin-right: 6px;">
-                    <path d="M12 3a9 9 0 0 1 9 9"></path>
-                    <path d="M12 7a5 5 0 0 1 5 5"></path>
-                    <path d="M12 11a1 1 0 0 1 1 1"></path>
-                    <path d="M12 21a9 9 0 0 1-9-9"></path>
-                    <path d="M12 17a5 5 0 0 1-5-5"></path>
-                    <path d="M12 13a1 1 0 0 1-1-1"></path>
-                  </svg>
-                  Spiral/Vortex
-                </button>
-                <button id="displayColorModePlasma" class="display-color-mode-btn" onclick="setDisplayColorMode(2)">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; margin-right: 6px;">
-                    <path d="M3 8 Q 8 5, 13 8 T 21 8"></path>
-                    <path d="M3 12 Q 8 15, 13 12 T 21 12"></path>
-                    <path d="M3 16 Q 8 13, 13 16 T 21 16"></path>
-                  </svg>
-                  Plasma Effect
-                </button>
-                <button id="displayColorModeRadial" class="display-color-mode-btn" onclick="setDisplayColorMode(3)">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; margin-right: 6px;">
-                    <circle cx="12" cy="12" r="2"></circle>
-                    <circle cx="12" cy="12" r="6"></circle>
-                    <circle cx="12" cy="12" r="10"></circle>
-                  </svg>
-                  Radial Pulse
-                </button>
-                <button id="displayColorModeDualSpiral" class="display-color-mode-btn" onclick="setDisplayColorMode(4)">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; margin-right: 6px;">
-                    <path d="M12 12c-1.5-1.5-3.5-2.5-5.5-2.5C4 9.5 2 11.5 2 14s2 4.5 4.5 4.5c2 0 4-1 5.5-2.5"></path>
-                    <path d="M12 12c1.5 1.5 3.5 2.5 5.5 2.5 2.5 0 4.5-2 4.5-4.5S20 5.5 17.5 5.5c-2 0-4 1-5.5 2.5"></path>
-                    <circle cx="12" cy="12" r="1"></circle>
-                  </svg>
-                  Dual Spiral
-                </button>
-                <button id="displayColorModeDualCircle" class="display-color-mode-btn" onclick="setDisplayColorMode(5)">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; margin-right: 6px;">
-                    <circle cx="12" cy="12" r="3"></circle>
-                    <circle cx="12" cy="12" r="7"></circle>
-                  </svg>
-                  Dual Circle
-                </button>
-              </div>
-            </div>
-
-            <!-- Gradient Colors (shown only when Gradient mode is selected) -->
-            <div id="customGradientColors" style="display: block;">
-              <!-- Top Gradient Color -->
+              <!-- Background Color -->
               <div class="color-picker-container" style="margin-bottom: 20px;">
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                  <h3 id="gradientTopColorLabel" style="margin: 0;">Top Gradient Color</h3>
-                  <span id="gradientTopColorHex" class="fade" style="font-size: 0.9rem;">#FFA393</span>
+                  <h3 style="margin: 0;">Background Color</h3>
+                  <span id="bgColorHex" class="fade" style="font-size: 0.9rem;">#FF446C</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 15px;">
-                  <input type="color" id="gradientTopColorPicker" value="#FFA393" style="width: 60px; height: 40px; border: 2px solid var(--acc1-color); border-radius: 8px; cursor: pointer; background: transparent;">
+                  <input type="color" id="bgColorPicker" value="#FF446C"
+                    style="width: 60px; height: 40px; border: 2px solid var(--acc1-color); border-radius: 8px; cursor: pointer; background: transparent;">
                   <div style="flex: 1; display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button class="color-preset-btn" data-color="#FFA393" data-target="gradientTop" style="background: #FFA393;" title="Light Peachy Pink"></button>
-                    <button class="color-preset-btn" data-color="#FF0000" data-target="gradientTop" style="background: #FF0000;" title="Red"></button>
-                    <button class="color-preset-btn" data-color="#FF8800" data-target="gradientTop" style="background: #FF8800;" title="Orange"></button>
-                    <button class="color-preset-btn" data-color="#FFFF00" data-target="gradientTop" style="background: #FFFF00;" title="Yellow"></button>
-                    <button class="color-preset-btn" data-color="#00FF00" data-target="gradientTop" style="background: #00FF00;" title="Green"></button>
-                    <button class="color-preset-btn" data-color="#000000" data-target="gradientTop" style="background: #000000;" title="Cyan"></button>
+                    <button class="color-preset-btn" data-color="#FF446C" data-target="bg" style="background: #FF446C;"
+                      title="Pink (Default)"></button>
+                    <button class="color-preset-btn" data-color="#4488FF" data-target="bg" style="background: #4488FF;"
+                      title="Blue"></button>
+                    <button class="color-preset-btn" data-color="#AA44FF" data-target="bg" style="background: #AA44FF;"
+                      title="Purple"></button>
+                    <button class="color-preset-btn" data-color="#44FF88" data-target="bg" style="background: #44FF88;"
+                      title="Green"></button>
+                    <button class="color-preset-btn" data-color="#FFAA44" data-target="bg" style="background: #FFAA44;"
+                      title="Orange"></button>
                   </div>
                 </div>
               </div>
 
-              <!-- Bottom Gradient Color -->
-              <div id="gradientBottomColorContainer" class="color-picker-container">
+              <!-- Fade/Sparkle Color -->
+              <div class="color-picker-container">
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                  <h3 id="gradientBottomColorLabel" style="margin: 0;">Bottom Gradient Color</h3>
-                  <span id="gradientBottomColorHex" class="fade" style="font-size: 0.9rem;">#FF2B5B</span>
+                  <h3 style="margin: 0;">Sparkle Color</h3>
+                  <span id="fadeColorHex" class="fade" style="font-size: 0.9rem;">#F9826C</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 15px;">
-                  <input type="color" id="gradientBottomColorPicker" value="#FF2B5B" style="width: 60px; height: 40px; border: 2px solid var(--acc1-color); border-radius: 8px; cursor: pointer; background: transparent;">
+                  <input type="color" id="fadeColorPicker" value="#F9826C"
+                    style="width: 60px; height: 40px; border: 2px solid var(--acc1-color); border-radius: 8px; cursor: pointer; background: transparent;">
                   <div style="flex: 1; display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button class="color-preset-btn" data-color="#FF2B5B" data-target="gradientBottom" style="background: #FF2B5B;" title="Deep Pink/Red"></button>
-                    <button class="color-preset-btn" data-color="#0000FF" data-target="gradientBottom" style="background: #0000FF;" title="Blue"></button>
-                    <button class="color-preset-btn" data-color="#8800FF" data-target="gradientBottom" style="background: #8800FF;" title="Purple"></button>
-                    <button class="color-preset-btn" data-color="#FF00FF" data-target="gradientBottom" style="background: #FF00FF;" title="Magenta"></button>
-                    <button class="color-preset-btn" data-color="#FF0088" data-target="gradientBottom" style="background: #FF0088;" title="Pink"></button>
-                    <button class="color-preset-btn" data-color="#ffffff" data-target="gradientBottom" style="background: #ffffff;" title="White"></button>
+                    <button class="color-preset-btn" data-color="#F9826C" data-target="fade"
+                      style="background: #F9826C;" title="Coral (Default)"></button>
+                    <button class="color-preset-btn" data-color="#6CC8FF" data-target="fade"
+                      style="background: #6CC8FF;" title="Cyan"></button>
+                    <button class="color-preset-btn" data-color="#FF6CFF" data-target="fade"
+                      style="background: #FF6CFF;" title="Magenta"></button>
+                    <button class="color-preset-btn" data-color="#6CFFAA" data-target="fade"
+                      style="background: #6CFFAA;" title="Lime"></button>
+                    <button class="color-preset-btn" data-color="#FFD66C" data-target="fade"
+                      style="background: #FFD66C;" title="Yellow"></button>
                   </div>
                 </div>
               </div>
-
-              <!-- Gradient Preview -->
-              <div id="gradientPreviewContainer" style="margin-top: 20px; padding: 15px; background-color: var(--black3-color); border-radius: 12px;">
-                <h3 id="gradientPreviewTitle" style="margin: 0 0 10px 0; font-size: 0.9rem; color: var(--white2-color);">Preview</h3>
-                <div id="gradientPreview" style="height: 80px; border-radius: 8px; background: linear-gradient(to bottom, #FFA393, #FF2B5B); border: 2px solid rgba(255, 255, 255, 0.2);"></div>
-              </div>
             </div>
 
-            <!-- Effect Option 1: Thickness Control (shown for modes 4 and 5) -->
-            <div id="dualSpiralThicknessControl" style="display: none; margin-top: 20px; padding: 15px; background-color: var(--black3-color); border-radius: 12px;">
-              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                <h3 id="effectOption1Label" style="margin: 0;">Thickness</h3>
-                <div class="value-display">
-                  <span id="spiralThicknessValue">128</span>
+            <!-- Motion Detection -->
+            <div class="settings-section" style="margin-top: 30px;">
+              <h3 class="section-title">Motion Detection</h3>
+
+              <!-- Motion Features Grid -->
+              <div class="display-mode-section">
+                <div class="display-mode-header">
+                  <h3>Enable Features</h3>
+                </div>
+                <div class="display-mode-grid">
+                  <button id="tapDetectionBtn" class="display-color-mode-btn active" onclick="toggleMotionFeature(0)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                      style="width: 18px; height: 18px; margin-right: 6px;">
+                      <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"></path>
+                      <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"></path>
+                      <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"></path>
+                      <path
+                        d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15">
+                      </path>
+                    </svg>
+                    Tap
+                  </button>
+                  <button id="pettingDetectionBtn" class="display-color-mode-btn active"
+                    onclick="toggleMotionFeature(1)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                      style="width: 18px; height: 18px; margin-right: 6px;">
+                      <path d="M11 15h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 17"></path>
+                      <path
+                        d="m7 21 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9">
+                      </path>
+                      <path d="m2 16 6 6"></path>
+                      <circle cx="16" cy="9" r="2.9"></circle>
+                      <circle cx="6" cy="5" r="3"></circle>
+                    </svg>
+                    Petting
+                  </button>
+                  <button id="tiltDetectionBtn" class="display-color-mode-btn active" onclick="toggleMotionFeature(2)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                      style="width: 18px; height: 18px; margin-right: 6px;">
+                      <path
+                        d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                      </path>
+                      <polyline points="7.5 4.21 12 6.81 16.5 4.21"></polyline>
+                      <polyline points="7.5 19.79 7.5 14.6 3 12"></polyline>
+                      <polyline points="21 12 16.5 14.6 16.5 19.79"></polyline>
+                      <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                      <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                    </svg>
+                    Tilt
+                  </button>
+                  <button id="upsideDownDetectionBtn" class="display-color-mode-btn active"
+                    onclick="toggleMotionFeature(3)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                      style="width: 18px; height: 18px; margin-right: 6px;">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <path d="M16 16s-1.5-2-4-2-4 2-4 2"></path>
+                      <path d="M9 9h.01"></path>
+                      <path d="M15 9h.01"></path>
+                    </svg>
+                    Upside Down
+                  </button>
                 </div>
               </div>
-              <input class="spiral-thickness-slider" type="range" min="0" max="255" value="128" id="dualSpiralThicknessSlider" style="width: 100%;">
-            </div>
 
-            <!-- Effect Option 2: Speed Control (shown for modes 4 and 5) -->
-            <div id="dualCircleThicknessControl" style="display: none; margin-top: 20px; padding: 15px; background-color: var(--black3-color); border-radius: 12px;">
-              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                <h3 id="effectOption2Label" style="margin: 0;">Speed</h3>
-                <div class="value-display">
-                  <span id="circleThicknessValue">128</span>
+              <!-- Tap Sensitivity Slider -->
+              <div style="margin-top: 20px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                  <h3 style="margin: 0;">Tap Sensitivity</h3>
+                </div>
+                <input type="range" id="tapSensitivitySlider" class="spiral-thickness-slider" min="0" max="100"
+                  value="50" style="width: 100%;">
+                <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                  <span class="fade" style="font-size: 0.75rem;">Very Sensitive</span>
+                  <span id="tapSensitivityValue" class="fade" style="font-size: 0.75rem;">50%</span>
+                  <span class="fade" style="font-size: 0.75rem;">Hard Taps</span>
                 </div>
               </div>
-              <input class="spiral-thickness-slider" type="range" min="0" max="255" value="128" id="dualCircleThicknessSlider" style="width: 100%;">
-            </div>
-
-            <!-- Effect Option 3: Direction/Invert Control (shown for modes 4 and 5) -->
-            <div id="directionInvertControl" style="display: none; margin-top: 20px; padding: 15px; background-color: var(--black3-color); border-radius: 12px;">
-              <div style="display: flex; align-items: center; justify-content: space-between;">
-                <div>
-                  <h3 id="effectOption3Label" style="margin: 0;">Direction</h3>
-                  <span id="directionInvertText" style="font-size: 0.8rem; color: var(--white2-color); margin-top: 4px; display: block;">Normal</span>
+              <!-- Glitch Intensity Slider -->
+              <div style="margin-top: 20px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                  <h3 style="margin: 0;">Glitch Intensity</h3>
+                  <span id="glitchIntensityValue" class="fade" style="font-size: 0.9rem;">50%</span>
                 </div>
-                <label class="direction-toggle-switch">
-                  <input type="checkbox" id="directionInvertToggle" onchange="toggleDirectionInvert()">
-                  <span class="direction-toggle-slider"></span>
-                </label>
+                <input type="range" id="glitchIntensitySlider" class="spiral-thickness-slider" min="0" max="100"
+                  value="50" style="width: 100%;">
+                <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                  <span class="fade" style="font-size: 0.75rem;">Subtle</span>
+                  <span class="fade" style="font-size: 0.75rem;">Dramatic</span>
+                </div>
+              </div>
+              <!-- Manual Trigger Section -->
+              <div class="display-mode-section">
+                <div class="display-mode-header">
+                  <h3>Manual Trigger</h3>
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <!-- Trigger Button -->
+                  <button id="triggerGlitchBtn" class="display-color-mode-btn" onclick="triggerGlitch()"
+                    style="flex-shrink: 0; min-width: 140px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                      style="width: 18px; height: 18px; margin-right: 6px;">
+                      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                    Trigger
+                  </button>
+
+                  <!-- Intensity Slider -->
+                  <div style="flex: 1;">
+                    <input type="range" id="manualGlitchIntensitySlider" class="spiral-thickness-slider" min="0"
+                      max="100" value="50" style="width: 100%;">
+                  </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 8px;">
+                  <span class="fade" style="font-size: 0.75rem;">Intensity</span>
+                  <span id="manualGlitchIntensityValue" class="fade" style="font-size: 0.75rem;">50</span>
+                  <span class="fade" style="font-size: 0.75rem;"></span>
+                </div>
               </div>
             </div>
           </div>
-
-          <!-- Cheek Panel Colors -->
-          <div class="settings-section" style="margin-top: 30px; position: relative;">
-            <h3 class="section-title">Cheek Panel Colors</h3>
-            <button id="resetColorsBtn" class="reset-colors-btn" onclick="resetCheekColors()">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; margin-right: 4px;">
-                <polyline points="1 4 1 10 7 10"></polyline>
-                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
-              </svg>
-              Reset
-            </button>
-
-            <!-- Background Color -->
-            <div class="color-picker-container" style="margin-bottom: 20px;">
-              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                <h3 style="margin: 0;">Background Color</h3>
-                <span id="bgColorHex" class="fade" style="font-size: 0.9rem;">#FF446C</span>
-              </div>
-              <div style="display: flex; align-items: center; gap: 15px;">
-                <input type="color" id="bgColorPicker" value="#FF446C" style="width: 60px; height: 40px; border: 2px solid var(--acc1-color); border-radius: 8px; cursor: pointer; background: transparent;">
-                <div style="flex: 1; display: flex; gap: 8px; flex-wrap: wrap;">
-                  <button class="color-preset-btn" data-color="#FF446C" data-target="bg" style="background: #FF446C;" title="Pink (Default)"></button>
-                  <button class="color-preset-btn" data-color="#4488FF" data-target="bg" style="background: #4488FF;" title="Blue"></button>
-                  <button class="color-preset-btn" data-color="#AA44FF" data-target="bg" style="background: #AA44FF;" title="Purple"></button>
-                  <button class="color-preset-btn" data-color="#44FF88" data-target="bg" style="background: #44FF88;" title="Green"></button>
-                  <button class="color-preset-btn" data-color="#FFAA44" data-target="bg" style="background: #FFAA44;" title="Orange"></button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Fade/Sparkle Color -->
-            <div class="color-picker-container">
-              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                <h3 style="margin: 0;">Sparkle Color</h3>
-                <span id="fadeColorHex" class="fade" style="font-size: 0.9rem;">#F9826C</span>
-              </div>
-              <div style="display: flex; align-items: center; gap: 15px;">
-                <input type="color" id="fadeColorPicker" value="#F9826C" style="width: 60px; height: 40px; border: 2px solid var(--acc1-color); border-radius: 8px; cursor: pointer; background: transparent;">
-                <div style="flex: 1; display: flex; gap: 8px; flex-wrap: wrap;">
-                  <button class="color-preset-btn" data-color="#F9826C" data-target="fade" style="background: #F9826C;" title="Coral (Default)"></button>
-                  <button class="color-preset-btn" data-color="#6CC8FF" data-target="fade" style="background: #6CC8FF;" title="Cyan"></button>
-                  <button class="color-preset-btn" data-color="#FF6CFF" data-target="fade" style="background: #FF6CFF;" title="Magenta"></button>
-                  <button class="color-preset-btn" data-color="#6CFFAA" data-target="fade" style="background: #6CFFAA;" title="Lime"></button>
-                  <button class="color-preset-btn" data-color="#FFD66C" data-target="fade" style="background: #FFD66C;" title="Yellow"></button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
         </div>
         <!-- End Page Content Container -->
       </div>
@@ -488,200 +677,207 @@
       <div class="control-panel">
         <!-- Page Content Container (Scrollable) -->
         <div class="page-content-container">
-        <div class="about-content">
-          <!-- Hero Card -->
-          <div class="about-card about-hero-card">
-            <div class="hero-icon-wrapper">
-              <img class="hero-icon" src="asset/svg/control-icon.svg" alt="KMMX Icon">
+          <div class="about-content">
+            <!-- Hero Card -->
+            <div class="about-card about-hero-card">
+              <div class="hero-icon-wrapper">
+                <img class="hero-icon" src="asset/svg/control-icon.svg" alt="KMMX Icon">
+              </div>
+              <h2 class="about-title">KMMX Control Panel</h2>
+              <p class="about-version">Version 1.0</p>
+              <div class="about-divider"></div>
+              <div class="about-copyright">
+                <p class="copyright-text">Kimmix ©2026</p>
+                <p class="copyright-auth">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lock-icon">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                  Authorized use only
+                </p>
+              </div>
             </div>
-            <h2 class="about-title">KMMX Control Panel</h2>
-            <p class="about-version">Version 1.0</p>
-            <div class="about-divider"></div>
-            <div class="about-copyright">
-              <p class="copyright-text">Kimmix ©2026</p>
-              <p class="copyright-auth">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lock-icon">
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                </svg>
-                Authorized use only
-              </p>
-            </div>
-          </div>
 
-          <!-- Device Details Section -->
-          <div class="about-card collapsible-section">
-            <button id="bleCharBtn" class="section-toggle-button" onclick="toggleBLECharacteristics()">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="toggle-icon">
-                <path d="M6 9l6 6 6-6"/>
-              </svg>
-              <span>Device Details</span>
-            </button>
-            <div id="bleCharContent" class="collapsible-content" style="display: none;">
-              <div class="ble-char-grid">
-              <div class="ble-char-item">
-                <div class="ble-char-header">
-                  <span class="ble-char-name">Device Name</span>
-                  <span class="ble-char-value" id="device-name-stat">-</span>
-                </div>
-                <span class="ble-char-uuid">Bluetooth device name</span>
-              </div>
-              <div class="ble-char-item" id="device-id-item">
-                <div class="ble-char-header">
-                  <span class="ble-char-name">Device ID</span>
-                  <span class="ble-char-value" id="ble-protocol-stat">-</span>
-                </div>
-                <span class="ble-char-uuid">Bluetooth device identifier</span>
-              </div>
-              <div class="ble-char-item">
-                <div class="ble-char-header">
-                  <span class="ble-char-name">Eye State</span>
-                  <span class="ble-char-value" id="ble-eyestate">-</span>
-                </div>
-                <span class="ble-char-uuid">UUID: 49a36bb2-1c66-4e5c-8ff3-28e55a64beb3</span>
-              </div>
-              <div class="ble-char-item">
-                <div class="ble-char-header">
-                  <span class="ble-char-name">Display Brightness</span>
-                  <span class="ble-char-value" id="ble-brightness">-</span>
-                </div>
-                <span class="ble-char-uuid">UUID: 9fdfd124-966b-44f7-8331-778c4d1512fc</span>
-              </div>
-              <div class="ble-char-item">
-                <div class="ble-char-header">
-                  <span class="ble-char-name">Viseme</span>
-                  <span class="ble-char-value" id="ble-viseme">-</span>
-                </div>
-                <span class="ble-char-uuid">UUID: 493d06f3-0fa0-4a90-88f1-ebaed0da9b80</span>
-              </div>
-              <div class="ble-char-item">
-                <div class="ble-char-header">
-                  <span class="ble-char-name">Mouth State</span>
-                  <span class="ble-char-value" id="ble-mouthstate">-</span>
-                </div>
-                <span class="ble-char-uuid">UUID: f6a7b8c9-d0e1-4f5a-b1c2-3d4e5f6a7b8c</span>
-              </div>
-              <div class="ble-char-item">
-                <div class="ble-char-header">
-                  <span class="ble-char-name">Horn LED Brightness</span>
-                  <span class="ble-char-value" id="ble-hornled">-</span>
-                </div>
-                <span class="ble-char-uuid">UUID: a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d</span>
-              </div>
-              <div class="ble-char-item">
-                <div class="ble-char-header">
-                  <span class="ble-char-name">Cheek Panel Brightness</span>
-                  <span class="ble-char-value" id="ble-cheekpanel">-</span>
-                </div>
-                <span class="ble-char-uuid">UUID: b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e</span>
-              </div>
-              <div class="ble-char-item">
-                <div class="ble-char-header">
-                  <span class="ble-char-name">Cheek Background Color</span>
-                  <span class="ble-char-value" id="ble-cheekbgcolor">-</span>
-                </div>
-                <span class="ble-char-uuid">UUID: c3d4e5f6-a7b8-4c5d-9e0f-1a2b3c4d5e6f</span>
-              </div>
-              <div class="ble-char-item">
-                <div class="ble-char-header">
-                  <span class="ble-char-name">Cheek Sparkle Color</span>
-                  <span class="ble-char-value" id="ble-cheekfadecolor">-</span>
-                </div>
-                <span class="ble-char-uuid">UUID: d4e5f6a7-b8c9-4d5e-9f0a-1b2c3d4e5f6a</span>
-              </div>
-              <div class="ble-char-item">
-                <div class="ble-char-header">
-                  <span class="ble-char-name">Display Color Mode</span>
-                  <span class="ble-char-value" id="ble-displaycolormode">-</span>
-                </div>
-                <span class="ble-char-uuid">UUID: f5a6b7c8-d9e0-4f5a-b0c1-2d3e4f5a6b7c</span>
-              </div>
-              <div class="ble-char-item">
-                <div class="ble-char-header">
-                  <span class="ble-char-name">Display Effect Color 1</span>
-                  <span class="ble-char-value" id="ble-displayeffectcolor1">-</span>
-                </div>
-                <span class="ble-char-uuid">UUID: a6b7c8d9-e0f1-4a5b-c1d2-3e4f5a6b7c8d</span>
-              </div>
-              <div class="ble-char-item">
-                <div class="ble-char-header">
-                  <span class="ble-char-name">Display Effect Color 2</span>
-                  <span class="ble-char-value" id="ble-displayeffectcolor2">-</span>
-                </div>
-                <span class="ble-char-uuid">UUID: b7c8d9e0-f1a2-4b5c-d2e3-4f5a6b7c8d9e</span>
-              </div>
-              <div class="ble-char-item">
-                <div class="ble-char-header">
-                  <span class="ble-char-name">Display Effect Option 1</span>
-                  <span class="ble-char-value" id="ble-displayeffectoption1">-</span>
-                </div>
-                <span class="ble-char-uuid">UUID: c7d8e9f0-a1b2-4c5d-e2f3-4a5b6c7d8e9f</span>
-              </div>
-              <div class="ble-char-item">
-                <div class="ble-char-header">
-                  <span class="ble-char-name">Display Effect Option 2</span>
-                  <span class="ble-char-value" id="ble-displayeffectoption2">-</span>
-                </div>
-                <span class="ble-char-uuid">UUID: d8e9f0a1-b2c3-4d5e-f3a4-5b6c7d8e9f0a</span>
-              </div>
-              <div class="ble-char-item">
-                <div class="ble-char-header">
-                  <span class="ble-char-name">Display Effect Option 3</span>
-                  <span class="ble-char-value" id="ble-displayeffectoption3">-</span>
-                </div>
-                <span class="ble-char-uuid">UUID: f7a8b9c0-d1e2-4f5a-b2c3-4d5e6f7a8b9c</span>
-              </div>
-              </div>
-              <button id="refreshBleBtn" class="refresh-ble-button" onclick="refreshBLECharacteristics()" disabled>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px;">
-                  <polyline points="23 4 23 10 17 10"></polyline>
-                  <polyline points="1 20 1 14 7 14"></polyline>
-                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            <!-- Device Details Section -->
+            <div class="about-card collapsible-section">
+              <button id="bleCharBtn" class="section-toggle-button" onclick="toggleBLECharacteristics()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="toggle-icon">
+                  <path d="M6 9l6 6 6-6" />
                 </svg>
-                Refresh Values
+                <span>Device Details</span>
               </button>
-              <button id="rebootDeviceBtn" class="reboot-device-button" onclick="rebootDevice()" disabled>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px;">
-                  <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+              <div id="bleCharContent" class="collapsible-content" style="display: none;">
+                <div class="ble-char-grid">
+                  <div class="ble-char-item">
+                    <div class="ble-char-header">
+                      <span class="ble-char-name">Device Name</span>
+                      <span class="ble-char-value" id="device-name-stat">-</span>
+                    </div>
+                    <span class="ble-char-uuid">Bluetooth device name</span>
+                  </div>
+                  <div class="ble-char-item" id="device-id-item">
+                    <div class="ble-char-header">
+                      <span class="ble-char-name">Device ID</span>
+                      <span class="ble-char-value" id="ble-protocol-stat">-</span>
+                    </div>
+                    <span class="ble-char-uuid">Bluetooth device identifier</span>
+                  </div>
+                  <div class="ble-char-item">
+                    <div class="ble-char-header">
+                      <span class="ble-char-name">Eye State</span>
+                      <span class="ble-char-value" id="ble-eyestate">-</span>
+                    </div>
+                    <span class="ble-char-uuid">UUID: 49a36bb2-1c66-4e5c-8ff3-28e55a64beb3</span>
+                  </div>
+                  <div class="ble-char-item">
+                    <div class="ble-char-header">
+                      <span class="ble-char-name">Display Brightness</span>
+                      <span class="ble-char-value" id="ble-brightness">-</span>
+                    </div>
+                    <span class="ble-char-uuid">UUID: 9fdfd124-966b-44f7-8331-778c4d1512fc</span>
+                  </div>
+                  <div class="ble-char-item">
+                    <div class="ble-char-header">
+                      <span class="ble-char-name">Viseme</span>
+                      <span class="ble-char-value" id="ble-viseme">-</span>
+                    </div>
+                    <span class="ble-char-uuid">UUID: 493d06f3-0fa0-4a90-88f1-ebaed0da9b80</span>
+                  </div>
+                  <div class="ble-char-item">
+                    <div class="ble-char-header">
+                      <span class="ble-char-name">Mouth State</span>
+                      <span class="ble-char-value" id="ble-mouthstate">-</span>
+                    </div>
+                    <span class="ble-char-uuid">UUID: f6a7b8c9-d0e1-4f5a-b1c2-3d4e5f6a7b8c</span>
+                  </div>
+                  <div class="ble-char-item">
+                    <div class="ble-char-header">
+                      <span class="ble-char-name">Horn LED Brightness</span>
+                      <span class="ble-char-value" id="ble-hornled">-</span>
+                    </div>
+                    <span class="ble-char-uuid">UUID: a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d</span>
+                  </div>
+                  <div class="ble-char-item">
+                    <div class="ble-char-header">
+                      <span class="ble-char-name">Cheek Panel Brightness</span>
+                      <span class="ble-char-value" id="ble-cheekpanel">-</span>
+                    </div>
+                    <span class="ble-char-uuid">UUID: b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e</span>
+                  </div>
+                  <div class="ble-char-item">
+                    <div class="ble-char-header">
+                      <span class="ble-char-name">Cheek Background Color</span>
+                      <span class="ble-char-value" id="ble-cheekbgcolor">-</span>
+                    </div>
+                    <span class="ble-char-uuid">UUID: c3d4e5f6-a7b8-4c5d-9e0f-1a2b3c4d5e6f</span>
+                  </div>
+                  <div class="ble-char-item">
+                    <div class="ble-char-header">
+                      <span class="ble-char-name">Cheek Sparkle Color</span>
+                      <span class="ble-char-value" id="ble-cheekfadecolor">-</span>
+                    </div>
+                    <span class="ble-char-uuid">UUID: d4e5f6a7-b8c9-4d5e-9f0a-1b2c3d4e5f6a</span>
+                  </div>
+                  <div class="ble-char-item">
+                    <div class="ble-char-header">
+                      <span class="ble-char-name">Display Color Mode</span>
+                      <span class="ble-char-value" id="ble-displaycolormode">-</span>
+                    </div>
+                    <span class="ble-char-uuid">UUID: f5a6b7c8-d9e0-4f5a-b0c1-2d3e4f5a6b7c</span>
+                  </div>
+                  <div class="ble-char-item">
+                    <div class="ble-char-header">
+                      <span class="ble-char-name">Display Effect Color 1</span>
+                      <span class="ble-char-value" id="ble-displayeffectcolor1">-</span>
+                    </div>
+                    <span class="ble-char-uuid">UUID: a6b7c8d9-e0f1-4a5b-c1d2-3e4f5a6b7c8d</span>
+                  </div>
+                  <div class="ble-char-item">
+                    <div class="ble-char-header">
+                      <span class="ble-char-name">Display Effect Color 2</span>
+                      <span class="ble-char-value" id="ble-displayeffectcolor2">-</span>
+                    </div>
+                    <span class="ble-char-uuid">UUID: b7c8d9e0-f1a2-4b5c-d2e3-4f5a6b7c8d9e</span>
+                  </div>
+                  <div class="ble-char-item">
+                    <div class="ble-char-header">
+                      <span class="ble-char-name">Display Effect Option 1</span>
+                      <span class="ble-char-value" id="ble-displayeffectoption1">-</span>
+                    </div>
+                    <span class="ble-char-uuid">UUID: c7d8e9f0-a1b2-4c5d-e2f3-4a5b6c7d8e9f</span>
+                  </div>
+                  <div class="ble-char-item">
+                    <div class="ble-char-header">
+                      <span class="ble-char-name">Display Effect Option 2</span>
+                      <span class="ble-char-value" id="ble-displayeffectoption2">-</span>
+                    </div>
+                    <span class="ble-char-uuid">UUID: d8e9f0a1-b2c3-4d5e-f3a4-5b6c7d8e9f0a</span>
+                  </div>
+                  <div class="ble-char-item">
+                    <div class="ble-char-header">
+                      <span class="ble-char-name">Display Effect Option 3</span>
+                      <span class="ble-char-value" id="ble-displayeffectoption3">-</span>
+                    </div>
+                    <span class="ble-char-uuid">UUID: f7a8b9c0-d1e2-4f5a-b2c3-4d5e6f7a8b9c</span>
+                  </div>
+                </div>
+                <button id="refreshBleBtn" class="refresh-ble-button" onclick="refreshBLECharacteristics()" disabled>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    style="width: 16px; height: 16px; margin-right: 6px;">
+                    <polyline points="23 4 23 10 17 10"></polyline>
+                    <polyline points="1 20 1 14 7 14"></polyline>
+                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                  </svg>
+                  Refresh Values
+                </button>
+                <button id="rebootDeviceBtn" class="reboot-device-button" onclick="rebootDevice()" disabled>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    style="width: 16px; height: 16px; margin-right: 6px;">
+                    <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" />
+                  </svg>
+                  Reboot Device
+                </button>
+              </div>
+            </div>
+
+            <!-- System Information Section -->
+            <div class="about-card collapsible-section">
+              <button id="debugBtn" class="section-toggle-button" onclick="toggleDebugInfo()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="toggle-icon">
+                  <path d="M6 9l6 6 6-6" />
                 </svg>
-                Reboot Device
+                <span>System Information</span>
               </button>
-            </div>
-          </div>
-
-          <!-- System Information Section -->
-          <div class="about-card collapsible-section">
-            <button id="debugBtn" class="section-toggle-button" onclick="toggleDebugInfo()">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="toggle-icon">
-                <path d="M6 9l6 6 6-6"/>
-              </svg>
-              <span>System Information</span>
-            </button>
-            <div id="debugInfo" class="collapsible-content" style="display: none;">
-              <div class="debug-item">
-                <span class="debug-label">Display Mode:</span>
-                <span class="debug-value" id="debug-display-mode">-</span>
-              </div>
-              <div class="debug-item">
-                <span class="debug-label">User Agent:</span>
-                <span class="debug-value" id="debug-ua">-</span>
-              </div>
-              <div class="debug-item">
-                <span class="debug-label">Platform:</span>
-                <span class="debug-value" id="debug-platform">-</span>
-              </div>
-              <div class="debug-item">
-                <span class="debug-label">Screen Size:</span>
-                <span class="debug-value" id="debug-screen">-</span>
-              </div>
-              <div class="debug-item">
-                <span class="debug-label">Viewport:</span>
-                <span class="debug-value" id="debug-viewport">-</span>
+              <div id="debugInfo" class="collapsible-content" style="display: none;">
+                <div class="debug-item">
+                  <span class="debug-label">Display Mode:</span>
+                  <span class="debug-value" id="debug-display-mode">-</span>
+                </div>
+                <div class="debug-item">
+                  <span class="debug-label">User Agent:</span>
+                  <span class="debug-value" id="debug-ua">-</span>
+                </div>
+                <div class="debug-item">
+                  <span class="debug-label">Platform:</span>
+                  <span class="debug-value" id="debug-platform">-</span>
+                </div>
+                <div class="debug-item">
+                  <span class="debug-label">Screen Size:</span>
+                  <span class="debug-value" id="debug-screen">-</span>
+                </div>
+                <div class="debug-item">
+                  <span class="debug-label">Viewport:</span>
+                  <span class="debug-value" id="debug-viewport">-</span>
+                </div>
               </div>
             </div>
-          </div>
 
-        </div>
+          </div>
         </div>
         <!-- End Page Content Container -->
       </div>
@@ -703,7 +899,9 @@
     <button class="nav-icon" data-page="settings">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
         stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+        <path
+          d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z">
+        </path>
         <circle cx="12" cy="12" r="3"></circle>
       </svg>
       <span class="nav-label">Settings</span>

@@ -976,3 +976,191 @@ function setDisplayEffectOption3Value(value) {
         directionInvertText.textContent = (value === 1) ? 'Inverted' : 'Normal';
     }
 }
+
+// --------- Motion Detection & Glitch Control ---------
+
+// Motion feature state (bit flags)
+let motionEnableFlags = 0x0F; // All features enabled by default (binary: 1111)
+
+// Motion feature bit positions
+const MOTION_FLAGS = {
+    TAP_DETECTION: 0,      // Bit 0 (0x01)
+    PETTING_DETECTION: 1,  // Bit 1 (0x02)
+    TILT_DETECTION: 2,     // Bit 2 (0x04)
+    UPSIDE_DOWN: 3         // Bit 3 (0x08)
+};
+
+// Toggle individual motion feature
+function toggleMotionFeature(featureBit) {
+    // Toggle the bit
+    motionEnableFlags ^= (1 << featureBit);
+
+    // Update UI
+    updateMotionFeatureUI(featureBit);
+
+    // Send to BLE
+    setMotionEnableFlagsCharacteristic(motionEnableFlags);
+
+    // Haptic feedback
+    vibrateDevice();
+
+    console.log(`Motion feature ${featureBit} toggled. New flags: 0x${motionEnableFlags.toString(16)}`);
+}
+
+// Update motion feature button UI
+function updateMotionFeatureUI(featureBit) {
+    const buttons = [
+        document.getElementById('tapDetectionBtn'),
+        document.getElementById('pettingDetectionBtn'),
+        document.getElementById('tiltDetectionBtn'),
+        document.getElementById('upsideDownDetectionBtn')
+    ];
+
+    if (buttons[featureBit]) {
+        const isEnabled = (motionEnableFlags & (1 << featureBit)) !== 0;
+        if (isEnabled) {
+            buttons[featureBit].classList.add('active');
+        } else {
+            buttons[featureBit].classList.remove('active');
+        }
+    }
+}
+
+// Set motion enable flags value from BLE (called when connecting to device)
+function setMotionEnableFlagsValue(value) {
+    motionEnableFlags = value;
+
+    // Update all button states
+    for (let i = 0; i < 4; i++) {
+        updateMotionFeatureUI(i);
+    }
+
+    console.log(`Motion enable flags set to: 0x${motionEnableFlags.toString(16)}`);
+}
+
+// Tap Sensitivity slider
+const tapSensitivitySlider = document.getElementById('tapSensitivitySlider');
+const tapSensitivityValue = document.getElementById('tapSensitivityValue');
+
+if (tapSensitivitySlider && tapSensitivityValue) {
+    tapSensitivitySlider.addEventListener('input', (e) => {
+        const value = parseInt(e.target.value);
+        updateTapSensitivitySlider(value);
+
+        // Send to BLE with throttle/debounce
+        throttledAndDebouncedSetTapSensitivity(value);
+
+        vibrateDevice();
+    });
+}
+
+// Update tap sensitivity slider display
+function updateTapSensitivitySlider(value) {
+    if (tapSensitivityValue) {
+        tapSensitivityValue.textContent = value + '%';
+    }
+
+    // Update slider fill
+    if (tapSensitivitySlider) {
+        const min = parseInt(tapSensitivitySlider.min) || 0;
+        const max = parseInt(tapSensitivitySlider.max) || 100;
+        const percentage = ((value - min) / (max - min)) * 100;
+        tapSensitivitySlider.style.background = `linear-gradient(to right, white 0%, white ${percentage}%, rgba(255, 255, 255, 0.1) ${percentage}%, rgba(255, 255, 255, 0.1) 100%)`;
+    }
+}
+
+// Set tap sensitivity value from BLE (called when connecting to device)
+function setTapSensitivityValue(value) {
+    if (tapSensitivitySlider && tapSensitivityValue) {
+        tapSensitivitySlider.value = value;
+        updateTapSensitivitySlider(value);
+    }
+}
+
+// Glitch Intensity slider (for automatic glitches)
+const glitchIntensitySlider = document.getElementById('glitchIntensitySlider');
+const glitchIntensityValue = document.getElementById('glitchIntensityValue');
+
+if (glitchIntensitySlider && glitchIntensityValue) {
+    glitchIntensitySlider.addEventListener('input', (e) => {
+        const value = parseInt(e.target.value);
+        updateGlitchIntensitySlider(value);
+
+        // Send to BLE with throttle/debounce
+        throttledAndDebouncedSetGlitchIntensity(value);
+
+        vibrateDevice();
+    });
+}
+
+// Update glitch intensity slider display
+function updateGlitchIntensitySlider(value) {
+    if (glitchIntensityValue) {
+        glitchIntensityValue.textContent = value + '%';
+    }
+
+    // Update slider fill
+    if (glitchIntensitySlider) {
+        const min = parseInt(glitchIntensitySlider.min) || 0;
+        const max = parseInt(glitchIntensitySlider.max) || 100;
+        const percentage = ((value - min) / (max - min)) * 100;
+        glitchIntensitySlider.style.background = `linear-gradient(to right, white 0%, white ${percentage}%, rgba(255, 255, 255, 0.1) ${percentage}%, rgba(255, 255, 255, 0.1) 100%)`;
+    }
+}
+
+// Set glitch intensity value from BLE (called when connecting to device)
+function setGlitchIntensityValue(value) {
+    if (glitchIntensitySlider && glitchIntensityValue) {
+        glitchIntensitySlider.value = value;
+        updateGlitchIntensitySlider(value);
+    }
+}
+
+// Manual Glitch Intensity slider (for trigger button)
+const manualGlitchIntensitySlider = document.getElementById('manualGlitchIntensitySlider');
+const manualGlitchIntensityValue = document.getElementById('manualGlitchIntensityValue');
+
+if (manualGlitchIntensitySlider && manualGlitchIntensityValue) {
+    manualGlitchIntensitySlider.addEventListener('input', (e) => {
+        const value = parseInt(e.target.value);
+        updateManualGlitchIntensitySlider(value);
+        vibrateDevice();
+    });
+}
+
+// Update manual glitch intensity slider display
+function updateManualGlitchIntensitySlider(value) {
+    if (manualGlitchIntensityValue) {
+        manualGlitchIntensityValue.textContent = value;
+    }
+
+    // Update slider fill
+    if (manualGlitchIntensitySlider) {
+        const min = parseInt(manualGlitchIntensitySlider.min) || 0;
+        const max = parseInt(manualGlitchIntensitySlider.max) || 100;
+        const percentage = ((value - min) / (max - min)) * 100;
+        manualGlitchIntensitySlider.style.background = `linear-gradient(to right, white 0%, white ${percentage}%, rgba(255, 255, 255, 0.1) ${percentage}%, rgba(255, 255, 255, 0.1) 100%)`;
+    }
+}
+
+// Trigger Glitch Effect
+function triggerGlitch() {
+    const intensity = manualGlitchIntensitySlider ? parseInt(manualGlitchIntensitySlider.value) : 50;
+
+    // Send glitch trigger to BLE
+    setGlitchTriggerCharacteristic(intensity);
+
+    // Visual feedback - pulse animation
+    const btn = document.getElementById('triggerGlitchBtn');
+    if (btn) {
+        btn.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            btn.style.transform = '';
+        }, 150);
+    }
+
+    // Haptic feedback
+    vibrateDevice();
+
+    console.log(`Glitch triggered with intensity: ${intensity}`);
+}
