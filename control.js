@@ -1126,12 +1126,15 @@ if (manualGlitchIntensitySlider && manualGlitchIntensityValue) {
         updateManualGlitchIntensitySlider(value);
         vibrateDevice();
     });
+
+    // Initialize display with current slider value
+    updateManualGlitchIntensitySlider(parseInt(manualGlitchIntensitySlider.value));
 }
 
 // Update manual glitch intensity slider display
 function updateManualGlitchIntensitySlider(value) {
     if (manualGlitchIntensityValue) {
-        manualGlitchIntensityValue.textContent = value;
+        manualGlitchIntensityValue.textContent = value + '%';
     }
 
     // Update slider fill

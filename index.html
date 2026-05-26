@@ -636,26 +636,31 @@
                 </div>
               </div>
               <!-- Manual Trigger Section -->
-              <div class="display-mode-section" style="margin-top: 30px;">
-                <div class="display-mode-header">
-                  <h3>Manual Trigger</h3>
-                </div>
-                <div style="display: flex; align-items: center; gap: 12px;">
-                  <!-- Trigger Button -->
-                  <button id="triggerGlitchBtn" class="display-color-mode-btn" onclick="triggerGlitch()"
-                    style="flex-shrink: 0; min-width: 140px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                      style="width: 18px; height: 18px; margin-right: 6px;">
-                      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                    </svg>
-                    Trigger
-                  </button>
+              <div style="margin-top: 30px;">
+                <h3 style="margin: 0 0 15px 0;">Manual Trigger</h3>
 
-                  <!-- Intensity Slider -->
-                  <div style="flex: 1;">
-                    <input type="range" id="manualGlitchIntensitySlider" class="spiral-thickness-slider" min="0"
-                      max="100" value="50" style="width: 100%;">
+                <!-- Trigger Button -->
+                <button id="triggerGlitchBtn" class="display-color-mode-btn" onclick="triggerGlitch()"
+                  style="width: 100%; margin-bottom: 15px;">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    style="width: 18px; height: 18px; margin-right: 6px;">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                  </svg>
+                  Trigger Glitch
+                </button>
+
+                <!-- Intensity Slider -->
+                <div>
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                    <h3 style="margin: 0;">Trigger Intensity</h3>
+                    <span id="manualGlitchIntensityValue" class="fade" style="font-size: 0.9rem;">50%</span>
+                  </div>
+                  <input type="range" id="manualGlitchIntensitySlider" class="spiral-thickness-slider" min="0"
+                    max="100" value="50" style="width: 100%;">
+                  <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                    <span class="fade" style="font-size: 0.75rem;">Subtle</span>
+                    <span class="fade" style="font-size: 0.75rem;">Dramatic</span>
                   </div>
                 </div>
               </div>
