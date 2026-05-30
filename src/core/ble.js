@@ -433,6 +433,13 @@ async function startBLE() {
     await connectToDevice(device, false);
 
   } catch (error) {
+    // Silently handle user cancellation (when they close the pairing dialog)
+    if (error.name === 'NotFoundError' || error.message?.includes('User cancelled')) {
+      console.log('User cancelled device selection');
+      return;
+    }
+
+    // Show alert for other errors
     console.error('Error:', error);
     alert(error);
   }
