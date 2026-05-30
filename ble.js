@@ -45,35 +45,7 @@ let tapSensitivityCharacteristic;
 let glitchIntensityCharacteristic;
 let bleDevice; // Store the connected device
 
-// BLE Write Queue to prevent "GATT operation already in progress" errors
-let bleWriteQueue = [];
-let isProcessingBleWrite = false;
-
-async function processBleWriteQueue() {
-  if (isProcessingBleWrite || bleWriteQueue.length === 0) {
-    return;
-  }
-
-  isProcessingBleWrite = true;
-
-  while (bleWriteQueue.length > 0) {
-    const writeOperation = bleWriteQueue.shift();
-    try {
-      await writeOperation();
-    } catch (error) {
-      console.error('BLE write error:', error);
-    }
-    // Delay between operations to prevent GATT conflicts
-    await new Promise(resolve => setTimeout(resolve, 50));
-  }
-
-  isProcessingBleWrite = false;
-}
-
-function queueBleWrite(writeFunction) {
-  bleWriteQueue.push(writeFunction);
-  processBleWriteQueue();
-}
+// BLE Write Queue is now handled by bleManager
 
 //? Connect to a BLE device (new or existing)
 async function connectToDevice(device, isReconnect = false) {
@@ -201,6 +173,51 @@ async function connectToDevice(device, isReconnect = false) {
   } catch (error) {
     console.warn('Glitch Intensity characteristic not available on this device');
     glitchIntensityCharacteristic = null;
+  }
+
+  // Register all characteristics with BLE Manager
+  bleManager.register('eyeState', eyeStateCharacteristic, { displayId: 'ble-eyestate' });
+  bleManager.register('displayBrightness', displayBrightnessCharacteristic, { displayId: 'ble-brightness' });
+  bleManager.register('viseme', visemeCharacteristic, { displayId: 'ble-viseme' });
+  bleManager.register('mouthState', mouthStateCharacteristic, { displayId: 'ble-mouthstate' });
+  bleManager.register('hornLedBrightness', hornLedBrightnessCharacteristic, { displayId: 'ble-hornled' });
+  bleManager.register('cheekPanelBrightness', cheekPanelBrightnessCharacteristic, { displayId: 'ble-cheekpanel' });
+  bleManager.register('cheekBgColor', cheekBgColorCharacteristic, { displayId: 'ble-cheekbgcolor', isColor: true, throttleMs: 150 });
+  bleManager.register('cheekFadeColor', cheekFadeColorCharacteristic, { displayId: 'ble-cheekfadecolor', isColor: true, throttleMs: 150 });
+  bleManager.register('reboot', rebootCharacteristic);
+
+  // Register Hub75 characteristics if available
+  if (displayColorModeCharacteristic) {
+    bleManager.register('displayColorMode', displayColorModeCharacteristic, { displayId: 'ble-displaycolormode' });
+  }
+  if (displayEffectColor1Characteristic) {
+    bleManager.register('displayEffectColor1', displayEffectColor1Characteristic, { displayId: 'ble-displayeffectcolor1', isColor: true, throttleMs: 150 });
+  }
+  if (displayEffectColor2Characteristic) {
+    bleManager.register('displayEffectColor2', displayEffectColor2Characteristic, { displayId: 'ble-displayeffectcolor2', isColor: true, throttleMs: 150 });
+  }
+  if (displayEffectOption1Characteristic) {
+    bleManager.register('displayEffectOption1', displayEffectOption1Characteristic, { displayId: 'ble-displayeffectoption1' });
+  }
+  if (displayEffectOption2Characteristic) {
+    bleManager.register('displayEffectOption2', displayEffectOption2Characteristic, { displayId: 'ble-displayeffectoption2' });
+  }
+  if (displayEffectOption3Characteristic) {
+    bleManager.register('displayEffectOption3', displayEffectOption3Characteristic, { displayId: 'ble-displayeffectoption3' });
+  }
+
+  // Register Motion & Glitch characteristics if available
+  if (glitchTriggerCharacteristic) {
+    bleManager.register('glitchTrigger', glitchTriggerCharacteristic, { isTrigger: true });
+  }
+  if (motionEnableFlagsCharacteristic) {
+    bleManager.register('motionEnableFlags', motionEnableFlagsCharacteristic, { displayId: 'ble-motionenableflags' });
+  }
+  if (tapSensitivityCharacteristic) {
+    bleManager.register('tapSensitivity', tapSensitivityCharacteristic, { displayId: 'ble-tapsensitivity' });
+  }
+  if (glitchIntensityCharacteristic) {
+    bleManager.register('glitchIntensity', glitchIntensityCharacteristic, { displayId: 'ble-glitchintensity' });
   }
 
   console.log('Reading value...');
@@ -382,9 +399,8 @@ function onDisconnected(event) {
   const device = event.target;
   console.log(`Device ${device.name} is disconnected.`);
 
-  // Clear BLE write queue on disconnect
-  bleWriteQueue = [];
-  isProcessingBleWrite = false;
+  // Clear BLE Manager on disconnect
+  bleManager.clear();
 
   isStatusConnected(false);
   updateBLECharacteristicsDisplay('-', '-', '-', '-', '-', '-', null, null);
@@ -392,342 +408,93 @@ function onDisconnected(event) {
 }
 
 async function setEyeStateCharacteristic(value) {
-  if (!eyeStateCharacteristic) {
-    console.log('Not connected - eye state change skipped');
-    return;
-  }
-  eyeStateCharacteristic.writeValue(Uint8Array.of(value))
-    .then(_ => {
-      console.log('> Characteristic eye state changed to: ' + Uint8Array.of(value));
-      updateBLECharValue('ble-eyestate', value);
-    })
-    .catch(error => {
-      console.error('Argh! ' + error);
-    });
+  bleManager.write('eyeState', value);
 }
 
 function setVisemeCharacteristic(value) {
-  if (!visemeCharacteristic) {
-    console.log('Not connected - viseme change skipped');
-    return;
-  }
-  visemeCharacteristic.writeValue(Uint8Array.of(value))
-    .then(_ => {
-      console.log('> Characteristic viseme changed to: ' + Uint8Array.of(value));
-      updateBLECharValue('ble-viseme', value);
-    })
-    .catch(error => {
-      console.error('Argh! ' + error);
-    });
+  bleManager.write('viseme', value);
 }
 
 function setMouthStateCharacteristic(value) {
-  if (!mouthStateCharacteristic) {
-    console.log('Not connected - mouth state change skipped');
-    return;
-  }
-  mouthStateCharacteristic.writeValue(Uint8Array.of(value))
-    .then(_ => {
-      console.log('> Characteristic mouth state changed to: ' + Uint8Array.of(value));
-      updateBLECharValue('ble-mouthstate', value);
-    })
-    .catch(error => {
-      console.error('Argh! ' + error);
-    });
+  bleManager.write('mouthState', value);
 }
 
-let prevBrightnessValue = -1;
 function setdisplayBrightnessCharacteristic(value) {
-  if (!displayBrightnessCharacteristic) {
-    console.log('Not connected - display brightness change skipped');
-    return;
-  }
-  if (value !== prevBrightnessValue) {
-    displayBrightnessCharacteristic.writeValue(Uint8Array.of(value))
-      .then(_ => {
-        console.log('> Characteristic viseme changed to: ' + Uint8Array.of(value));
-        prevBrightnessValue = value; // Update the previous value
-        updateBLECharValue('ble-brightness', value);
-      })
-      .catch(error => {
-        console.error('Argh! ' + error);
-      });
-  }
+  bleManager.write('displayBrightness', value);
 }
 
-let prevHornLedBrightnessValue = -1;
 function setHornLedBrightnessCharacteristic(value) {
-  if (!hornLedBrightnessCharacteristic) {
-    console.log('Not connected - horn LED brightness change skipped');
-    return;
-  }
-  if (value !== prevHornLedBrightnessValue) {
-    hornLedBrightnessCharacteristic.writeValue(Uint8Array.of(value))
-      .then(_ => {
-        console.log('> Characteristic horn LED brightness changed to: ' + Uint8Array.of(value));
-        prevHornLedBrightnessValue = value;
-        updateBLECharValue('ble-hornled', value);
-      })
-      .catch(error => {
-        console.error('Argh! ' + error);
-      });
-  }
+  bleManager.write('hornLedBrightness', value);
 }
 
-let prevCheekPanelBrightnessValue = -1;
 function setCheekPanelBrightnessCharacteristic(value) {
-  if (!cheekPanelBrightnessCharacteristic) {
-    console.log('Not connected - cheek panel brightness change skipped');
-    return;
-  }
-  if (value !== prevCheekPanelBrightnessValue) {
-    cheekPanelBrightnessCharacteristic.writeValue(Uint8Array.of(value))
-      .then(_ => {
-        console.log('> Characteristic cheek panel brightness changed to: ' + Uint8Array.of(value));
-        prevCheekPanelBrightnessValue = value;
-        updateBLECharValue('ble-cheekpanel', value);
-      })
-      .catch(error => {
-        console.error('Argh! ' + error);
-      });
-  }
+  bleManager.write('cheekPanelBrightness', value);
 }
 
-let prevCheekBgColor = null;
 function setCheekBgColorCharacteristic(r, g, b) {
-  if (!cheekBgColorCharacteristic) {
-    console.log('Not connected - cheek BG color change skipped');
-    return;
-  }
-  const colorKey = `${r},${g},${b}`;
-  if (colorKey !== prevCheekBgColor) {
-    prevCheekBgColor = colorKey;
-    queueBleWrite(async () => {
-      await cheekBgColorCharacteristic.writeValue(Uint8Array.of(r, g, b));
-      console.log(`> Characteristic cheek BG color changed to: R=${r} G=${g} B=${b}`);
-      updateBLECharColorValue('ble-cheekbgcolor', r, g, b);
-    });
-  }
+  bleManager.write('cheekBgColor', [r, g, b]);
 }
 
-let prevCheekFadeColor = null;
 function setCheekFadeColorCharacteristic(r, g, b) {
-  if (!cheekFadeColorCharacteristic) {
-    console.log('Not connected - cheek fade color change skipped');
-    return;
-  }
-  const colorKey = `${r},${g},${b}`;
-  if (colorKey !== prevCheekFadeColor) {
-    prevCheekFadeColor = colorKey;
-    queueBleWrite(async () => {
-      await cheekFadeColorCharacteristic.writeValue(Uint8Array.of(r, g, b));
-      console.log(`> Characteristic cheek fade color changed to: R=${r} G=${g} B=${b}`);
-      updateBLECharColorValue('ble-cheekfadecolor', r, g, b);
-    });
-  }
+  bleManager.write('cheekFadeColor', [r, g, b]);
 }
 
-let prevDisplayColorMode = -1;
 function setDisplayColorModeCharacteristic(mode) {
-  if (!displayColorModeCharacteristic) {
-    console.log('Not connected - display color mode change skipped');
-    return;
-  }
-  if (mode !== prevDisplayColorMode) {
-    prevDisplayColorMode = mode;
-    queueBleWrite(async () => {
-      await displayColorModeCharacteristic.writeValue(Uint8Array.of(mode));
-      console.log(`> Characteristic display color mode changed to: ${mode}`);
-      updateBLECharValue('ble-displaycolormode', mode);
-    });
-  }
+  bleManager.write('displayColorMode', mode);
 }
 
-let prevDisplayEffectColor1 = null;
 function setDisplayEffectColor1Characteristic(r, g, b) {
-  if (!displayEffectColor1Characteristic) {
-    console.log('Not connected - display effect color 1 change skipped');
-    return;
-  }
-  const colorKey = `${r},${g},${b}`;
-  if (colorKey !== prevDisplayEffectColor1) {
-    prevDisplayEffectColor1 = colorKey;
-    queueBleWrite(async () => {
-      await displayEffectColor1Characteristic.writeValue(Uint8Array.of(r, g, b));
-      console.log(`> Characteristic display effect color 1 changed to: R=${r} G=${g} B=${b}`);
-      updateBLECharColorValue('ble-displayeffectcolor1', r, g, b);
-    });
-  }
+  bleManager.write('displayEffectColor1', [r, g, b]);
 }
 
-let prevDisplayEffectColor2 = null;
 function setDisplayEffectColor2Characteristic(r, g, b) {
-  if (!displayEffectColor2Characteristic) {
-    console.log('Not connected - display effect color 2 change skipped');
-    return;
-  }
-  const colorKey = `${r},${g},${b}`;
-  if (colorKey !== prevDisplayEffectColor2) {
-    prevDisplayEffectColor2 = colorKey;
-    queueBleWrite(async () => {
-      await displayEffectColor2Characteristic.writeValue(Uint8Array.of(r, g, b));
-      console.log(`> Characteristic display effect color 2 changed to: R=${r} G=${g} B=${b}`);
-      updateBLECharColorValue('ble-displayeffectcolor2', r, g, b);
-    });
-  }
+  bleManager.write('displayEffectColor2', [r, g, b]);
 }
 
-let prevDisplayEffectOption1 = -1;
 function setDisplayEffectOption1Characteristic(value) {
-  if (!displayEffectOption1Characteristic) {
-    console.log('Not connected - display effect option 1 change skipped');
-    return;
-  }
-  if (value !== prevDisplayEffectOption1) {
-    prevDisplayEffectOption1 = value;
-    queueBleWrite(async () => {
-      await displayEffectOption1Characteristic.writeValue(Uint8Array.of(value));
-      console.log(`> Characteristic display effect option 1 changed to: ${value}`);
-      updateBLECharValue('ble-displayeffectoption1', value);
-    });
-  }
+  bleManager.write('displayEffectOption1', value);
 }
 
-let prevDisplayEffectOption2 = -1;
 function setDisplayEffectOption2Characteristic(value) {
-  if (!displayEffectOption2Characteristic) {
-    console.log('Not connected - display effect option 2 change skipped');
-    return;
-  }
-  if (value !== prevDisplayEffectOption2) {
-    prevDisplayEffectOption2 = value;
-    queueBleWrite(async () => {
-      await displayEffectOption2Characteristic.writeValue(Uint8Array.of(value));
-      console.log(`> Characteristic display effect option 2 changed to: ${value}`);
-      updateBLECharValue('ble-displayeffectoption2', value);
-    });
-  }
+  bleManager.write('displayEffectOption2', value);
 }
 
-let prevDisplayEffectOption3 = -1;
 function setDisplayEffectOption3Characteristic(value) {
-  if (!displayEffectOption3Characteristic) {
-    console.log('Not connected - display effect option 3 change skipped');
-    return;
-  }
-  if (value !== prevDisplayEffectOption3) {
-    prevDisplayEffectOption3 = value;
-    queueBleWrite(async () => {
-      await displayEffectOption3Characteristic.writeValue(Uint8Array.of(value));
-      console.log(`> Characteristic display effect option 3 changed to: ${value}`);
-      updateBLECharValue('ble-displayeffectoption3', value);
-    });
-  }
+  bleManager.write('displayEffectOption3', value);
 }
 
 // Motion Detection & Glitch Control Characteristics
 function setGlitchTriggerCharacteristic(intensity) {
-  if (!glitchTriggerCharacteristic) {
-    console.log('Not connected - glitch trigger skipped');
-    return;
-  }
-  queueBleWrite(async () => {
-    await glitchTriggerCharacteristic.writeValue(Uint8Array.of(intensity));
-    console.log(`> Glitch triggered with intensity: ${intensity}`);
-  });
+  bleManager.write('glitchTrigger', intensity);
 }
 
-let prevMotionEnableFlags = -1;
 function setMotionEnableFlagsCharacteristic(flags) {
-  if (!motionEnableFlagsCharacteristic) {
-    console.log('Not connected - motion enable flags change skipped');
-    return;
-  }
-  if (flags !== prevMotionEnableFlags) {
-    prevMotionEnableFlags = flags;
-    queueBleWrite(async () => {
-      await motionEnableFlagsCharacteristic.writeValue(Uint8Array.of(flags));
-      console.log(`> Motion enable flags changed to: 0x${flags.toString(16)}`);
-      updateBLECharValue('ble-motionenableflags', flags);
-    });
-  }
+  bleManager.write('motionEnableFlags', flags);
 }
 
-let prevTapSensitivity = -1;
 function setTapSensitivityCharacteristic(value) {
-  if (!tapSensitivityCharacteristic) {
-    console.log('Not connected - tap sensitivity change skipped');
-    return;
-  }
-  if (value !== prevTapSensitivity) {
-    prevTapSensitivity = value;
-    queueBleWrite(async () => {
-      await tapSensitivityCharacteristic.writeValue(Uint8Array.of(value));
-      console.log(`> Tap sensitivity changed to: ${value}`);
-      updateBLECharValue('ble-tapsensitivity', value);
-    });
-  }
+  bleManager.write('tapSensitivity', value);
 }
 
-let prevGlitchIntensity = -1;
 function setGlitchIntensityCharacteristic(value) {
-  if (!glitchIntensityCharacteristic) {
-    console.log('Not connected - glitch intensity change skipped');
-    return;
-  }
-  if (value !== prevGlitchIntensity) {
-    prevGlitchIntensity = value;
-    queueBleWrite(async () => {
-      await glitchIntensityCharacteristic.writeValue(Uint8Array.of(value));
-      console.log(`> Glitch intensity changed to: ${value}`);
-      updateBLECharValue('ble-glitchintensity', value);
-    });
-  }
+  bleManager.write('glitchIntensity', value);
 }
 
-const throttledAndDebouncedsetVisemeCharacteristic = throttleAndDebounce(setVisemeCharacteristic, 100, 50);
-const throttledAndDebouncedSetDisplayBrightness = throttleAndDebounce(setdisplayBrightnessCharacteristic, 100, 50);
-const throttledAndDebouncedSetHornLedBrightness = throttleAndDebounce(setHornLedBrightnessCharacteristic, 100, 50);
-const throttledAndDebouncedSetCheekPanelBrightness = throttleAndDebounce(setCheekPanelBrightnessCharacteristic, 100, 50);
-const throttledAndDebouncedSetCheekBgColor = throttleAndDebounce(setCheekBgColorCharacteristic, 150, 100);
-const throttledAndDebouncedSetCheekFadeColor = throttleAndDebounce(setCheekFadeColorCharacteristic, 150, 100);
-const throttledAndDebouncedSetDisplayEffectColor1 = throttleAndDebounce(setDisplayEffectColor1Characteristic, 150, 100);
-const throttledAndDebouncedSetDisplayEffectColor2 = throttleAndDebounce(setDisplayEffectColor2Characteristic, 150, 100);
-const throttledAndDebouncedSetDisplayEffectOption1 = throttleAndDebounce(setDisplayEffectOption1Characteristic, 100, 50);
-const throttledAndDebouncedSetDisplayEffectOption2 = throttleAndDebounce(setDisplayEffectOption2Characteristic, 100, 50);
-const throttledAndDebouncedSetDisplayEffectOption3 = throttleAndDebounce(setDisplayEffectOption3Characteristic, 100, 50);
-const throttledAndDebouncedSetTapSensitivity = throttleAndDebounce(setTapSensitivityCharacteristic, 100, 50);
-const throttledAndDebouncedSetGlitchIntensity = throttleAndDebounce(setGlitchIntensityCharacteristic, 100, 50);
-
-// Throttle and debounce function
-function throttleAndDebounce(func, throttleDelay, debounceDelay) {
-  let isThrottled = false;
-  let lastCallTime = 0;
-  let timeoutId;
-
-  function throttledAndDebounced(...args) {
-    const currentTime = Date.now();
-
-    // Throttle
-    if (!isThrottled || currentTime - lastCallTime >= throttleDelay) {
-      func.apply(this, args);
-      lastCallTime = currentTime;
-      isThrottled = true;
-    }
-
-    // Debounce
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => {
-      isThrottled = false;
-      if (Date.now() - lastCallTime >= debounceDelay) {
-        func.apply(this, args);
-        lastCallTime = Date.now();
-      }
-    }, debounceDelay);
-  }
-
-  return throttledAndDebounced;
-}
+// Throttled/debounced wrappers that use BLE Manager
+// These get the auto-created throttled functions from the manager
+const throttledAndDebouncedsetVisemeCharacteristic = (value) => bleManager.getThrottledWrite('viseme')(value);
+const throttledAndDebouncedSetDisplayBrightness = (value) => bleManager.getThrottledWrite('displayBrightness')(value);
+const throttledAndDebouncedSetHornLedBrightness = (value) => bleManager.getThrottledWrite('hornLedBrightness')(value);
+const throttledAndDebouncedSetCheekPanelBrightness = (value) => bleManager.getThrottledWrite('cheekPanelBrightness')(value);
+const throttledAndDebouncedSetCheekBgColor = (r, g, b) => bleManager.getThrottledWrite('cheekBgColor')([r, g, b]);
+const throttledAndDebouncedSetCheekFadeColor = (r, g, b) => bleManager.getThrottledWrite('cheekFadeColor')([r, g, b]);
+const throttledAndDebouncedSetDisplayEffectColor1 = (r, g, b) => bleManager.getThrottledWrite('displayEffectColor1')([r, g, b]);
+const throttledAndDebouncedSetDisplayEffectColor2 = (r, g, b) => bleManager.getThrottledWrite('displayEffectColor2')([r, g, b]);
+const throttledAndDebouncedSetDisplayEffectOption1 = (value) => bleManager.getThrottledWrite('displayEffectOption1')(value);
+const throttledAndDebouncedSetDisplayEffectOption2 = (value) => bleManager.getThrottledWrite('displayEffectOption2')(value);
+const throttledAndDebouncedSetDisplayEffectOption3 = (value) => bleManager.getThrottledWrite('displayEffectOption3')(value);
+const throttledAndDebouncedSetTapSensitivity = (value) => bleManager.getThrottledWrite('tapSensitivity')(value);
+const throttledAndDebouncedSetGlitchIntensity = (value) => bleManager.getThrottledWrite('glitchIntensity')(value);
 
 // Update BLE characteristics display on About page
 function updateBLECharacteristicsDisplay(eyeState, brightness, viseme, mouthState, hornLed, cheekPanel, cheekBgColor, cheekFadeColor) {
