@@ -499,85 +499,37 @@ const gradientPreviewContainer = document.getElementById('gradientPreviewContain
 // Display mode names for reference
 const displayModeNames = ['Gradient', 'Spiral Vortex', 'Plasma Effect', 'Radial Pulse', 'Dual Spiral', 'Dual Circle'];
 
-// Set display color mode (called when connecting to device or changing mode)
-function setDisplayColorMode(mode) {
-    // Update BLE characteristic
-    setDisplayColorModeCharacteristic(mode);
-
-    // Update UI - toggle button states
-    const modeButtons = [
+// Initialize Display Mode Manager
+const displayModeManager = new DisplayModeManager({
+    modeButtons: [
         displayColorModeGradient,
         displayColorModeSpiral,
         displayColorModePlasma,
         displayColorModeRadial,
         displayColorModeDualSpiral,
         displayColorModeDualCircle
-    ];
+    ],
+    customGradientColors,
+    gradientBottomColorContainer,
+    gradientTopColorLabel,
+    gradientBottomColorLabel,
+    gradientPreview,
+    gradientPreviewTitle,
+    gradientPreviewContainer,
+    gradientTopColorPicker,
+    gradientBottomColorPicker,
+    dualSpiralThicknessControl,
+    dualCircleThicknessControl,
+    directionInvertControl
+});
 
-    // Remove active class from all mode buttons
-    modeButtons.forEach(btn => {
-        if (btn) btn.classList.remove('active');
-    });
+// Set display color mode (called when user changes mode)
+function setDisplayColorMode(mode) {
+    // Update BLE characteristic
+    setDisplayColorModeCharacteristic(mode);
 
-    // Add active class to selected mode button
-    if (mode >= 0 && mode < modeButtons.length && modeButtons[mode]) {
-        modeButtons[mode].classList.add('active');
-    }
-
-    // Show/hide color controls based on mode
-    // Mode 0: Gradient - shows Color1 (top) and Color2 (bottom)
-    // Mode 1-3: Rainbow effects - no color controls
-    // Mode 4: Dual Spiral - shows Color1 only, Option1 (Thickness), Option2 (Speed)
-    // Mode 5: Dual Circle - shows Color1 only, Option1 (Thickness), Option2 (Speed)
-    const showColorControls = (mode === 0 || mode === 4 || mode === 5);
-    if (customGradientColors) {
-        customGradientColors.style.display = showColorControls ? 'block' : 'none';
-    }
-
-    // Show/hide second color picker (Color2) - for modes 0, 4, and 5
-    if (gradientBottomColorContainer) {
-        gradientBottomColorContainer.style.display = (mode === 0 || mode === 4 || mode === 5) ? 'block' : 'none';
-    }
-
-    // Show/hide gradient preview - only for mode 0 (Gradient)
-    if (gradientPreviewContainer) {
-        gradientPreviewContainer.style.display = (mode === 0) ? 'block' : 'none';
-    }
-
-    // Show/hide thickness control (Option1) - for modes 4 and 5
-    if (dualSpiralThicknessControl) {
-        dualSpiralThicknessControl.style.display = (mode === 4 || mode === 5) ? 'block' : 'none';
-    }
-
-    // Show/hide speed control (Option2) - for modes 4 and 5
-    if (dualCircleThicknessControl) {
-        dualCircleThicknessControl.style.display = (mode === 4 || mode === 5) ? 'block' : 'none';
-    }
-
-    // Show/hide direction control (Option3) - for modes 4 and 5
-    if (directionInvertControl) {
-        directionInvertControl.style.display = (mode === 4 || mode === 5) ? 'block' : 'none';
-    }
-
-    // Update color picker labels based on mode
-    if (mode === 0) {
-        if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Top Gradient Color';
-        if (gradientBottomColorLabel) gradientBottomColorLabel.textContent = 'Bottom Gradient Color';
-    } else if (mode === 4) {
-        if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Primary Spiral Color';
-        if (gradientBottomColorLabel) gradientBottomColorLabel.textContent = 'Secondary Spiral Color';
-    } else if (mode === 5) {
-        if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Primary Circle Color';
-        if (gradientBottomColorLabel) gradientBottomColorLabel.textContent = 'Secondary Circle Color';
-    }
-
-    // Update option control labels based on mode
-    updateEffectOptionLabels(mode);
-
-    // Update preview when mode changes (only for Gradient mode)
-    if (mode === 0) {
-        updateGradientPreview(gradientTopColorPicker.value, gradientBottomColorPicker.value, mode);
-    }
+    // Update UI using DisplayModeManager
+    displayModeManager.updateUI(mode);
 
     // Provide haptic feedback
     vibrateDevice();
@@ -585,120 +537,19 @@ function setDisplayColorMode(mode) {
 
 // Set color mode value from BLE (called when connecting to device)
 function setDisplayColorModeValue(mode) {
-    // Update UI - toggle button states
-    const modeButtons = [
-        displayColorModeGradient,
-        displayColorModeSpiral,
-        displayColorModePlasma,
-        displayColorModeRadial,
-        displayColorModeDualSpiral,
-        displayColorModeDualCircle
-    ];
-
-    // Remove active class from all mode buttons
-    modeButtons.forEach(btn => {
-        if (btn) btn.classList.remove('active');
-    });
-
-    // Add active class to selected mode button
-    if (mode >= 0 && mode < modeButtons.length && modeButtons[mode]) {
-        modeButtons[mode].classList.add('active');
-    }
-
-    // Show/hide color controls based on mode
-    const showColorControls = (mode === 0 || mode === 4 || mode === 5);
-    if (customGradientColors) {
-        customGradientColors.style.display = showColorControls ? 'block' : 'none';
-    }
-
-    // Show/hide second color picker (Color2) - for modes 0, 4, and 5
-    if (gradientBottomColorContainer) {
-        gradientBottomColorContainer.style.display = (mode === 0 || mode === 4 || mode === 5) ? 'block' : 'none';
-    }
-
-    // Show/hide gradient preview - only for mode 0 (Gradient)
-    if (gradientPreviewContainer) {
-        gradientPreviewContainer.style.display = (mode === 0) ? 'block' : 'none';
-    }
-
-    // Show/hide thickness control (Option1) - for modes 4 and 5
-    if (dualSpiralThicknessControl) {
-        dualSpiralThicknessControl.style.display = (mode === 4 || mode === 5) ? 'block' : 'none';
-    }
-
-    // Show/hide speed control (Option2) - for modes 4 and 5
-    if (dualCircleThicknessControl) {
-        dualCircleThicknessControl.style.display = (mode === 4 || mode === 5) ? 'block' : 'none';
-    }
-
-    // Show/hide direction control (Option3) - for modes 4 and 5
-    if (directionInvertControl) {
-        directionInvertControl.style.display = (mode === 4 || mode === 5) ? 'block' : 'none';
-    }
-
-    // Update color picker labels based on mode
-    if (mode === 0) {
-        if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Top Gradient Color';
-        if (gradientBottomColorLabel) gradientBottomColorLabel.textContent = 'Bottom Gradient Color';
-    } else if (mode === 4) {
-        if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Primary Spiral Color';
-        if (gradientBottomColorLabel) gradientBottomColorLabel.textContent = 'Secondary Spiral Color';
-    } else if (mode === 5) {
-        if (gradientTopColorLabel) gradientTopColorLabel.textContent = 'Primary Circle Color';
-        if (gradientBottomColorLabel) gradientBottomColorLabel.textContent = 'Secondary Circle Color';
-    }
-
-    // Update option control labels based on mode
-    updateEffectOptionLabels(mode);
-
-    // Update preview when mode changes (only for Gradient mode)
-    if (mode === 0) {
-        updateGradientPreview(gradientTopColorPicker.value, gradientBottomColorPicker.value, mode);
-    }
+    // Update UI using DisplayModeManager (no BLE write, no haptic feedback)
+    displayModeManager.updateUI(mode);
 }
 
-// Update gradient preview
+// Update gradient preview (wrapper for DisplayModeManager)
 function updateGradientPreview(topColor, bottomColor, mode = null) {
-    if (gradientPreview) {
-        // If mode is not provided, try to get current active mode
-        if (mode === null) {
-            const modeButtons = [
-                displayColorModeGradient,
-                displayColorModeSpiral,
-                displayColorModePlasma,
-                displayColorModeRadial,
-                displayColorModeDualSpiral,
-                displayColorModeDualCircle
-            ];
-            mode = modeButtons.findIndex(btn => btn && btn.classList.contains('active'));
-        }
-
-        // DualSpiral mode (mode 4) - show dual spiral preview
-        if (mode === 4) {
-            gradientPreview.style.background = `conic-gradient(from 45deg, ${topColor} 0deg 45deg, ${bottomColor} 45deg 90deg, ${topColor} 90deg 135deg, ${bottomColor} 135deg 180deg, ${topColor} 180deg 225deg, ${bottomColor} 225deg 270deg, ${topColor} 270deg 315deg, ${bottomColor} 315deg 360deg)`;
-            if (gradientPreviewTitle) {
-                gradientPreviewTitle.textContent = 'DualSpiral Preview';
-            }
-        } else {
-            // Default gradient preview for mode 0
-            gradientPreview.style.background = `linear-gradient(to bottom, ${topColor}, ${bottomColor})`;
-            if (gradientPreviewTitle) {
-                gradientPreviewTitle.textContent = 'Preview';
-            }
-        }
+    // If mode is not provided, get current active mode from manager
+    if (mode === null) {
+        mode = displayModeManager.getCurrentMode();
     }
-}
 
-// Update effect option labels based on mode
-function updateEffectOptionLabels(mode) {
-    const option1Label = document.getElementById('effectOption1Label');
-    const option2Label = document.getElementById('effectOption2Label');
-
-    // For modes 4 and 5, both use Thickness and Speed
-    if (mode === 4 || mode === 5) {
-        if (option1Label) option1Label.textContent = 'Thickness';
-        if (option2Label) option2Label.textContent = 'Speed';
-    }
+    // Use the manager's updatePreview method
+    displayModeManager.updatePreview(mode);
 }
 
 // Effect Color 1 (top/gradient/spiral/circle color) picker handler
