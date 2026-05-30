@@ -282,8 +282,7 @@
                   <h3>Display Mode</h3>
                 </div>
                 <div class="display-mode-grid">
-                  <button id="displayColorModeGradient" class="display-color-mode-btn active"
-                    onclick="setDisplayColorMode(0)">
+                  <button id="displayColorModeGradient" class="display-color-mode-btn active">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="0" style="width: 18px; height: 18px; margin-right: 6px;">
                       <rect x="4" y="4" width="16" height="3" fill="currentColor" opacity="1"></rect>
@@ -294,7 +293,7 @@
                     </svg>
                     Gradient
                   </button>
-                  <button id="displayColorModeSpiral" class="display-color-mode-btn" onclick="setDisplayColorMode(1)">
+                  <button id="displayColorModeSpiral" class="display-color-mode-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
@@ -307,7 +306,7 @@
                     </svg>
                     Spiral/Vortex
                   </button>
-                  <button id="displayColorModePlasma" class="display-color-mode-btn" onclick="setDisplayColorMode(2)">
+                  <button id="displayColorModePlasma" class="display-color-mode-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
@@ -317,7 +316,7 @@
                     </svg>
                     Plasma Effect
                   </button>
-                  <button id="displayColorModeRadial" class="display-color-mode-btn" onclick="setDisplayColorMode(3)">
+                  <button id="displayColorModeRadial" class="display-color-mode-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
@@ -327,8 +326,7 @@
                     </svg>
                     Radial Pulse
                   </button>
-                  <button id="displayColorModeDualSpiral" class="display-color-mode-btn"
-                    onclick="setDisplayColorMode(4)">
+                  <button id="displayColorModeDualSpiral" class="display-color-mode-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
@@ -339,8 +337,7 @@
                     </svg>
                     Dual Spiral
                   </button>
-                  <button id="displayColorModeDualCircle" class="display-color-mode-btn"
-                    onclick="setDisplayColorMode(5)">
+                  <button id="displayColorModeDualCircle" class="display-color-mode-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
@@ -532,7 +529,7 @@
                   <h3>Enable Features</h3>
                 </div>
                 <div class="display-mode-grid">
-                  <button id="tapDetectionBtn" class="display-color-mode-btn active" onclick="toggleMotionFeature(0)">
+                  <button id="tapDetectionBtn" class="display-color-mode-btn active">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
@@ -545,8 +542,7 @@
                     </svg>
                     Tap
                   </button>
-                  <button id="pettingDetectionBtn" class="display-color-mode-btn active"
-                    onclick="toggleMotionFeature(1)">
+                  <button id="pettingDetectionBtn" class="display-color-mode-btn active">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
@@ -560,7 +556,7 @@
                     </svg>
                     Petting
                   </button>
-                  <button id="tiltDetectionBtn" class="display-color-mode-btn active" onclick="toggleMotionFeature(2)">
+                  <button id="tiltDetectionBtn" class="display-color-mode-btn active">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
@@ -575,8 +571,7 @@
                     </svg>
                     Tilt
                   </button>
-                  <button id="upsideDownDetectionBtn" class="display-color-mode-btn active"
-                    onclick="toggleMotionFeature(3)">
+                  <button id="upsideDownDetectionBtn" class="display-color-mode-btn active">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
@@ -901,22 +896,22 @@
   </div>
 
   <!-- Configuration files -->
-  <script type="module" src="config/ble-config.js"></script>
-  <script type="module" src="config/expressions.js"></script>
-  <script type="module" src="config/mouth-states.js"></script>
-  <script type="module" src="config/display-modes.js"></script>
+  <script type="module" src="src/config/ble-config.js"></script>
+  <script type="module" src="src/config/expressions.js"></script>
+  <script type="module" src="src/config/mouth-states.js"></script>
+  <script type="module" src="src/config/display-modes.js"></script>
 
   <!-- Component and manager files -->
-  <script defer src="ble-manager.js"></script>
-  <script defer src="managers/display-mode-manager.js"></script>
-  <script defer src="components/slider.js"></script>
-  <script defer src="components/button-grid.js"></script>
+  <script defer src="src/managers/ble-manager.js"></script>
+  <script defer src="src/managers/display-mode-manager.js"></script>
+  <script defer src="src/components/slider.js"></script>
+  <script defer src="src/components/button-grid.js"></script>
 
   <!-- Main application files -->
-  <script type="module" src="app.js"></script>
-  <script type="module" src="control.js"></script>
-  <script defer src="ble.js"></script>
-  <script defer src="navigation.js"></script>
+  <script type="module" src="src/core/app.js"></script>
+  <script type="module" src="src/core/control.js"></script>
+  <script defer src="src/core/ble.js"></script>
+  <script defer src="src/core/navigation.js"></script>
   <!-- <script defer src="carousel.js"></script> -->
 </body>
 

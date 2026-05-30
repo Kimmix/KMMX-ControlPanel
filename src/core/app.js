@@ -1,5 +1,5 @@
 // Import utilities
-import { vibrateDevice, clamp } from './utils/helpers.js';
+import { vibrateDevice, clamp } from '../utils/helpers.js';
 
 // Make utilities globally available for non-module scripts
 window.vibrateDevice = vibrateDevice;

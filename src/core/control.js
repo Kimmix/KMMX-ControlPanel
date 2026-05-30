@@ -1,10 +1,10 @@
 // Import utilities
-import { hexToRgb, rgbToHex, vibrateDevice } from './utils/helpers.js';
+import { hexToRgb, rgbToHex, vibrateDevice } from '../utils/helpers.js';
 
 // Import configurations
-import { expressions } from './config/expressions.js';
-import { mouthStates } from './config/mouth-states.js';
-import { displayModeNames } from './config/display-modes.js';
+import { expressions } from '../config/expressions.js';
+import { mouthStates } from '../config/mouth-states.js';
+import { displayModeNames } from '../config/display-modes.js';
 
 // Make utilities globally available for non-module scripts
 window.hexToRgb = hexToRgb;
@@ -309,29 +309,31 @@ if (fadeColorPicker) {
     });
 }
 
-// Color preset buttons handler
-document.querySelectorAll('.color-preset-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const color = btn.getAttribute('data-color');
-        const target = btn.getAttribute('data-target');
+// Event delegation for all color preset buttons (cheek panel colors)
+// Attach a single listener to the document and filter by class
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.color-preset-btn:not([data-target^="gradient"])');
+    if (!btn) return;
 
-        if (target === 'bg' && bgColorPicker) {
-            bgColorPicker.value = color;
-            if (bgColorHex) bgColorHex.textContent = color.toUpperCase();
-            const rgb = hexToRgb(color);
-            if (rgb) {
-                throttledAndDebouncedSetCheekBgColor(rgb.r, rgb.g, rgb.b);
-            }
-        } else if (target === 'fade' && fadeColorPicker) {
-            fadeColorPicker.value = color;
-            if (fadeColorHex) fadeColorHex.textContent = color.toUpperCase();
-            const rgb = hexToRgb(color);
-            if (rgb) {
-                throttledAndDebouncedSetCheekFadeColor(rgb.r, rgb.g, rgb.b);
-            }
+    const color = btn.getAttribute('data-color');
+    const target = btn.getAttribute('data-target');
+
+    if (target === 'bg' && bgColorPicker) {
+        bgColorPicker.value = color;
+        if (bgColorHex) bgColorHex.textContent = color.toUpperCase();
+        const rgb = hexToRgb(color);
+        if (rgb) {
+            throttledAndDebouncedSetCheekBgColor(rgb.r, rgb.g, rgb.b);
         }
-        vibrateDevice();
-    });
+    } else if (target === 'fade' && fadeColorPicker) {
+        fadeColorPicker.value = color;
+        if (fadeColorHex) fadeColorHex.textContent = color.toUpperCase();
+        const rgb = hexToRgb(color);
+        if (rgb) {
+            throttledAndDebouncedSetCheekFadeColor(rgb.r, rgb.g, rgb.b);
+        }
+    }
+    vibrateDevice();
 });
 
 // Set color values from BLE (called when connecting to device)
@@ -427,6 +429,25 @@ const displayModeManager = new DisplayModeManager({
     directionInvertControl
 });
 
+// Event delegation for display mode buttons
+// Map button IDs to mode values
+const displayModeButtonMap = {
+    'displayColorModeGradient': 0,
+    'displayColorModeSpiral': 1,
+    'displayColorModePlasma': 2,
+    'displayColorModeRadial': 3,
+    'displayColorModeDualSpiral': 4,
+    'displayColorModeDualCircle': 5
+};
+
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.display-color-mode-btn');
+    if (!btn || !btn.id || !(btn.id in displayModeButtonMap)) return;
+
+    const mode = displayModeButtonMap[btn.id];
+    setDisplayColorMode(mode);
+});
+
 // Set display color mode (called when user changes mode)
 setDisplayColorMode = function(mode) {
     // Update BLE characteristic
@@ -482,31 +503,32 @@ gradientBottomColorPicker.addEventListener('input', (e) => {
     }
 });
 
-// Color preset buttons handler for display effect colors
-document.querySelectorAll('.color-preset-btn[data-target^="gradient"]').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const color = btn.getAttribute('data-color');
-        const target = btn.getAttribute('data-target');
+// Event delegation for display effect color preset buttons
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.color-preset-btn[data-target^="gradient"]');
+    if (!btn) return;
 
-        if (target === 'gradientTop') {
-            gradientTopColorPicker.value = color;
-            gradientTopColorHex.textContent = color.toUpperCase();
-            const rgb = hexToRgb(color);
-            if (rgb) {
-                throttledAndDebouncedSetDisplayEffectColor1(rgb.r, rgb.g, rgb.b);
-                updateGradientPreview(color, gradientBottomColorPicker.value);
-            }
-        } else if (target === 'gradientBottom') {
-            gradientBottomColorPicker.value = color;
-            gradientBottomColorHex.textContent = color.toUpperCase();
-            const rgb = hexToRgb(color);
-            if (rgb) {
-                throttledAndDebouncedSetDisplayEffectColor2(rgb.r, rgb.g, rgb.b);
-                updateGradientPreview(gradientTopColorPicker.value, color);
-            }
+    const color = btn.getAttribute('data-color');
+    const target = btn.getAttribute('data-target');
+
+    if (target === 'gradientTop') {
+        gradientTopColorPicker.value = color;
+        gradientTopColorHex.textContent = color.toUpperCase();
+        const rgb = hexToRgb(color);
+        if (rgb) {
+            throttledAndDebouncedSetDisplayEffectColor1(rgb.r, rgb.g, rgb.b);
+            updateGradientPreview(color, gradientBottomColorPicker.value);
         }
-        vibrateDevice();
-    });
+    } else if (target === 'gradientBottom') {
+        gradientBottomColorPicker.value = color;
+        gradientBottomColorHex.textContent = color.toUpperCase();
+        const rgb = hexToRgb(color);
+        if (rgb) {
+            throttledAndDebouncedSetDisplayEffectColor2(rgb.r, rgb.g, rgb.b);
+            updateGradientPreview(gradientTopColorPicker.value, color);
+        }
+    }
+    vibrateDevice();
 });
 
 // Set display effect color values from BLE (called when connecting to device)
@@ -640,6 +662,23 @@ const MOTION_FLAGS = {
     TILT_DETECTION: 2,     // Bit 2 (0x04)
     UPSIDE_DOWN: 3         // Bit 3 (0x08)
 };
+
+// Event delegation for motion feature buttons
+// Map button IDs to feature bit positions
+const motionFeatureButtonMap = {
+    'tapDetectionBtn': 0,
+    'pettingDetectionBtn': 1,
+    'tiltDetectionBtn': 2,
+    'upsideDownDetectionBtn': 3
+};
+
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('#tapDetectionBtn, #pettingDetectionBtn, #tiltDetectionBtn, #upsideDownDetectionBtn');
+    if (!btn || !btn.id || !(btn.id in motionFeatureButtonMap)) return;
+
+    const featureBit = motionFeatureButtonMap[btn.id];
+    toggleMotionFeature(featureBit);
+});
 
 // Toggle individual motion feature
 toggleMotionFeature = function(featureBit) {
