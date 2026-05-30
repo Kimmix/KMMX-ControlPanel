@@ -1,6 +1,11 @@
 // Import utilities
 import { hexToRgb, rgbToHex, vibrateDevice } from './utils/helpers.js';
 
+// Import configurations
+import { expressions } from './config/expressions.js';
+import { mouthStates } from './config/mouth-states.js';
+import { displayModeNames } from './config/display-modes.js';
+
 // Make utilities globally available for non-module scripts
 window.hexToRgb = hexToRgb;
 window.rgbToHex = rgbToHex;
@@ -17,97 +22,12 @@ let switchControlMode, toggleViseme, setDisplayColorMode, toggleDirectionInvert;
 let resetCheekColors, resetDisplayColors, toggleMotionFeature, triggerGlitch;
 
 //* --------- Expression ---------
-const expression = [
-    {
-        id: 0,
-        buttonId: 'button0',
-        name: 'Idle',
-        src: 'asset/svg/expression/default.svg',
-    },
-    {
-        id: 1,
-        buttonId: 'button1',
-        name: 'Googly',
-        src: 'asset/svg/expression/googly.svg',
-    },
-    {
-        id: 2,
-        buttonId: 'button2',
-        name: 'Heart',
-        src: 'asset/svg/expression/heart.svg',
-    },
-    {
-        id: 3,
-        buttonId: 'button3',
-        name: 'Smile',
-        src: 'asset/svg/expression/smile.svg',
-    },
-    {
-        id: 4,
-        buttonId: 'button4',
-        name: 'Angry',
-        src: null, // Placeholder - add icon later
-    },
-    {
-        id: 5,
-        buttonId: 'button5',
-        name: 'Sad',
-        src: null, // Placeholder - add icon later
-    },
-    {
-        id: 6,
-        buttonId: 'button6',
-        name: 'Arrow',
-        src: null, // Placeholder - add icon later
-    },
-    {
-        id: 7,
-        buttonId: 'button7',
-        name: 'O Eye',
-        src: null, // Placeholder - add icon later
-    },
-    {
-        id: 8,
-        buttonId: 'button8',
-        name: 'Cry',
-        src: null, // Placeholder - add icon later
-    },
-    {
-        id: 9,
-        buttonId: 'button9',
-        name: 'Doubted',
-        src: null, // Placeholder - add icon later
-    },
-    {
-        id: 10,
-        buttonId: 'button10',
-        name: 'Rounded',
-        src: null, // Placeholder - add icon later
-    },
-    {
-        id: 11,
-        buttonId: 'button11',
-        name: 'Sharp',
-        src: null, // Placeholder - add icon later
-    },
-    {
-        id: 12,
-        buttonId: 'button12',
-        name: 'Giggle',
-        src: null, // Placeholder - add icon later
-    },
-    {
-        id: 13,
-        buttonId: 'button13',
-        name: 'Unimpressed',
-        src: null, // Placeholder - add icon later
-    },
-]
+// Expression definitions imported from config/expressions.js
 
 // Create expression buttons using ButtonGrid component
 const expressionGrid = new ButtonGrid({
     containerId: 'exp-btn',
-    items: expression,
+    items: expressions,
     buttonClass: 'exp-btn',
     countElementId: 'expBtnCount',
     initialActiveIndex: 0,
@@ -120,7 +40,7 @@ const expressionGrid = new ButtonGrid({
 
 setExpression = function(i) {
     expressionGrid.setActiveById(i);
-    const item = expression.find(({ id }) => id === i);
+    const item = expressions.find(({ id }) => id === i);
     if (item) {
         setEyeStateCharacteristic(item.id);
         updateEyeStateDisplay(item.name);
@@ -178,43 +98,7 @@ switchControlMode = function(mode) {
 window.switchControlMode = switchControlMode;
 
 //* --------- Mouth State ---------
-const mouthStates = [
-    {
-        id: 0,
-        buttonId: 'mouth-btn-0',
-        name: 'IDLE',
-        subtitle: 'Default',
-        src: null
-    },
-    {
-        id: 1,
-        buttonId: 'mouth-btn-1',
-        name: 'WAH',
-        subtitle: 'Bouncy',
-        src: null
-    },
-    {
-        id: 2,
-        buttonId: 'mouth-btn-2',
-        name: 'EH',
-        subtitle: 'Meh',
-        src: null
-    },
-    {
-        id: 3,
-        buttonId: 'mouth-btn-3',
-        name: 'POUT',
-        subtitle: 'Sad',
-        src: null
-    },
-    {
-        id: 4,
-        buttonId: 'mouth-btn-4',
-        name: 'DROOL',
-        subtitle: 'Blep',
-        src: null
-    }
-];
+// Mouth state definitions imported from config/mouth-states.js
 
 // Create mouth state buttons using ButtonGrid component
 const mouthStateGrid = new ButtonGrid({
@@ -517,8 +401,7 @@ const directionInvertText = document.getElementById('directionInvertText');
 const gradientBottomColorContainer = document.getElementById('gradientBottomColorContainer');
 const gradientPreviewContainer = document.getElementById('gradientPreviewContainer');
 
-// Display mode names for reference
-const displayModeNames = ['Gradient', 'Spiral Vortex', 'Plasma Effect', 'Radial Pulse', 'Dual Spiral', 'Dual Circle'];
+// Display mode names imported from config/display-modes.js
 
 // Initialize Display Mode Manager
 const displayModeManager = new DisplayModeManager({
