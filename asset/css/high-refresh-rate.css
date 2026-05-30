@@ -118,7 +118,13 @@ body {
   /* Prevent double-tap zoom on buttons */
   button,
   a,
-  [role="button"] {
+  [role="button"],
+  .btn-base,
+  .display-color-mode-btn,
+  .color-preset-btn,
+  .nav-icon,
+  .status-item,
+  .reset-colors-btn {
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
   }
@@ -127,6 +133,41 @@ body {
   .page-content-container,
   .expression-container {
     touch-action: pan-y !important;
+  }
+
+  /* Optimize sliders for touch */
+  input[type="range"],
+  .vsm-slider,
+  .bn-slider,
+  .spiral-thickness-slider {
+    touch-action: pan-x;
+    cursor: pointer;
+  }
+
+  /* Larger touch targets for slider thumbs */
+  input[type="range"]::-webkit-slider-thumb,
+  .spiral-thickness-slider::-webkit-slider-thumb {
+    width: 24px;
+    height: 24px;
+  }
+
+  input[type="range"]::-moz-range-thumb,
+  .spiral-thickness-slider::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* Optimize toggle switches */
+  .direction-toggle-switch {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Optimize color pickers */
+  input[type="color"] {
+    touch-action: manipulation;
+    min-width: 44px;
+    min-height: 44px;
   }
 }
 
