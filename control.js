@@ -322,124 +322,43 @@ function isVisemeOn() {
 // }
 
 //* --------- Horn LED Brightness ---------
-function createHornDots(numDots) {
-    const dotsContainer = document.getElementById('horn-dots-container');
-    for (let i = 0; i < numDots; i++) {
-        const dot = document.createElement('div');
-        dot.className = 'dot';
-        dotsContainer.appendChild(dot);
+//* --------- Horn LED Brightness Slider ---------
+const hornLedSlider = new Slider({
+    sliderId: 'hornLedValue',
+    dotsContainerId: 'horn-dots-container',
+    valueDisplayId: 'hornLedSliderValue',
+    type: 'dots',
+    maxValue: 100,
+    onChange: (value) => {
+        throttledAndDebouncedSetHornLedBrightness(value);
     }
-}
-
-function renderTotalHornDots() {
-    const deviceWidth = window.innerWidth;
-    const numDots = Math.floor(deviceWidth / 30);
-    const dotsContainer = document.getElementById('horn-dots-container');
-    dotsContainer.innerHTML = '';
-    createHornDots(numDots);
-}
-renderTotalHornDots();
-
-let hornLedValueInput = document.getElementById('hornLedValue');
-function setHornLedBrightnessValue(i) {
-    hornLedValueInput.value = i;
-    renderHornWhiteDots(hornLedValueInput.value);
-}
-
-hornLedValueInput.addEventListener('input', () => {
-    let value = hornLedValueInput.value;
-    renderHornWhiteDots(value);
-    throttledAndDebouncedSetHornLedBrightness(value);
 });
 
-let prevNumOfHornWhiteDots = 0;
-function renderHornWhiteDots(value, firstTime) {
-    const dotsContainer = document.getElementById('horn-dots-container');
-    let dots = dotsContainer.querySelectorAll('.dot');
-    const numOfWhiteDots = Math.ceil((value / 100) * dots.length);
-    if ((numOfWhiteDots !== prevNumOfHornWhiteDots) && !firstTime) {
-        vibrateDevice();
-        prevNumOfHornWhiteDots = numOfWhiteDots;
+// Function to set value from BLE
+function setHornLedBrightnessValue(value) {
+    hornLedSlider.setValue(value);
+}
+
+//* --------- Cheek Panel Brightness Slider ---------
+const cheekPanelSlider = new Slider({
+    sliderId: 'cheekPanelValue',
+    dotsContainerId: 'cheek-dots-container',
+    valueDisplayId: 'cheekPanelSliderValue',
+    type: 'dots',
+    maxValue: 255,
+    convertToPercentage: true,
+    onChange: (value) => {
+        throttledAndDebouncedSetCheekPanelBrightness(value);
     }
-    dots.forEach((dot, index) => {
-        if (index < numOfWhiteDots) {
-            dot.classList.add('white-dot');
-        } else {
-            dot.classList.remove('white-dot');
-        }
-    });
-    const sliderValueElement = document.getElementById('hornLedSliderValue');
-    sliderValueElement.textContent = value;
-}
-
-//* --------- Cheek Panel Brightness ---------
-function createCheekDots(numDots) {
-    const dotsContainer = document.getElementById('cheek-dots-container');
-    for (let i = 0; i < numDots; i++) {
-        const dot = document.createElement('div');
-        dot.className = 'dot';
-        dotsContainer.appendChild(dot);
-    }
-}
-
-function renderTotalCheekDots() {
-    const deviceWidth = window.innerWidth;
-    const numDots = Math.floor(deviceWidth / 30);
-    const dotsContainer = document.getElementById('cheek-dots-container');
-    dotsContainer.innerHTML = '';
-    createCheekDots(numDots);
-}
-renderTotalCheekDots();
-
-let cheekPanelValueInput = document.getElementById('cheekPanelValue');
-function setCheekPanelBrightnessValue(i) {
-    cheekPanelValueInput.value = i;
-    renderCheekWhiteDots(cheekPanelValueInput.value);
-}
-
-cheekPanelValueInput.addEventListener('input', () => {
-    let value = cheekPanelValueInput.value;
-    renderCheekWhiteDots(value);
-    throttledAndDebouncedSetCheekPanelBrightness(value);
 });
 
-let prevNumOfCheekWhiteDots = 0;
-function renderCheekWhiteDots(value, firstTime) {
-    const dotsContainer = document.getElementById('cheek-dots-container');
-    let dots = dotsContainer.querySelectorAll('.dot');
-    const numOfWhiteDots = Math.ceil((value / 255) * dots.length);
-    if ((numOfWhiteDots !== prevNumOfCheekWhiteDots) && !firstTime) {
-        vibrateDevice();
-        prevNumOfCheekWhiteDots = numOfWhiteDots;
-    }
-    dots.forEach((dot, index) => {
-        if (index < numOfWhiteDots) {
-            dot.classList.add('white-dot');
-        } else {
-            dot.classList.remove('white-dot');
-        }
-    });
-    const sliderValueElement = document.getElementById('cheekPanelSliderValue');
-    // Convert 0-255 to 0-100 percentage
-    const percentageValue = Math.round((value / 255) * 100);
-    sliderValueElement.textContent = percentageValue;
+// Function to set value from BLE
+function setCheekPanelBrightnessValue(value) {
+    cheekPanelSlider.setValue(value);
 }
 
 //* --------- Consolidated Resize Handler ---------
-// Update all dots when the window is resized
-window.addEventListener('resize', () => {
-    // Matrix brightness - Disabled
-    // renderTotalDots();
-    // renderWhiteDots(dotValueInput.value);
-
-    // Horn LED brightness
-    renderTotalHornDots();
-    renderHornWhiteDots(hornLedValueInput.value);
-
-    // Cheek Panel brightness
-    renderTotalCheekDots();
-    renderCheekWhiteDots(cheekPanelValueInput.value);
-});
+// Resize handling is now managed by individual Slider components
 
 //* --------- Cheek Panel Color Controls ---------
 const bgColorPicker = document.getElementById('bgColorPicker');
@@ -881,74 +800,42 @@ function resetDisplayColors() {
 }
 
 //* --------- Display Effect Option Controls ---------
-// Set Display Effect Option 1 value from BLE (called when connecting to device)
+//* --------- Display Effect Option 1 Slider (Thickness) ---------
 // Option1 is used for Thickness in modes 4 (Dual Spiral) and 5 (Dual Circle)
-function setDisplayEffectOption1Value(value) {
-    if (dualSpiralThicknessSlider) {
-        dualSpiralThicknessSlider.value = value;
-        updateDisplayEffectOption1Slider(value);
-    }
-}
-
-// Update slider display for Effect Option 1 (Thickness)
-function updateDisplayEffectOption1Slider(value) {
-    const valueDisplay = document.getElementById('spiralThicknessValue');
-    if (valueDisplay) {
-        valueDisplay.textContent = value;
-    }
-
-    // Update slider fill
-    if (dualSpiralThicknessSlider) {
-        const min = parseInt(dualSpiralThicknessSlider.min) || 0;
-        const max = parseInt(dualSpiralThicknessSlider.max) || 255;
-        const percentage = ((value - min) / (max - min)) * 100;
-        dualSpiralThicknessSlider.style.background = `linear-gradient(to right, white 0%, white ${percentage}%, rgba(255, 255, 255, 0.1) ${percentage}%, rgba(255, 255, 255, 0.1) 100%)`;
-    }
-}
-
-// Effect Option 1 (Thickness) slider event listener
-if (dualSpiralThicknessSlider) {
-    dualSpiralThicknessSlider.addEventListener('input', (e) => {
-        const value = parseInt(e.target.value);
-        updateDisplayEffectOption1Slider(value);
+const displayEffectOption1Slider = dualSpiralThicknessSlider ? new Slider({
+    sliderId: 'dualSpiralThicknessSlider',
+    valueDisplayId: 'spiralThicknessValue',
+    type: 'gradient',
+    maxValue: 255,
+    onChange: (value) => {
         throttledAndDebouncedSetDisplayEffectOption1(value);
-        vibrateDevice();
-    });
+    }
+}) : null;
+
+// Set Display Effect Option 1 value from BLE (called when connecting to device)
+function setDisplayEffectOption1Value(value) {
+    if (displayEffectOption1Slider) {
+        displayEffectOption1Slider.setValue(value);
+    }
 }
+
+//* --------- Display Effect Option 2 Slider (Speed) ---------
+// Option2 is used for Speed in modes 4 (Dual Spiral) and 5 (Dual Circle)
+const displayEffectOption2Slider = dualCircleThicknessSlider ? new Slider({
+    sliderId: 'dualCircleThicknessSlider',
+    valueDisplayId: 'circleThicknessValue',
+    type: 'gradient',
+    maxValue: 255,
+    onChange: (value) => {
+        throttledAndDebouncedSetDisplayEffectOption2(value);
+    }
+}) : null;
 
 // Set Display Effect Option 2 value from BLE (called when connecting to device)
-// Option2 is used for Speed in modes 4 (Dual Spiral) and 5 (Dual Circle)
 function setDisplayEffectOption2Value(value) {
-    if (dualCircleThicknessSlider) {
-        dualCircleThicknessSlider.value = value;
-        updateDisplayEffectOption2Slider(value);
+    if (displayEffectOption2Slider) {
+        displayEffectOption2Slider.setValue(value);
     }
-}
-
-// Update slider display for Effect Option 2 (Speed)
-function updateDisplayEffectOption2Slider(value) {
-    const valueDisplay = document.getElementById('circleThicknessValue');
-    if (valueDisplay) {
-        valueDisplay.textContent = value;
-    }
-
-    // Update slider fill
-    if (dualCircleThicknessSlider) {
-        const min = parseInt(dualCircleThicknessSlider.min) || 0;
-        const max = parseInt(dualCircleThicknessSlider.max) || 255;
-        const percentage = ((value - min) / (max - min)) * 100;
-        dualCircleThicknessSlider.style.background = `linear-gradient(to right, white 0%, white ${percentage}%, rgba(255, 255, 255, 0.1) ${percentage}%, rgba(255, 255, 255, 0.1) 100%)`;
-    }
-}
-
-// Effect Option 2 (Speed) slider event listener
-if (dualCircleThicknessSlider) {
-    dualCircleThicknessSlider.addEventListener('input', (e) => {
-        const value = parseInt(e.target.value);
-        updateDisplayEffectOption2Slider(value);
-        throttledAndDebouncedSetDisplayEffectOption2(value);
-        vibrateDevice();
-    });
 }
 
 // Effect Option 3 (Direction/Invert) toggle function
