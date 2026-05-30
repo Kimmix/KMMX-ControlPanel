@@ -1,0 +1,123 @@
+/**
+ * High Refresh Rate Optimizations
+ * Enables smooth 120Hz display support for PWA
+ */
+
+/* Enable GPU acceleration for all elements */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Optimize interactive elements */
+button,
+a,
+input,
+select,
+textarea,
+[role="button"],
+.nav-icon,
+.expression-btn,
+.mouth-state-button,
+.display-color-mode-btn,
+.color-preset-btn {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  perspective: 1000;
+  will-change: transform, opacity;
+}
+
+/* Optimize all animated elements */
+[class*="animation"],
+[class*="transition"],
+.fade,
+.slide,
+.scale {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Optimize SVG rendering */
+svg {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Optimize grid containers */
+.expression-grid,
+.mouth-state-buttons,
+.display-mode-grid,
+.ble-char-grid {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Optimize floating navigation */
+.floating-nav {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+/* Optimize header elements */
+.static-header,
+.status-header {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Enable smooth transitions at high refresh rates */
+@media (prefers-reduced-motion: no-preference) {
+  * {
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+/* Force GPU rendering for animations */
+@keyframes gpuAccelerate {
+  0% {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+  100% {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+}
+
+/* Apply to body for overall performance */
+body {
+  animation: gpuAccelerate 0.001s;
+}
+
+/* Optimize touch interactions */
+@media (hover: none) and (pointer: coarse) {
+  * {
+    touch-action: manipulation;
+  }
+  
+  button,
+  a,
+  [role="button"] {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Optimize for high DPI screens */
+@media (-webkit-min-device-pixel-ratio: 2),
+       (min-resolution: 192dpi) {
+  body {
+    -webkit-font-smoothing: subpixel-antialiased;
+  }
+}

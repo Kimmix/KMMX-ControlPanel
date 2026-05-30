@@ -1,8 +1,8 @@
 // KMMX Control Panel - Service Worker
-// Version 1.0.0
+// Version 1.0.1
 
-const CACHE_NAME = 'kmmx-control-v1.0.0';
-const RUNTIME_CACHE = 'kmmx-runtime-v1.0.0';
+const CACHE_NAME = 'kmmx-control-v1.0.1';
+const RUNTIME_CACHE = 'kmmx-runtime-v1.0.1';
 
 // Assets to cache on install
 const PRECACHE_ASSETS = [
@@ -14,6 +14,7 @@ const PRECACHE_ASSETS = [
   '/asset/maskable_icon.png',
   '/asset/css/normalize.css',
   '/asset/css/styles-main.css',
+  '/asset/css/high-refresh-rate.css',
   '/asset/css/splash.css',
   '/asset/css/control-panel.css',
   '/asset/css/navigation.css',
@@ -40,7 +41,7 @@ const PRECACHE_ASSETS = [
 // Install event - cache assets
 self.addEventListener('install', (event) => {
   console.log('[SW] Installing service worker...');
-  
+
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
@@ -54,7 +55,7 @@ self.addEventListener('install', (event) => {
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
   console.log('[SW] Activating service worker...');
-  
+
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
@@ -73,12 +74,12 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   // Skip non-GET requests
   if (event.request.method !== 'GET') return;
-  
+
   // Skip chrome-extension and other non-http(s) requests
   if (!event.request.url.startsWith('http')) return;
-  
+
   // Skip external resources (fonts, etc.)
-  if (event.request.url.includes('googleapis.com') || 
+  if (event.request.url.includes('googleapis.com') ||
       event.request.url.includes('gstatic.com')) {
     return;
   }
@@ -125,7 +126,7 @@ self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
-  
+
   if (event.data && event.data.type === 'CLEAR_CACHE') {
     event.waitUntil(
       caches.keys().then((cacheNames) => {

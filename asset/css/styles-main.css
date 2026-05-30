@@ -67,6 +67,16 @@ body {
   -webkit-tap-highlight-color: #00000000;
   user-select: none;
   overscroll-behavior-y: contain;
+
+  /* High refresh rate support */
+  -webkit-overflow-scrolling: touch;
+  -webkit-transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000;
+  will-change: scroll-position;
 }
 
 img {
@@ -103,6 +113,12 @@ button {
   border-radius: 10%;
   padding: 10px;
   /* height: 120px; */
+
+  /* GPU acceleration for smooth interactions */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 .bold {

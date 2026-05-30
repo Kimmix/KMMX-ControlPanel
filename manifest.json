@@ -5,9 +5,11 @@
   "start_url": "/",
   "scope": "/",
   "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
   "background_color": "#0b0b0c",
   "theme_color": "#f9826c",
   "orientation": "portrait-primary",
+  "prefer_related_applications": false,
   "categories": ["entertainment", "utilities"],
   "icons": [
     {

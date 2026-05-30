@@ -186,6 +186,13 @@
   /* Hide scrollbar */
   scrollbar-width: none;
   -ms-overflow-style: none;
+
+  /* High refresh rate optimization */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: scroll-position;
 }
 
 .expression-container::-webkit-scrollbar {
