@@ -93,7 +93,7 @@ const expBtn = document.getElementById('exp-btn');
 expression.forEach(exp => {
     const button = document.createElement('button');
     button.id = exp.buttonId;
-    button.className = 'exp-btn';
+    button.className = 'btn-base exp-btn';
     button.onclick = () => toggleButton(exp.buttonId);
 
     // Add placeholder class and text if no icon is available

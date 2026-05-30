@@ -1,0 +1,89 @@
+/**
+ * Shared Animation Keyframes
+ * Centralized location for all @keyframes animations
+ */
+
+/* Fade In Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Max Width Expansion */
+@keyframes maxWidth {
+  from {
+    max-width: 0%;
+  }
+  to {
+    max-width: 100%;
+  }
+}
+
+/* Control Panel Entry Animation */
+@keyframes controlIn {
+  0% {
+    opacity: 0;
+    filter: blur(50px) grayscale(1) brightness(0.3);
+  }
+  30% {
+    filter: blur(20px) grayscale(0.7) brightness(0.4);
+  }
+  50% {
+    filter: blur(1px) grayscale(0.4) brightness(0.7);
+  }
+  100% {
+    filter: blur(0px) grayscale(0) brightness(1);
+    opacity: 1;
+  }
+}
+
+/* Ripple Effect for Button Click */
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+/* BLE Connection Pulse */
+@keyframes blePulse {
+  0%, 100% {
+    filter: drop-shadow(-2px 0 2px var(--pill-glow-color)) drop-shadow(2px 0 2px var(--pill-glow-color));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(-4px 0 8px var(--pill-glow-color)) drop-shadow(4px 0 8px var(--pill-glow-color));
+    transform: scale(1.1);
+  }
+}
+
+/* Pulsate Effect */
+@keyframes pulsate {
+  0% {
+    filter: drop-shadow(-2px 0 2px var(--pill-glow-color)) drop-shadow(2px 0 4px var(--pill-glow-color));
+  }
+  100% {
+    filter: drop-shadow(-5px 0 7px var(--pill-glow-color)) drop-shadow(5px 0 7px var(--pill-glow-color));
+  }
+}
+
+/* Pulse Effect for Active Buttons */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 15px rgba(255, 255, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  }
+}

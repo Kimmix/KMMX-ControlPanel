@@ -1,103 +1,4 @@
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes maxWidth {
-  from {
-    max-width: 0%;
-  }
-
-  to {
-    max-width: 100%;
-  }
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes maxWidth {
-  from {
-    max-width: 0%;
-  }
-  to {
-    max-width: 100%;
-  }
-}
-
-@keyframes controlIn {
-  0% {
-    opacity: 0;
-    filter: blur(50px) grayscale(1) brightness(0.3);
-  }
-  30% {
-    filter: blur(20px) grayscale(0.7) brightness(0.4);
-  }
-  50% {
-    filter: blur(1px) grayscale(0.4) brightness(0.7);
-  }
-  100% {
-    filter: blur(0px) grayscale(0) brightness(1);
-    opacity: 1;
-  }
-}
-
-@keyframes ripple {
-  0% {
-    transform: scale(0);
-    opacity: 0.6;
-  }
-  100% {
-    transform: scale(2.5);
-    opacity: 0;
-  }
-}
-
-
-
-@keyframes blePulse {
-  0%, 100% {
-    filter: drop-shadow(-2px 0 2px var(--pill-glow-color)) drop-shadow(2px 0 2px var(--pill-glow-color));
-    transform: scale(1);
-  }
-  50% {
-    filter: drop-shadow(-4px 0 8px var(--pill-glow-color)) drop-shadow(4px 0 8px var(--pill-glow-color));
-    transform: scale(1.1);
-  }
-}
-
-@keyframes pulsate {
-  0% {
-    filter: drop-shadow(-2px 0 2px var(--pill-glow-color)) drop-shadow(2px 0 4px var(--pill-glow-color));
-  }
-  100% {
-    filter: drop-shadow(-5px 0 7px var(--pill-glow-color)) drop-shadow(5px 0 7px var(--pill-glow-color));
-  }
-}
-
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
-  }
-  70% {
-    box-shadow: 0 0 0 15px rgba(255, 255, 255, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
-  }
-}
+/* Animations are now imported from animations.css */
 
 @keyframes slideUp {
   from {
@@ -402,98 +303,7 @@
   grid-auto-rows: minmax(110px, auto);
 }
 
-.mouth-state-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  background-color: var(--black3-color);
-  color: var(--white-color);
-  border: none;
-  border-radius: 16px;
-  cursor: pointer;
-  padding: 15px;
-  aspect-ratio: 1 / 1;
-  min-width: 100px;
-  width: 100%;
-  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-}
-
-.mouth-state-btn::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
-  transform: translate(-50%, -50%);
-  transition: width 0.4s, height 0.4s;
-}
-
-.mouth-state-btn:active::before {
-  width: 200px;
-  height: 200px;
-  transition: width 0s, height 0s;
-  animation: ripple 0.4s ease-out;
-}
-
-.mouth-state-btn:hover {
-  background-color: var(--black2-color);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-}
-
-.mouth-state-btn:active {
-  transform: scale(0.95);
-}
-
-.mouth-state-btn.active {
-  background-color: var(--white-color);
-  color: var(--black-color);
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-  transform: scale(1);
-  animation: pulse 2s infinite;
-}
-
-/* Placeholder button styling for mouth buttons */
-.mouth-state-btn.placeholder {
-  background-color: var(--black2-color);
-  border: 2px dashed var(--white2-color);
-  opacity: 0.7;
-}
-
-.mouth-state-btn.placeholder .placeholder-text {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--white-color);
-  text-align: center;
-  line-height: 1.2;
-  word-wrap: break-word;
-  max-width: 90%;
-  position: relative;
-  z-index: 1;
-}
-
-.mouth-state-btn.placeholder:hover {
-  opacity: 1;
-  border-color: var(--acc1-color);
-}
-
-/* Active placeholder button */
-.mouth-state-btn.placeholder.active {
-  background-color: var(--white-color);
-  border-color: var(--white-color);
-  opacity: 1;
-}
-
-.mouth-state-btn.placeholder.active .placeholder-text {
-  color: var(--black-color);
-}
+/* Mouth state buttons use shared .btn-base styles from components.css */
 
 /* Responsive adjustments */
 @media (max-width: 480px) {
@@ -523,14 +333,6 @@
     gap: 12px;
     grid-auto-rows: minmax(95px, auto);
   }
-
-  .mouth-state-btn {
-    padding: 12px;
-  }
-
-  .mouth-state-btn.placeholder .placeholder-text {
-    font-size: 0.75rem;
-  }
 }
 
 @media (min-width: 768px) {
@@ -559,14 +361,6 @@
     gap: 20px;
     grid-auto-rows: minmax(130px, auto);
   }
-
-  .mouth-state-btn {
-    padding: 15px;
-  }
-
-  .mouth-state-btn.placeholder .placeholder-text {
-    font-size: 1.1rem;
-  }
 }
 
 /* Expression Grid Layout - Fursuit Friendly */
@@ -578,46 +372,12 @@
   animation: fadeIn 800ms ease-in-out;
   grid-auto-rows: minmax(110px, auto);
 
+  /* Expression buttons use shared .btn-base styles from components.css */
   >button.exp-btn {
-    display: flex;
+    /* Center images properly - override .btn-base flex settings */
     justify-content: center;
     align-items: center;
-    background-color: var(--black3-color);
-    color: var(--white-color);
-    border: none;
-    border-radius: 16px;
-    cursor: pointer;
-    padding: 15px;
-    aspect-ratio: 1 / 1;
-
-    /* Fursuit-friendly: Large touch targets */
-    min-width: 100px;
-    width: 100%;
-
-    transition: all 300ms ease;
-    position: relative;
-    overflow: hidden;
-
-    /* Ripple effect container */
-    &::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.5);
-      transform: translate(-50%, -50%);
-      transition: width 0.6s, height 0.6s;
-    }
-
-    &:active::before {
-      width: 300px;
-      height: 300px;
-      transition: width 0s, height 0s;
-      animation: ripple 0.6s ease-out;
-    }
+    gap: 0; /* Remove gap for image-only buttons */
 
     >img {
       width: 70%;
@@ -630,61 +390,21 @@
         transform 300ms ease;
     }
 
-    /* Hover effect for desktop */
-    &:hover {
+    /* Adjust hover for scale instead of translateY - but not when active */
+    &:hover:not(.active) {
       transform: scale(1.05);
       background-color: var(--black2-color);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     }
 
-    /* Active/pressed state */
-    &:active {
-      transform: scale(0.95);
-    }
-  }
+    /* Active state: invert background and image */
+    &.active {
+      /* White background and pulse inherited from .btn-base.active */
 
-  /* Placeholder button styling */
-  >button.exp-btn.placeholder {
-    background-color: var(--black2-color);
-    border: 2px dashed var(--white2-color);
-    opacity: 0.7;
-
-    .placeholder-text {
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: var(--white-color);
-      text-align: center;
-      line-height: 1.2;
-      word-wrap: break-word;
-      max-width: 90%;
-    }
-
-    &:hover {
-      opacity: 1;
-      border-color: var(--acc1-color);
-    }
-  }
-
-  /* Active placeholder button */
-  >button.exp-btn.placeholder.active {
-    background-color: var(--white-color);
-    border-color: var(--white-color);
-    opacity: 1;
-
-    .placeholder-text {
-      color: var(--black-color);
-    }
-  }
-
-  >button.exp-btn.active {
-    background-color: var(--white-color);
-    color: var(--black-color);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-    transform: scale(1);
-    animation: pulse 2s infinite;
-
-    >img {
-      filter: invert(0);
-      transform: scale(1.1);
+      >img {
+        filter: invert(0);
+        transform: scale(1.1);
+      }
     }
   }
 }
@@ -696,15 +416,9 @@
     grid-auto-rows: minmax(95px, auto);
 
     >button.exp-btn {
-      padding: 12px;
-
       >img {
         max-width: 65px;
         max-height: 65px;
-      }
-
-      .placeholder-text {
-        font-size: 0.75rem;
       }
     }
   }
@@ -720,10 +434,6 @@
       >img {
         max-width: 100px;
         max-height: 100px;
-      }
-
-      .placeholder-text {
-        font-size: 1.1rem;
       }
     }
   }

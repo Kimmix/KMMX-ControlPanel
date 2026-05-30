@@ -1,3 +1,7 @@
+/* Import shared styles - must be at the top */
+@import url('animations.css');
+@import url('components.css');
+
 /* Global */
 
 :root {
@@ -120,14 +124,4 @@ button {
 .superscript {
   vertical-align: super;
   font-size: smaller;
-}
-
-/* Shared Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
 }
