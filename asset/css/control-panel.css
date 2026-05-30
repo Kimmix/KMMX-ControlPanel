@@ -1,15 +1,4 @@
-/* Animations are now imported from animations.css */
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+/* All animations are now imported from animations.css */
 
 /* Control Panel */
 .main-content {
