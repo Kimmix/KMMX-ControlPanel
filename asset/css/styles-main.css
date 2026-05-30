@@ -52,8 +52,8 @@
 html,
 body {
   overflow-anchor: none;
-  touch-action: manipulation;
-  scroll-behavior: smooth;
+  /* Allow native scroll on child elements */
+  touch-action: pan-y pinch-zoom;
   width: 100%;
   height: 100dvh;
   height: fill-available;
@@ -76,7 +76,6 @@ body {
   transform: translateZ(0);
   backface-visibility: hidden;
   perspective: 1000;
-  will-change: scroll-position;
 }
 
 img {

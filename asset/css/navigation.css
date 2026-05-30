@@ -114,9 +114,12 @@
   padding-bottom: 35vh;
   /* No padding-top so content can scroll behind header for blur effect */
 
-  /* Smooth scrolling */
-  scroll-behavior: smooth;
+  /* Native momentum scrolling (iOS/Android) */
   -webkit-overflow-scrolling: touch;
+
+  /* Native-like overscroll bounce effect */
+  overscroll-behavior-y: contain;
+  overscroll-behavior-x: none;
 
   /* Hide scrollbar */
   scrollbar-width: none;
@@ -128,6 +131,9 @@
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   will-change: scroll-position;
+
+  /* Touch optimization */
+  touch-action: pan-y;
 }
 
 .page-content-container::-webkit-scrollbar {

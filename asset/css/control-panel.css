@@ -175,8 +175,7 @@
   overflow-x: hidden;
   padding-bottom: 35vh;
 
-  /* Smooth scrolling */
-  scroll-behavior: smooth;
+  /* Native momentum scrolling (iOS/Android) */
   -webkit-overflow-scrolling: touch;
 
   /* Native-like overscroll bounce */
@@ -193,6 +192,9 @@
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   will-change: scroll-position;
+
+  /* Touch optimization */
+  touch-action: pan-y;
 }
 
 .expression-container::-webkit-scrollbar {

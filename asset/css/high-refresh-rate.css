@@ -9,6 +9,18 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Ensure all scrollable areas have native-like momentum scrolling */
+*[style*="overflow-y: auto"],
+*[style*="overflow: auto"],
+.page-content-container,
+.expression-container,
+.about-content,
+.settings-section {
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior-y: contain;
+  /* Remove scroll-behavior: smooth to allow native momentum scrolling */
+}
+
 /* Optimize interactive elements */
 button,
 a,
@@ -103,14 +115,18 @@ body {
 
 /* Optimize touch interactions */
 @media (hover: none) and (pointer: coarse) {
-  * {
-    touch-action: manipulation;
-  }
-  
+  /* Prevent double-tap zoom on buttons */
   button,
   a,
   [role="button"] {
     -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  /* Allow native momentum scrolling on scroll containers */
+  .page-content-container,
+  .expression-container {
+    touch-action: pan-y !important;
   }
 }
 
