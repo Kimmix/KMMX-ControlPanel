@@ -86,69 +86,36 @@ const expression = [
         src: null, // Placeholder - add icon later
     },
 ]
-document.getElementById('expBtnCount').textContent = expression.length;
 
-// Create expression buttons
-const expBtn = document.getElementById('exp-btn');
-expression.forEach(exp => {
-    const button = document.createElement('button');
-    button.id = exp.buttonId;
-    button.className = 'btn-base exp-btn';
-    button.onclick = () => toggleButton(exp.buttonId);
-
-    // Add placeholder class and text if no icon is available
-    if (!exp.src) {
-        button.classList.add('placeholder');
-        button.title = exp.name;
-
-        // Create text element for placeholder
-        const textSpan = document.createElement('span');
-        textSpan.className = 'placeholder-text';
-        textSpan.textContent = exp.name;
-        button.appendChild(textSpan);
-    } else {
-        const img = document.createElement('img');
-        img.src = exp.src;
-        img.alt = exp.name;
-        button.appendChild(img);
+// Create expression buttons using ButtonGrid component
+const expressionGrid = new ButtonGrid({
+    containerId: 'exp-btn',
+    items: expression,
+    buttonClass: 'exp-btn',
+    countElementId: 'expBtnCount',
+    initialActiveIndex: 0,
+    onClick: (item) => {
+        setEyeStateCharacteristic(item.id);
+        updateEyeStateDisplay(item.name);
+        vibrateDevice();
     }
-
-    expBtn.appendChild(button);
 });
 
-// Toggle button state
-let activeButton = null;
-async function toggleButton(btnId) {
-    const button = document.getElementById(btnId);
-    if (activeButton !== null && activeButton !== button) {
-        activeButton.classList.remove('active');
-    }
-    button.classList.add('active');
-    activeButton = button;
-    let selected = expression.find(({ buttonId }) => buttonId === btnId);
-    setEyeStateCharacteristic(selected.id);
-    setCurrentExpression(selected);
-}
-
 function setExpression(i) {
-    let button = expression.find(({ id }) => id === i);
-    if (!button) {
-        toggleButton(expression[0].buttonId)
-    } else {
-        toggleButton(button.buttonId)
+    expressionGrid.setActiveById(i);
+    const item = expression.find(({ id }) => id === i);
+    if (item) {
+        setEyeStateCharacteristic(item.id);
+        updateEyeStateDisplay(item.name);
+        vibrateDevice();
     }
 }
 
-let currentExp = 0;
-function setCurrentExpression(btn) {
-    // Update the dual status display for eye
+function updateEyeStateDisplay(name) {
     const currentEyeState = document.getElementById('currentEyeState');
     if (currentEyeState) {
-        currentEyeState.textContent = btn.name;
+        currentEyeState.textContent = name;
     }
-
-    // Provide haptic feedback
-    vibrateDevice();
 }
 
 //* --------- Control Mode Switching ---------
@@ -192,30 +159,72 @@ function switchControlMode(mode) {
 }
 
 //* --------- Mouth State ---------
-const mouthStateNames = ['IDLE', 'WAH', 'EH', 'POUT', 'DROOL'];
+const mouthStates = [
+    {
+        id: 0,
+        buttonId: 'mouth-btn-0',
+        name: 'IDLE',
+        subtitle: 'Default',
+        src: null
+    },
+    {
+        id: 1,
+        buttonId: 'mouth-btn-1',
+        name: 'WAH',
+        subtitle: 'Bouncy',
+        src: null
+    },
+    {
+        id: 2,
+        buttonId: 'mouth-btn-2',
+        name: 'EH',
+        subtitle: 'Meh',
+        src: null
+    },
+    {
+        id: 3,
+        buttonId: 'mouth-btn-3',
+        name: 'POUT',
+        subtitle: 'Sad',
+        src: null
+    },
+    {
+        id: 4,
+        buttonId: 'mouth-btn-4',
+        name: 'DROOL',
+        subtitle: 'Blep',
+        src: null
+    }
+];
+
+// Create mouth state buttons using ButtonGrid component
+const mouthStateGrid = new ButtonGrid({
+    containerId: 'mouthStateButtons',
+    items: mouthStates,
+    buttonClass: 'mouth-state-btn',
+    initialActiveIndex: 0,
+    onClick: (item) => {
+        setMouthStateCharacteristic(item.id);
+        updateMouthStateDisplay(item.name);
+        vibrateDevice();
+    }
+});
 
 function setMouthState(state) {
-    // Update BLE characteristic
-    setMouthStateCharacteristic(state);
-
-    // Update UI - remove active class from all buttons
-    const buttons = document.querySelectorAll('.mouth-state-btn');
-    buttons.forEach(btn => btn.classList.remove('active'));
-
-    // Add active class to selected button
-    const activeButton = document.querySelector(`.mouth-state-btn[data-state="${state}"]`);
-    if (activeButton) {
-        activeButton.classList.add('active');
+    mouthStateGrid.setActiveById(state);
+    const item = mouthStates.find(s => s.id === state);
+    if (item) {
+        setMouthStateCharacteristic(state);
+        updateMouthStateDisplay(item.name);
+        vibrateDevice();
     }
+}
 
-    // Update current state display in dual status
+function updateMouthStateDisplay(name) {
     const currentMouthState = document.getElementById('currentMouthState');
-    if (currentMouthState && state >= 0 && state < mouthStateNames.length) {
-        currentMouthState.textContent = mouthStateNames[state];
+    if (currentMouthState) {
+        currentMouthState.textContent = name;
     }
-
-    // Provide haptic feedback
-    vibrateDevice();
 }
 
 //* --------- Viseme ---------
