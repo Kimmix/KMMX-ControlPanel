@@ -1,3 +1,20 @@
+// Import utilities
+import { hexToRgb, rgbToHex, vibrateDevice } from './utils/helpers.js';
+
+// Make utilities globally available for non-module scripts
+window.hexToRgb = hexToRgb;
+window.rgbToHex = rgbToHex;
+// vibrateDevice is already exported by app.js
+
+// Functions that will be exposed globally for ble.js and HTML onclick handlers
+let setExpression, setViseme, setMouthState;
+let setHornLedBrightnessValue, setCheekPanelBrightnessValue;
+let setCheekBgColorValue, setCheekFadeColorValue;
+let setDisplayColorModeValue, setDisplayEffectColor1Value, setDisplayEffectColor2Value;
+let setDisplayEffectOption1Value, setDisplayEffectOption2Value, setDisplayEffectOption3Value;
+let setMotionEnableFlagsValue, setTapSensitivityValue, setGlitchIntensityValue;
+let switchControlMode, toggleViseme, setDisplayColorMode, toggleDirectionInvert;
+let resetCheekColors, resetDisplayColors, toggleMotionFeature, triggerGlitch;
 
 //* --------- Expression ---------
 const expression = [
@@ -101,7 +118,7 @@ const expressionGrid = new ButtonGrid({
     }
 });
 
-function setExpression(i) {
+setExpression = function(i) {
     expressionGrid.setActiveById(i);
     const item = expression.find(({ id }) => id === i);
     if (item) {
@@ -109,7 +126,8 @@ function setExpression(i) {
         updateEyeStateDisplay(item.name);
         vibrateDevice();
     }
-}
+};
+window.setExpression = setExpression;
 
 function updateEyeStateDisplay(name) {
     const currentEyeState = document.getElementById('currentEyeState');
@@ -121,7 +139,7 @@ function updateEyeStateDisplay(name) {
 //* --------- Control Mode Switching ---------
 let currentControlMode = 'eye'; // 'eye' or 'mouth'
 
-function switchControlMode(mode) {
+switchControlMode = function(mode) {
     // If clicking the same mode, just provide feedback and keep it active
     if (currentControlMode === mode) {
         vibrateDevice();
@@ -156,7 +174,8 @@ function switchControlMode(mode) {
 
     // Provide haptic feedback
     vibrateDevice();
-}
+};
+window.switchControlMode = switchControlMode;
 
 //* --------- Mouth State ---------
 const mouthStates = [
@@ -210,7 +229,7 @@ const mouthStateGrid = new ButtonGrid({
     }
 });
 
-function setMouthState(state) {
+setMouthState = function(state) {
     mouthStateGrid.setActiveById(state);
     const item = mouthStates.find(s => s.id === state);
     if (item) {
@@ -218,7 +237,8 @@ function setMouthState(state) {
         updateMouthStateDisplay(item.name);
         vibrateDevice();
     }
-}
+};
+window.setMouthState = setMouthState;
 
 function updateMouthStateDisplay(name) {
     const currentMouthState = document.getElementById('currentMouthState');
@@ -232,22 +252,24 @@ const visemeBtn = document.getElementById('visemeBtn');
 const visemeOn = document.getElementById('visemeOn');
 const visemeOff = document.getElementById('visemeOff');
 const visemeSilder = document.getElementById('vsmSlider');
-function toggleViseme() {
+toggleViseme = function() {
     visemeBtn.classList.toggle('active');
     visemeOn.classList.toggle('active');
     visemeOff.classList.toggle('active');
     visemeSilder.classList.toggle('disable');
     vibrateDevice();
     updateViseme();
-}
+};
+window.toggleViseme = toggleViseme;
 
-function setViseme(i) {
+setViseme = function(i) {
     if (i && !isVisemeOn()) {
         toggleViseme();
     } else if (!i && isVisemeOn()) {
         toggleViseme();
     }
-}
+};
+window.setViseme = setViseme;
 
 function updateViseme() {
     if (isVisemeOn()) {
@@ -344,9 +366,10 @@ const hornLedSlider = new Slider({
 });
 
 // Function to set value from BLE
-function setHornLedBrightnessValue(value) {
+setHornLedBrightnessValue = function(value) {
     hornLedSlider.setValue(value);
-}
+};
+window.setHornLedBrightnessValue = setHornLedBrightnessValue;
 
 //* --------- Cheek Panel Brightness Slider ---------
 const cheekPanelSlider = new Slider({
@@ -362,9 +385,10 @@ const cheekPanelSlider = new Slider({
 });
 
 // Function to set value from BLE
-function setCheekPanelBrightnessValue(value) {
+setCheekPanelBrightnessValue = function(value) {
     cheekPanelSlider.setValue(value);
-}
+};
+window.setCheekPanelBrightnessValue = setCheekPanelBrightnessValue;
 
 //* --------- Consolidated Resize Handler ---------
 // Resize handling is now managed by individual Slider components
@@ -374,21 +398,6 @@ const bgColorPicker = document.getElementById('bgColorPicker');
 const fadeColorPicker = document.getElementById('fadeColorPicker');
 const bgColorHex = document.getElementById('bgColorHex');
 const fadeColorHex = document.getElementById('fadeColorHex');
-
-// Helper function to convert hex to RGB
-function hexToRgb(hex) {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
-    } : null;
-}
-
-// Helper function to convert RGB to hex
-function rgbToHex(r, g, b) {
-    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
-}
 
 // Background color picker handler
 if (bgColorPicker) {
@@ -442,20 +451,22 @@ document.querySelectorAll('.color-preset-btn').forEach(btn => {
 });
 
 // Set color values from BLE (called when connecting to device)
-function setCheekBgColorValue(r, g, b) {
+setCheekBgColorValue = function(r, g, b) {
     const hex = rgbToHex(r, g, b);
     if (bgColorPicker) bgColorPicker.value = hex;
     if (bgColorHex) bgColorHex.textContent = hex;
-}
+};
+window.setCheekBgColorValue = setCheekBgColorValue;
 
-function setCheekFadeColorValue(r, g, b) {
+setCheekFadeColorValue = function(r, g, b) {
     const hex = rgbToHex(r, g, b);
     if (fadeColorPicker) fadeColorPicker.value = hex;
     if (fadeColorHex) fadeColorHex.textContent = hex;
-}
+};
+window.setCheekFadeColorValue = setCheekFadeColorValue;
 
 // Reset colors to default values
-function resetCheekColors() {
+resetCheekColors = function() {
     const defaultBgColor = '#FF446C';  // Default pink
     const defaultFadeColor = '#F9826C';  // Default coral
 
@@ -477,7 +488,8 @@ function resetCheekColors() {
 
     // Haptic feedback
     vibrateDevice();
-}
+};
+window.resetCheekColors = resetCheekColors;
 
 //* --------- Hub75 Display Color Controls ---------
 const gradientTopColorPicker = document.getElementById('gradientTopColorPicker');
@@ -533,7 +545,7 @@ const displayModeManager = new DisplayModeManager({
 });
 
 // Set display color mode (called when user changes mode)
-function setDisplayColorMode(mode) {
+setDisplayColorMode = function(mode) {
     // Update BLE characteristic
     setDisplayColorModeCharacteristic(mode);
 
@@ -542,13 +554,15 @@ function setDisplayColorMode(mode) {
 
     // Provide haptic feedback
     vibrateDevice();
-}
+};
+window.setDisplayColorMode = setDisplayColorMode;
 
 // Set color mode value from BLE (called when connecting to device)
-function setDisplayColorModeValue(mode) {
+setDisplayColorModeValue = function(mode) {
     // Update UI using DisplayModeManager (no BLE write, no haptic feedback)
     displayModeManager.updateUI(mode);
-}
+};
+window.setDisplayColorModeValue = setDisplayColorModeValue;
 
 // Update gradient preview (wrapper for DisplayModeManager)
 function updateGradientPreview(topColor, bottomColor, mode = null) {
@@ -613,22 +627,24 @@ document.querySelectorAll('.color-preset-btn[data-target^="gradient"]').forEach(
 });
 
 // Set display effect color values from BLE (called when connecting to device)
-function setDisplayEffectColor1Value(r, g, b) {
+setDisplayEffectColor1Value = function(r, g, b) {
     const hex = rgbToHex(r, g, b);
     gradientTopColorPicker.value = hex;
     gradientTopColorHex.textContent = hex;
     updateGradientPreview(hex, gradientBottomColorPicker.value);
-}
+};
+window.setDisplayEffectColor1Value = setDisplayEffectColor1Value;
 
-function setDisplayEffectColor2Value(r, g, b) {
+setDisplayEffectColor2Value = function(r, g, b) {
     const hex = rgbToHex(r, g, b);
     gradientBottomColorPicker.value = hex;
     gradientBottomColorHex.textContent = hex;
     updateGradientPreview(gradientTopColorPicker.value, hex);
-}
+};
+window.setDisplayEffectColor2Value = setDisplayEffectColor2Value;
 
 // Reset display colors to default values
-function resetDisplayColors() {
+resetDisplayColors = function() {
     const defaultTopColor = '#FFA393';  // Light peachy pink (RGB: 255, 163, 147)
     const defaultBottomColor = '#FF2B5B';  // Deep pink/red (RGB: 255, 43, 91)
     const defaultMode = 0;  // Gradient mode
@@ -657,7 +673,8 @@ function resetDisplayColors() {
 
     // Haptic feedback
     vibrateDevice();
-}
+};
+window.resetDisplayColors = resetDisplayColors;
 
 //* --------- Display Effect Option Controls ---------
 //* --------- Display Effect Option 1 Slider (Thickness) ---------
@@ -673,11 +690,12 @@ const displayEffectOption1Slider = dualSpiralThicknessSlider ? new Slider({
 }) : null;
 
 // Set Display Effect Option 1 value from BLE (called when connecting to device)
-function setDisplayEffectOption1Value(value) {
+setDisplayEffectOption1Value = function(value) {
     if (displayEffectOption1Slider) {
         displayEffectOption1Slider.setValue(value);
     }
-}
+};
+window.setDisplayEffectOption1Value = setDisplayEffectOption1Value;
 
 //* --------- Display Effect Option 2 Slider (Speed) ---------
 // Option2 is used for Speed in modes 4 (Dual Spiral) and 5 (Dual Circle)
@@ -692,14 +710,15 @@ const displayEffectOption2Slider = dualCircleThicknessSlider ? new Slider({
 }) : null;
 
 // Set Display Effect Option 2 value from BLE (called when connecting to device)
-function setDisplayEffectOption2Value(value) {
+setDisplayEffectOption2Value = function(value) {
     if (displayEffectOption2Slider) {
         displayEffectOption2Slider.setValue(value);
     }
-}
+};
+window.setDisplayEffectOption2Value = setDisplayEffectOption2Value;
 
 // Effect Option 3 (Direction/Invert) toggle function
-function toggleDirectionInvert() {
+toggleDirectionInvert = function() {
     const checkbox = document.getElementById('directionInvertToggle');
     const isInverted = checkbox.checked;
     const value = isInverted ? 1 : 0;
@@ -712,17 +731,19 @@ function toggleDirectionInvert() {
     // Send to BLE
     setDisplayEffectOption3Characteristic(value);
     vibrateDevice();
-}
+};
+window.toggleDirectionInvert = toggleDirectionInvert;
 
 // Set Display Effect Option 3 value from BLE (called when connecting to device)
 // Option3 is used for Direction/Invert in modes 4 (Dual Spiral) and 5 (Dual Circle)
-function setDisplayEffectOption3Value(value) {
+setDisplayEffectOption3Value = function(value) {
     const checkbox = document.getElementById('directionInvertToggle');
     if (checkbox && directionInvertText) {
         checkbox.checked = (value === 1);
         directionInvertText.textContent = (value === 1) ? 'Inverted' : 'Normal';
     }
-}
+};
+window.setDisplayEffectOption3Value = setDisplayEffectOption3Value;
 
 // --------- Motion Detection & Glitch Control ---------
 
@@ -738,7 +759,7 @@ const MOTION_FLAGS = {
 };
 
 // Toggle individual motion feature
-function toggleMotionFeature(featureBit) {
+toggleMotionFeature = function(featureBit) {
     // Toggle the bit
     motionEnableFlags ^= (1 << featureBit);
 
@@ -752,7 +773,8 @@ function toggleMotionFeature(featureBit) {
     vibrateDevice();
 
     console.log(`Motion feature ${featureBit} toggled. New flags: 0x${motionEnableFlags.toString(16)}`);
-}
+};
+window.toggleMotionFeature = toggleMotionFeature;
 
 // Update motion feature button UI
 function updateMotionFeatureUI(featureBit) {
@@ -774,7 +796,7 @@ function updateMotionFeatureUI(featureBit) {
 }
 
 // Set motion enable flags value from BLE (called when connecting to device)
-function setMotionEnableFlagsValue(value) {
+setMotionEnableFlagsValue = function(value) {
     motionEnableFlags = value;
 
     // Update all button states
@@ -783,7 +805,8 @@ function setMotionEnableFlagsValue(value) {
     }
 
     console.log(`Motion enable flags set to: 0x${motionEnableFlags.toString(16)}`);
-}
+};
+window.setMotionEnableFlagsValue = setMotionEnableFlagsValue;
 
 // Tap Sensitivity slider
 const tapSensitivitySlider = document.getElementById('tapSensitivitySlider');
@@ -817,12 +840,13 @@ function updateTapSensitivitySlider(value) {
 }
 
 // Set tap sensitivity value from BLE (called when connecting to device)
-function setTapSensitivityValue(value) {
+setTapSensitivityValue = function(value) {
     if (tapSensitivitySlider && tapSensitivityValue) {
         tapSensitivitySlider.value = value;
         updateTapSensitivitySlider(value);
     }
-}
+};
+window.setTapSensitivityValue = setTapSensitivityValue;
 
 // Glitch Intensity slider (for automatic glitches)
 const glitchIntensitySlider = document.getElementById('glitchIntensitySlider');
@@ -856,12 +880,13 @@ function updateGlitchIntensitySlider(value) {
 }
 
 // Set glitch intensity value from BLE (called when connecting to device)
-function setGlitchIntensityValue(value) {
+setGlitchIntensityValue = function(value) {
     if (glitchIntensitySlider && glitchIntensityValue) {
         glitchIntensitySlider.value = value;
         updateGlitchIntensitySlider(value);
     }
-}
+};
+window.setGlitchIntensityValue = setGlitchIntensityValue;
 
 // Manual Glitch Intensity slider (for trigger button)
 const manualGlitchIntensitySlider = document.getElementById('manualGlitchIntensitySlider');
@@ -894,7 +919,7 @@ function updateManualGlitchIntensitySlider(value) {
 }
 
 // Trigger Glitch Effect
-function triggerGlitch() {
+triggerGlitch = function() {
     const intensity = manualGlitchIntensitySlider ? parseInt(manualGlitchIntensitySlider.value) : 50;
 
     // Send glitch trigger to BLE
@@ -913,4 +938,5 @@ function triggerGlitch() {
     vibrateDevice();
 
     console.log(`Glitch triggered with intensity: ${intensity}`);
-}
+};
+window.triggerGlitch = triggerGlitch;

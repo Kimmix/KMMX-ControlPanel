@@ -1,3 +1,10 @@
+// Import utilities
+import { vibrateDevice, clamp } from './utils/helpers.js';
+
+// Make utilities globally available for non-module scripts
+window.vibrateDevice = vibrateDevice;
+window.clamp = clamp;
+
 //! Show main page
 document.addEventListener('DOMContentLoaded', async function () {
     const splash = document.getElementById('splash');
@@ -50,6 +57,7 @@ async function startBLEWithProgress() {
         }, 2000);
     }
 }
+window.startBLEWithProgress = startBLEWithProgress;
 
 //? Update progress bar and loader text
 function updateProgress(percent, text) {
@@ -63,6 +71,7 @@ function updateProgress(percent, text) {
         loaderProgress.textContent = text;
     }
 }
+window.updateProgress = updateProgress;
 
 //? Check BLE compatibility
 try {
@@ -78,12 +87,7 @@ document.addEventListener("visibilitychange", () => {
     favicon.setAttribute("href", `/favicon${hidden ? "-hidden" : ""}.png`)
 })
 
-//? Device vibrate
-function vibrateDevice() {
-    if (navigator.vibrate) {
-        navigator.vibrate(10);
-    }
-}
+// vibrateDevice() is now imported from utils/helpers.js
 
 //? Timer
 let isConnected = true;
@@ -143,6 +147,7 @@ function isStatusConnected(bool) {
         }
     }
 }
+window.isStatusConnected = isStatusConnected;
 
 //? Store full device ID for toggling
 let fullDeviceId = null;
@@ -192,6 +197,7 @@ function updateDeviceInfo(device) {
         isShowingFullId = false;
     }
 }
+window.updateDeviceInfo = updateDeviceInfo;
 
 //? Toggle between short and full device ID
 function toggleDeviceId() {
@@ -216,6 +222,7 @@ function toggleDeviceId() {
         isShowingFullId = true;
     }
 }
+window.toggleDeviceId = toggleDeviceId;
 
 //? Update timer in stats
 function updateStatusAndTimer() {
@@ -278,6 +285,7 @@ function skipPairing(event) {
 
     console.log('Pairing skipped - running in offline mode');
 }
+window.skipPairing = skipPairing;
 
 //? Disconnect Popup
 function showDisconnectPopup() {
@@ -287,6 +295,7 @@ function showDisconnectPopup() {
         vibrateDevice();
     }
 }
+window.showDisconnectPopup = showDisconnectPopup;
 
 //* ------- Gyroscope ---------
 // Initialize gyroscope after DOM is ready
@@ -314,9 +323,7 @@ document.addEventListener('DOMContentLoaded', function() {
         element.style.transform = "translate(" + yRotation + "px, " + xRotation + "px)";
     }
 
-    function clamp(value, min, max) {
-        return Math.min(Math.max(value, min), max);
-    }
+    // clamp() is now imported from utils/helpers.js and available globally
 
     // Add event listener for device orientation
     window.addEventListener("deviceorientation", handleOrientation);
@@ -342,6 +349,7 @@ function toggleBLECharacteristics() {
     // Vibrate on toggle
     vibrateDevice();
 }
+window.toggleBLECharacteristics = toggleBLECharacteristics;
 
 //* ------- Debug Info ---------
 function toggleDebugInfo() {
@@ -362,6 +370,7 @@ function toggleDebugInfo() {
     // Vibrate on toggle
     vibrateDevice();
 }
+window.toggleDebugInfo = toggleDebugInfo;
 
 async function populateDebugInfo() {
     // Display Mode (PWA detection)
@@ -398,21 +407,7 @@ function getDisplayMode() {
     return 'Browser';
 }
 
-//? Haptic Feedback Patterns
-function vibrateDevice(pattern = 'light') {
-    if (!navigator.vibrate) return;
-
-    const patterns = {
-        light: 30,           // Quick tap
-        medium: 50,          // Button press
-        heavy: 80,           // Important action
-        success: [30, 80, 30], // Double tap
-        error: [50, 120, 50, 120, 50], // Triple pulse
-        long: 100            // Long press
-    };
-
-    navigator.vibrate(patterns[pattern] || patterns.light);
-}
+// vibrateDevice() with pattern support is now imported from utils/helpers.js
 
 //? BLE Write Visual Feedback
 function triggerBLEWriteFeedback() {
