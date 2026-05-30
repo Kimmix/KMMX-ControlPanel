@@ -1,27 +1,64 @@
 {
   "name": "KMMX Control Panel",
   "short_name": "KMMX-Control",
-  "start_url": "index.html",
+  "description": "KMMX BLE Control Panel - Control your KMMX Fursuit via Bluetooth",
+  "start_url": "/",
+  "scope": "/",
   "display": "fullscreen",
   "background_color": "#0b0b0c",
   "theme_color": "#f9826c",
   "orientation": "portrait-primary",
+  "categories": ["entertainment", "utilities"],
   "icons": [
     {
       "src": "favicon.png",
       "type": "image/png",
-      "sizes": "250x250"
+      "sizes": "250x250",
+      "purpose": "any"
     },
     {
       "src": "asset/maskable_icon.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "maskable"
     },
     {
-      "src": "icon-pwa/png",
-      "sizes": "250x250",
+      "src": "favicon.png",
       "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "asset/maskable_icon.png",
+      "type": "image/png",
+      "sizes": "512x512",
       "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Connect Device",
+      "short_name": "Connect",
+      "description": "Quick connect to KMMX device",
+      "url": "/",
+      "icons": [
+        {
+          "src": "favicon.png",
+          "sizes": "250x250"
+        }
+      ]
+    },
+    {
+      "name": "Settings",
+      "short_name": "Settings",
+      "description": "Open device settings",
+      "url": "/?page=settings",
+      "icons": [
+        {
+          "src": "favicon.png",
+          "sizes": "250x250"
+        }
+      ]
     }
   ]
 }
