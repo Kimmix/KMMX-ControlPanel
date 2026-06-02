@@ -434,12 +434,12 @@ async function startBLE() {
 
   } catch (error) {
     // Silently handle user cancellation (when they close the pairing dialog)
-    if (error.name === 'NotFoundError' || error.message?.includes('User cancelled')) {
+    if (error.name === 'NotFoundError' && error.message?.includes('User cancelled the requestDevice() chooser')) {
       console.log('User cancelled device selection');
       return;
     }
 
-    // Show alert for other errors
+    // Show alert for all other errors (including other NotFoundError types)
     console.error('Error:', error);
     alert(error);
   }
