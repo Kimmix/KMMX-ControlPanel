@@ -61,7 +61,10 @@ jobs:
             if [ -f "$file" ]; then
               filename=$(basename "$file")
               echo "Processing: $filename"
-              cleancss -o "$file.tmp" "$file" && mv "$file.tmp" "$file" || echo "Failed to minify $filename"
+              # Use level 1 optimization (safe, no structural changes)
+              cleancss \
+                --level 1 \
+                -o "$file.tmp" "$file" && mv "$file.tmp" "$file" || echo "Failed to minify $filename"
             fi
           done
           echo "CSS minification complete"
@@ -93,11 +96,12 @@ jobs:
           echo "Starting HTML minification..."
           html-minifier-terser \
             --collapse-whitespace \
+            --conservative-collapse \
             --remove-comments \
             --minify-css true \
             --minify-js true \
-            --remove-script-type-attributes \
-            --use-short-doctype \
+            --keep-closing-slash \
+            --preserve-line-breaks \
             -o index.html.tmp \
             index.html
 
