@@ -1,7 +1,7 @@
 /**
  * ButtonGrid Component
  * Reusable component for creating button grids with icon or placeholder support
- * 
+ *
  * Features:
  * - Automatic button creation from data array
  * - Icon or placeholder text support
@@ -20,7 +20,6 @@ class ButtonGrid {
    * @param {string} config.items[].buttonId - DOM ID for the button element
    * @param {string} config.items[].name - Display name for the button
    * @param {string} [config.items[].src] - Optional icon source path
-   * @param {string} [config.items[].subtitle] - Optional subtitle for placeholder text
    * @param {Function} config.onClick - Click handler function (receives item object)
    * @param {string} [config.buttonClass='exp-btn'] - Additional CSS class for buttons
    * @param {string} [config.countElementId] - Optional ID of element to display button count
@@ -88,14 +87,7 @@ class ButtonGrid {
       // Create text element for placeholder
       const textSpan = document.createElement('span');
       textSpan.className = 'placeholder-text';
-      
-      // Add subtitle if provided (for multi-line placeholders)
-      if (item.subtitle) {
-        textSpan.innerHTML = `${item.name}<br><small>${item.subtitle}</small>`;
-      } else {
-        textSpan.textContent = item.name;
-      }
-      
+      textSpan.textContent = item.name;
       button.appendChild(textSpan);
     } else {
       // Create image element for icon
@@ -115,7 +107,7 @@ class ButtonGrid {
   handleClick(item) {
     const buttonId = item.buttonId;
     this.setActive(buttonId);
-    
+
     // Call the custom onClick handler
     if (this.onClick) {
       this.onClick(item);
