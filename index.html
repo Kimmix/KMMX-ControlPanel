@@ -606,6 +606,14 @@
                     </svg>
                     Upside Down
                   </button>
+                  <button id="boopToggleBtn" class="display-color-mode-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                      style="width: 18px; height: 18px; margin-right: 6px;">
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                    Boop Toggle
+                  </button>
                 </div>
               </div>
 
@@ -821,6 +829,27 @@
                       <span class="ble-char-value" id="ble-displayeffectoption3">-</span>
                     </div>
                     <span class="ble-char-uuid">UUID: f7a8b9c0-d1e2-4f5a-b2c3-4d5e6f7a8b9c</span>
+                  </div>
+                  <div class="ble-char-item">
+                    <div class="ble-char-header">
+                      <span class="ble-char-name">Motion Enable Flags</span>
+                      <span class="ble-char-value" id="ble-motionenableflags">-</span>
+                    </div>
+                    <span class="ble-char-uuid">UUID: a1a2a3a4-b1b2-4c1c-d1d2-e1e2e3e4e5f2</span>
+                  </div>
+                  <div class="ble-char-item">
+                    <div class="ble-char-header">
+                      <span class="ble-char-name">Tap Sensitivity</span>
+                      <span class="ble-char-value" id="ble-tapsensitivity">-</span>
+                    </div>
+                    <span class="ble-char-uuid">UUID: a1a2a3a4-b1b2-4c1c-d1d2-e1e2e3e4e5f3</span>
+                  </div>
+                  <div class="ble-char-item">
+                    <div class="ble-char-header">
+                      <span class="ble-char-name">Glitch Intensity</span>
+                      <span class="ble-char-value" id="ble-glitchintensity">-</span>
+                    </div>
+                    <span class="ble-char-uuid">UUID: a1a2a3a4-b1b2-4c1c-d1d2-e1e2e3e4e5f4</span>
                   </div>
                 </div>
                 <button id="refreshBleBtn" class="refresh-ble-button" onclick="refreshBLECharacteristics()" disabled>

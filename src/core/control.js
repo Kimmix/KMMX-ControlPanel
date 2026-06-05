@@ -660,7 +660,8 @@ const MOTION_FLAGS = {
     TAP_DETECTION: 0,      // Bit 0 (0x01)
     PETTING_DETECTION: 1,  // Bit 1 (0x02)
     TILT_DETECTION: 2,     // Bit 2 (0x04)
-    UPSIDE_DOWN: 3         // Bit 3 (0x08)
+    UPSIDE_DOWN: 3,        // Bit 3 (0x08)
+    BOOP_TOGGLE: 4         // Bit 4 (0x10)
 };
 
 // Event delegation for motion feature buttons
@@ -669,11 +670,12 @@ const motionFeatureButtonMap = {
     'tapDetectionBtn': 0,
     'pettingDetectionBtn': 1,
     'tiltDetectionBtn': 2,
-    'upsideDownDetectionBtn': 3
+    'upsideDownDetectionBtn': 3,
+    'boopToggleBtn': 4
 };
 
 document.addEventListener('click', (e) => {
-    const btn = e.target.closest('#tapDetectionBtn, #pettingDetectionBtn, #tiltDetectionBtn, #upsideDownDetectionBtn');
+    const btn = e.target.closest('#tapDetectionBtn, #pettingDetectionBtn, #tiltDetectionBtn, #upsideDownDetectionBtn, #boopToggleBtn');
     if (!btn || !btn.id || !(btn.id in motionFeatureButtonMap)) return;
 
     const featureBit = motionFeatureButtonMap[btn.id];
@@ -704,7 +706,8 @@ function updateMotionFeatureUI(featureBit) {
         document.getElementById('tapDetectionBtn'),
         document.getElementById('pettingDetectionBtn'),
         document.getElementById('tiltDetectionBtn'),
-        document.getElementById('upsideDownDetectionBtn')
+        document.getElementById('upsideDownDetectionBtn'),
+        document.getElementById('boopToggleBtn')
     ];
 
     if (buttons[featureBit]) {
@@ -722,7 +725,7 @@ setMotionEnableFlagsValue = function(value) {
     motionEnableFlags = value;
 
     // Update all button states
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 5; i++) {
         updateMotionFeatureUI(i);
     }
 
