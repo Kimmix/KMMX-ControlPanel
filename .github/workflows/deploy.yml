@@ -51,42 +51,26 @@ jobs:
         run: |
           echo "=== File sizes BEFORE minification ==="
           echo "HTML: $(wc -c < index.html) bytes"
-          echo "CSS total: $(find asset/css -name "*.css" -exec wc -c {} + | tail -1 | awk '{print $1}') bytes"
           echo "JS total: $(find . -name "*.js" -not -path "./node_modules/*" -exec wc -c {} + | tail -1 | awk '{print $1}') bytes"
 
-      - name: Minify CSS files
+      - name: Skip CSS minification
         run: |
-          echo "Starting CSS minification..."
-          for file in asset/css/*.css; do
-            if [ -f "$file" ]; then
-              filename=$(basename "$file")
-              echo "Processing: $filename"
-              # Use basic minification (safe)
-              cleancss -o "$file.tmp" "$file"
-              if [ -f "$file.tmp" ]; then
-                mv "$file.tmp" "$file"
-                echo "✓ Minified: $filename"
-              else
-                echo "✗ Failed to minify $filename"
-              fi
-            fi
-          done
-          echo "CSS minification complete"
+          echo "CSS minification skipped (preserving nested CSS syntax)"
 
       - name: Minify JavaScript files
         run: |
           echo "Starting JavaScript minification..."
 
-          # Minify src directory JS files
+          # Minify src directory JS files using find with -exec
           if [ -d "src" ]; then
-            find src -name "*.js" -type f | while read file; do
+            find src -name "*.js" -type f -print0 | while IFS= read -r -d '' file; do
               echo "Processing: $file"
-              terser "$file" -o "$file.tmp" --compress --mangle
-              if [ -f "$file.tmp" ]; then
-                mv "$file.tmp" "$file"
+              if terser "$file" --compress --mangle --output "$file.min.js"; then
+                mv "$file.min.js" "$file"
                 echo "✓ Minified: $file"
               else
                 echo "✗ Failed to minify $file"
+                rm -f "$file.min.js"
               fi
             done
           fi
@@ -95,17 +79,25 @@ jobs:
           for file in *.js; do
             if [ -f "$file" ]; then
               echo "Processing: $file"
-              terser "$file" -o "$file.tmp" --compress --mangle
-              if [ -f "$file.tmp" ]; then
-                mv "$file.tmp" "$file"
+              if terser "$file" --compress --mangle --output "$file.min.js"; then
+                mv "$file.min.js" "$file"
                 echo "✓ Minified: $file"
               else
                 echo "✗ Failed to minify $file"
+                rm -f "$file.min.js"
               fi
             fi
           done
 
           echo "JavaScript minification complete"
+
+          # Verify minification worked
+          echo "Checking if files are minified..."
+          if grep -q "async function connectToDevice" sw.js; then
+            echo "⚠️  WARNING: sw.js appears to still be formatted (not minified)"
+          else
+            echo "✓ sw.js appears minified"
+          fi
 
       - name: Minify HTML
         run: |
@@ -139,7 +131,6 @@ jobs:
         run: |
           echo "=== File sizes AFTER minification ==="
           echo "HTML: $(wc -c < index.html) bytes"
-          echo "CSS total: $(find asset/css -name "*.css" -exec wc -c {} + | tail -1 | awk '{print $1}') bytes"
           echo "JS total: $(find . -name "*.js" -not -path "./node_modules/*" -exec wc -c {} + | tail -1 | awk '{print $1}') bytes"
 
       - name: Setup Pages
