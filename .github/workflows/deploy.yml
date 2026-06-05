@@ -47,59 +47,80 @@ jobs:
           sed -i "s/\/\/ Version [0-9.]\+/\/\/ Version $CACHE_VER/g" sw.js
           echo "Cache version updated to: $CACHE_VER"
 
-      - name: Inject build date into HTML
+      - name: Check file sizes before minification
         run: |
-          sed -i "s/__BUILD_DATE__/${{ steps.date.outputs.BUILD_DATE }}/g" index.html
-          echo "Build date injected: ${{ steps.date.outputs.BUILD_DATE }}"
+          echo "=== File sizes BEFORE minification ==="
+          echo "HTML: $(wc -c < index.html) bytes"
+          echo "CSS total: $(find asset/css -name "*.css" -exec wc -c {} + | tail -1 | awk '{print $1}') bytes"
+          echo "JS total: $(find . -name "*.js" -not -path "./node_modules/*" -exec wc -c {} + | tail -1 | awk '{print $1}') bytes"
 
       - name: Minify CSS files
         run: |
-          mkdir -p asset/css-min
+          echo "Starting CSS minification..."
           for file in asset/css/*.css; do
-            filename=$(basename "$file")
-            cleancss -o "asset/css-min/$filename" "$file"
-            echo "Minified: $filename"
+            if [ -f "$file" ]; then
+              filename=$(basename "$file")
+              echo "Processing: $filename"
+              cleancss -o "$file.tmp" "$file" && mv "$file.tmp" "$file" || echo "Failed to minify $filename"
+            fi
           done
-          # Replace original with minified
-          mv asset/css-min/* asset/css/
-          rm -rf asset/css-min
+          echo "CSS minification complete"
 
       - name: Minify JavaScript files
         run: |
-          # Minify main scripts
-          find src -name "*.js" -type f -exec sh -c '
-            for file; do
-              terser "$file" -o "$file.min" --compress --mangle
-              mv "$file.min" "$file"
-              echo "Minified: $file"
-            done
-          ' sh {} +
+          echo "Starting JavaScript minification..."
 
-          # Minify root JS files
+          # Minify src directory JS files
+          if [ -d "src" ]; then
+            find src -name "*.js" -type f | while read file; do
+              echo "Processing: $file"
+              terser "$file" -o "$file.tmp" --compress --mangle && mv "$file.tmp" "$file" || echo "Failed to minify $file"
+            done
+          fi
+
+          # Minify root JS files (carousel.js, sw.js)
           for file in *.js; do
             if [ -f "$file" ]; then
-              terser "$file" -o "$file.min" --compress --mangle
-              mv "$file.min" "$file"
-              echo "Minified: $file"
+              echo "Processing: $file"
+              terser "$file" -o "$file.tmp" --compress --mangle && mv "$file.tmp" "$file" || echo "Failed to minify $file"
             fi
           done
 
+          echo "JavaScript minification complete"
+
       - name: Minify HTML
         run: |
+          echo "Starting HTML minification..."
           html-minifier-terser \
             --collapse-whitespace \
             --remove-comments \
             --minify-css true \
             --minify-js true \
-            --remove-optional-tags \
-            --remove-redundant-attributes \
             --remove-script-type-attributes \
-            --remove-tag-whitespace \
             --use-short-doctype \
-            -o index.html.min \
+            -o index.html.tmp \
             index.html
-          mv index.html.min index.html
-          echo "HTML minified"
+
+          if [ -f "index.html.tmp" ]; then
+            mv index.html.tmp index.html
+            echo "HTML minified successfully"
+          else
+            echo "HTML minification failed, using original"
+          fi
+
+      - name: Inject build date into HTML (after minification)
+        run: |
+          sed -i "s/__BUILD_DATE__/${{ steps.date.outputs.BUILD_DATE }}/g" index.html
+          echo "Build date injected: ${{ steps.date.outputs.BUILD_DATE }}"
+          # Verify it was replaced
+          grep "Build:" index.html || echo "WARNING: Build date not found in HTML"
+
+      - name: Check file sizes after minification
+        run: |
+          echo "=== File sizes AFTER minification ==="
+          echo "HTML: $(wc -c < index.html) bytes"
+          echo "CSS total: $(find asset/css -name "*.css" -exec wc -c {} + | tail -1 | awk '{print $1}') bytes"
+          echo "JS total: $(find . -name "*.js" -not -path "./node_modules/*" -exec wc -c {} + | tail -1 | awk '{print $1}') bytes"
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
