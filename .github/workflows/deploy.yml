@@ -1,0 +1,114 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # Change to 'master' if that's your default branch
+  workflow_dispatch:  # Allows manual trigger from Actions tab
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get current date and version
+        id: date
+        run: |
+          echo "BUILD_DATE=$(date +'%B %d, %Y')" >> $GITHUB_OUTPUT
+          echo "CACHE_VERSION=v$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install minification tools
+        run: npm install -g html-minifier-terser clean-css-cli terser
+
+      - name: Update service worker cache version
+        run: |
+          CACHE_VER="${{ steps.date.outputs.CACHE_VERSION }}"
+          sed -i "s/const CACHE_NAME = 'kmmx-control-v[^']*'/const CACHE_NAME = 'kmmx-control-$CACHE_VER'/g" sw.js
+          sed -i "s/const RUNTIME_CACHE = 'kmmx-runtime-v[^']*'/const RUNTIME_CACHE = 'kmmx-runtime-$CACHE_VER'/g" sw.js
+          sed -i "s/\/\/ Version [0-9.]\+/\/\/ Version $CACHE_VER/g" sw.js
+          echo "Cache version updated to: $CACHE_VER"
+
+      - name: Inject build date into HTML
+        run: |
+          sed -i "s/__BUILD_DATE__/${{ steps.date.outputs.BUILD_DATE }}/g" index.html
+          echo "Build date injected: ${{ steps.date.outputs.BUILD_DATE }}"
+
+      - name: Minify CSS files
+        run: |
+          mkdir -p asset/css-min
+          for file in asset/css/*.css; do
+            filename=$(basename "$file")
+            cleancss -o "asset/css-min/$filename" "$file"
+            echo "Minified: $filename"
+          done
+          # Replace original with minified
+          mv asset/css-min/* asset/css/
+          rm -rf asset/css-min
+
+      - name: Minify JavaScript files
+        run: |
+          # Minify main scripts
+          find src -name "*.js" -type f -exec sh -c '
+            for file; do
+              terser "$file" -o "$file.min" --compress --mangle
+              mv "$file.min" "$file"
+              echo "Minified: $file"
+            done
+          ' sh {} +
+
+          # Minify root JS files
+          for file in *.js; do
+            if [ -f "$file" ]; then
+              terser "$file" -o "$file.min" --compress --mangle
+              mv "$file.min" "$file"
+              echo "Minified: $file"
+            fi
+          done
+
+      - name: Minify HTML
+        run: |
+          html-minifier-terser \
+            --collapse-whitespace \
+            --remove-comments \
+            --minify-css true \
+            --minify-js true \
+            --remove-optional-tags \
+            --remove-redundant-attributes \
+            --remove-script-type-attributes \
+            --remove-tag-whitespace \
+            --use-short-doctype \
+            -o index.html.min \
+            index.html
+          mv index.html.min index.html
+          echo "HTML minified"
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
