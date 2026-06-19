@@ -130,3 +130,124 @@
     font-size: 1.1rem;
   }
 }
+
+/* Fan Control Styles (V4 Only) */
+.v4-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--acc1-color), var(--acc2-color));
+  color: var(--black-color);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 12px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.fan-control-card {
+  background-color: var(--black3-color);
+  border-radius: 16px;
+  padding: 20px;
+  margin-top: 15px;
+}
+
+.fan-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+}
+
+#fanIcon {
+  color: var(--white-color);
+  transition: all 0.3s ease;
+}
+
+/* Fan spin animation */
+@keyframes fan-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.fan-speed-container {
+  transition: opacity 0.3s ease;
+}
+
+.fan-status-container {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  padding: 15px;
+}
+
+.fan-status-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.fan-status-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.fan-rpm-display {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--acc1-color);
+  font-variant-numeric: tabular-nums;
+}
+
+.fan-connection-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.connection-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.connection-dot.connected {
+  background-color: #00ff88;
+  box-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+}
+
+.connection-dot.disconnected {
+  background-color: #ff4444;
+  box-shadow: 0 0 8px rgba(255, 68, 68, 0.6);
+  animation: none;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.connection-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--white-color);
+}
+
+/* Responsive fan control */
+@media (max-width: 480px) {
+  .fan-status-row {
+    gap: 15px;
+  }
+
+  .fan-rpm-display {
+    font-size: 1.5rem;
+  }
+}

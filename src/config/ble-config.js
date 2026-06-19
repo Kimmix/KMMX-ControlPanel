@@ -4,7 +4,6 @@
  */
 
 export const bleUUID = {
-  name: "KMMX-BLE",
   service: "c1449275-bf34-40ab-979d-e34a1fdbb129",
   characteristic: {
     display: "9fdfd124-966b-44f7-8331-778c4d1512fc",
@@ -25,7 +24,25 @@ export const bleUUID = {
     glitchTrigger: "a1a2a3a4-b1b2-4c1c-d1d2-e1e2e3e4e5f1",
     motionEnableFlags: "a1a2a3a4-b1b2-4c1c-d1d2-e1e2e3e4e5f2",
     tapSensitivity: "a1a2a3a4-b1b2-4c1c-d1d2-e1e2e3e4e5f3",
-    glitchIntensity: "a1a2a3a4-b1b2-4c1c-d1d2-e1e2e3e4e5f4"
+    glitchIntensity: "a1a2a3a4-b1b2-4c1c-d1d2-e1e2e3e4e5f4",
+    // Fan Control (V4 Only)
+    fanSpeed: "f1f2f3f4-a1a2-4b1b-c1c2-d1d2d3d4d5f1",
+    fanEnabled: "f1f2f3f4-a1a2-4b1b-c1c2-d1d2d3d4d5f2",
+    fanRPM: "f1f2f3f4-a1a2-4b1b-c1c2-d1d2d3d4d5f3",
+    fanConnected: "f1f2f3f4-a1a2-4b1b-c1c2-d1d2d3d4d5f4",
+    // Viseme Advanced Parameters
+    visemeEnvelopeAttack: "d1e2f3a4-b5c6-47d8-9e0f-1a2b3c4d5e6f",
+    visemeEnvelopeRelease: "d2e3f4a5-b6c7-48d9-9f0a-1b2c3d4e5f6a",
+    visemeAttackThreshold: "d3e4f5a6-b7c8-49da-a0b1-2c3d4e5f6a7b",
+    visemeMinSeparation: "d4e5f6a7-b8c9-4adb-a1b2-3d4e5f6a7b8c",
+    visemeNoiseFloorMin: "d6e7f8a9-bacb-4cdd-a3b4-5f6a7b8c9d0e",
+    visemeNoiseFloorMax: "d7e8f9aa-bbcc-4dde-a4b5-6a7b8c9d0e1f",
+    visemeNoiseAdaptSpeed: "d8e9faab-bccd-4edf-a5b6-7b8c9d0e1f2a",
+    visemeAHScale: "d9eafbac-bdce-4fe0-a6b7-8c9d0e1f2a3b",
+    visemeEEScale: "dafbfcad-becf-4ae1-a7b8-9d0e1f2a3b4c",
+    visemeOHScale: "dbfcfdae-bfd0-4be2-a8b9-0e1f2a3b4c5d",
+    visemeOOScale: "dcfdfebf-c0d1-4ce3-a9ba-1f2a3b4c5d6e",
+    visemeTHScale: "ddfeafc0-c1d2-4de4-aabb-2a3b4c5d6e7f"
   }
 };
 

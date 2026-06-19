@@ -465,8 +465,9 @@ hr.cenhr {
 .viseme {
   display: flex;
   flex-direction: column;
-  height: 220px;
-  overflow-y: hidden;
+  min-height: 220px;
+  height: auto;
+  overflow-y: visible;
 
   .viseme-btn {
     background-image: url(../svg/viseme-wave.svg);
@@ -477,7 +478,8 @@ hr.cenhr {
     flex-direction: column;
     justify-content: flex-end;
     gap: 8px;
-    height: 100%;
+    min-height: 100px;
+    height: auto;
     width: 100%;
     border-radius: 10px;
     opacity: 0.5;
@@ -556,7 +558,7 @@ hr.cenhr {
 
 .viseme-value-slider {
   display: flex;
-  height: 120px;
+  /* height: 120px; */
   text-align: center;
   flex-direction: column;
   margin-top: 12px;
@@ -625,6 +627,13 @@ hr.cenhr {
     width: calc(100% - 40px);
     opacity: 0;
   }
+}
+
+/* Viseme Advanced Parameters */
+.viseme-advanced-section {
+  width: 100%;
+  margin-top: 20px;
+  overflow: visible;
 }
 
 /* Matrix */

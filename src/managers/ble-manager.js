@@ -11,6 +11,7 @@ class BLECharacteristicManager {
     this.writeQueue = [];
     this.isProcessing = false;
     this.throttledWrites = new Map(); // Store throttled write functions
+    this.authAlertShown = false;
   }
 
   /**
@@ -94,8 +95,31 @@ class BLECharacteristicManager {
         }
       } catch (error) {
         console.error(`Error writing ${name}:`, error);
+        this.showPairingHelp(error);
       }
     });
+  }
+
+  writeBuffer(name, buffer, value) {
+    const characteristic = this.characteristics.get(name)?.char;
+    if (!characteristic) return;
+
+    this.queueWrite(async () => {
+      try {
+        await characteristic.writeValue(buffer);
+        console.log(`> ${name} changed to: ${value}`);
+      } catch (error) {
+        console.error(`Error writing ${name}:`, error);
+        this.showPairingHelp(error);
+      }
+    });
+  }
+
+  showPairingHelp(error) {
+    if (!this.authAlertShown && /auth|encrypt|security|permission/i.test(`${error.name} ${error.message}`)) {
+      this.authAlertShown = true;
+      alert('Bluetooth authentication failed. Pair the KMMX controller in your operating system using passkey 739241, then reconnect.');
+    }
   }
 
   /**
@@ -207,6 +231,7 @@ class BLECharacteristicManager {
     this.isProcessing = false;
     this.previousValues.clear();
     this.throttledWrites.clear();
+    this.authAlertShown = false;
     console.log('BLE Manager cleared');
   }
 

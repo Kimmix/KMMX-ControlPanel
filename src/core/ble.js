@@ -20,6 +20,22 @@ let glitchTriggerCharacteristic;
 let motionEnableFlagsCharacteristic;
 let tapSensitivityCharacteristic;
 let glitchIntensityCharacteristic;
+let fanSpeedCharacteristic;
+let fanEnabledCharacteristic;
+let fanRPMCharacteristic;
+let fanConnectedCharacteristic;
+let visemeEnvelopeAttackCharacteristic;
+let visemeEnvelopeReleaseCharacteristic;
+let visemeAttackThresholdCharacteristic;
+let visemeMinSeparationCharacteristic;
+let visemeNoiseFloorMinCharacteristic;
+let visemeNoiseFloorMaxCharacteristic;
+let visemeNoiseAdaptSpeedCharacteristic;
+let visemeAHScaleCharacteristic;
+let visemeEEScaleCharacteristic;
+let visemeOHScaleCharacteristic;
+let visemeOOScaleCharacteristic;
+let visemeTHScaleCharacteristic;
 let bleDevice; // Store the connected device
 let isConnecting = false; // Prevent multiple simultaneous connection attempts
 
@@ -182,6 +198,136 @@ async function connectToDevice(device, isReconnect = false, retryCount = 0) {
       glitchIntensityCharacteristic = null;
     }
 
+    // Try to get Fan Control characteristics (V4 only - may not exist on V2 hardware)
+    try {
+      fanSpeedCharacteristic = await service.getCharacteristic(bleUUID.characteristic.fanSpeed);
+      console.log('Fan Speed characteristic found (V4 hardware detected)');
+    } catch (error) {
+      console.warn('Fan Speed characteristic not available (V2 hardware or not supported)');
+      fanSpeedCharacteristic = null;
+    }
+
+    try {
+      fanEnabledCharacteristic = await service.getCharacteristic(bleUUID.characteristic.fanEnabled);
+      console.log('Fan Enabled characteristic found');
+    } catch (error) {
+      console.warn('Fan Enabled characteristic not available');
+      fanEnabledCharacteristic = null;
+    }
+
+    try {
+      fanRPMCharacteristic = await service.getCharacteristic(bleUUID.characteristic.fanRPM);
+      console.log('Fan RPM characteristic found');
+    } catch (error) {
+      console.warn('Fan RPM characteristic not available');
+      fanRPMCharacteristic = null;
+    }
+
+    try {
+      fanConnectedCharacteristic = await service.getCharacteristic(bleUUID.characteristic.fanConnected);
+      console.log('Fan Connected characteristic found');
+    } catch (error) {
+      console.warn('Fan Connected characteristic not available');
+      fanConnectedCharacteristic = null;
+    }
+
+    // Try to get Viseme Advanced Parameters characteristics (may not exist on older firmware)
+    try {
+      visemeEnvelopeAttackCharacteristic = await service.getCharacteristic(bleUUID.characteristic.visemeEnvelopeAttack);
+      console.log('Viseme Envelope Attack characteristic found');
+    } catch (error) {
+      console.warn('Viseme Envelope Attack characteristic not available');
+      visemeEnvelopeAttackCharacteristic = null;
+    }
+
+    try {
+      visemeEnvelopeReleaseCharacteristic = await service.getCharacteristic(bleUUID.characteristic.visemeEnvelopeRelease);
+      console.log('Viseme Envelope Release characteristic found');
+    } catch (error) {
+      console.warn('Viseme Envelope Release characteristic not available');
+      visemeEnvelopeReleaseCharacteristic = null;
+    }
+
+    try {
+      visemeAttackThresholdCharacteristic = await service.getCharacteristic(bleUUID.characteristic.visemeAttackThreshold);
+      console.log('Viseme Attack Threshold characteristic found');
+    } catch (error) {
+      console.warn('Viseme Attack Threshold characteristic not available');
+      visemeAttackThresholdCharacteristic = null;
+    }
+
+    try {
+      visemeMinSeparationCharacteristic = await service.getCharacteristic(bleUUID.characteristic.visemeMinSeparation);
+      console.log('Viseme Min Separation characteristic found');
+    } catch (error) {
+      console.warn('Viseme Min Separation characteristic not available');
+      visemeMinSeparationCharacteristic = null;
+    }
+
+    try {
+      visemeNoiseFloorMinCharacteristic = await service.getCharacteristic(bleUUID.characteristic.visemeNoiseFloorMin);
+      console.log('Viseme Noise Floor Min characteristic found');
+    } catch (error) {
+      console.warn('Viseme Noise Floor Min characteristic not available');
+      visemeNoiseFloorMinCharacteristic = null;
+    }
+
+    try {
+      visemeNoiseFloorMaxCharacteristic = await service.getCharacteristic(bleUUID.characteristic.visemeNoiseFloorMax);
+      console.log('Viseme Noise Floor Max characteristic found');
+    } catch (error) {
+      console.warn('Viseme Noise Floor Max characteristic not available');
+      visemeNoiseFloorMaxCharacteristic = null;
+    }
+
+    try {
+      visemeNoiseAdaptSpeedCharacteristic = await service.getCharacteristic(bleUUID.characteristic.visemeNoiseAdaptSpeed);
+      console.log('Viseme Noise Adapt Speed characteristic found');
+    } catch (error) {
+      console.warn('Viseme Noise Adapt Speed characteristic not available');
+      visemeNoiseAdaptSpeedCharacteristic = null;
+    }
+
+    try {
+      visemeAHScaleCharacteristic = await service.getCharacteristic(bleUUID.characteristic.visemeAHScale);
+      console.log('Viseme AH Scale characteristic found');
+    } catch (error) {
+      console.warn('Viseme AH Scale characteristic not available');
+      visemeAHScaleCharacteristic = null;
+    }
+
+    try {
+      visemeEEScaleCharacteristic = await service.getCharacteristic(bleUUID.characteristic.visemeEEScale);
+      console.log('Viseme EE Scale characteristic found');
+    } catch (error) {
+      console.warn('Viseme EE Scale characteristic not available');
+      visemeEEScaleCharacteristic = null;
+    }
+
+    try {
+      visemeOHScaleCharacteristic = await service.getCharacteristic(bleUUID.characteristic.visemeOHScale);
+      console.log('Viseme OH Scale characteristic found');
+    } catch (error) {
+      console.warn('Viseme OH Scale characteristic not available');
+      visemeOHScaleCharacteristic = null;
+    }
+
+    try {
+      visemeOOScaleCharacteristic = await service.getCharacteristic(bleUUID.characteristic.visemeOOScale);
+      console.log('Viseme OO Scale characteristic found');
+    } catch (error) {
+      console.warn('Viseme OO Scale characteristic not available');
+      visemeOOScaleCharacteristic = null;
+    }
+
+    try {
+      visemeTHScaleCharacteristic = await service.getCharacteristic(bleUUID.characteristic.visemeTHScale);
+      console.log('Viseme TH Scale characteristic found');
+    } catch (error) {
+      console.warn('Viseme TH Scale characteristic not available');
+      visemeTHScaleCharacteristic = null;
+    }
+
     // Register all characteristics with BLE Manager
     bleManager.register('eyeState', eyeStateCharacteristic, { displayId: 'ble-eyestate' });
     bleManager.register('displayBrightness', displayBrightnessCharacteristic, { displayId: 'ble-brightness' });
@@ -225,6 +371,74 @@ async function connectToDevice(device, isReconnect = false, retryCount = 0) {
     }
     if (glitchIntensityCharacteristic) {
       bleManager.register('glitchIntensity', glitchIntensityCharacteristic, { displayId: 'ble-glitchintensity' });
+    }
+
+    // Register Fan Control characteristics if available (V4 only)
+    if (fanSpeedCharacteristic) {
+      bleManager.register('fanSpeed', fanSpeedCharacteristic, { displayId: 'ble-fanspeed' });
+    }
+    if (fanEnabledCharacteristic) {
+      bleManager.register('fanEnabled', fanEnabledCharacteristic, { displayId: 'ble-fanenabled' });
+    }
+    if (fanRPMCharacteristic) {
+      bleManager.register('fanRPM', fanRPMCharacteristic, { displayId: 'ble-fanrpm' });
+      // Setup notification for real-time RPM updates
+      try {
+        await fanRPMCharacteristic.startNotifications();
+        fanRPMCharacteristic.addEventListener('characteristicvaluechanged', handleFanRPMChange);
+        console.log('Fan RPM notifications enabled');
+      } catch (error) {
+        console.warn('Could not enable Fan RPM notifications:', error);
+      }
+    }
+    if (fanConnectedCharacteristic) {
+      bleManager.register('fanConnected', fanConnectedCharacteristic, { displayId: 'ble-fanconnected' });
+      // Setup notification for fan connection status
+      try {
+        await fanConnectedCharacteristic.startNotifications();
+        fanConnectedCharacteristic.addEventListener('characteristicvaluechanged', handleFanConnectedChange);
+        console.log('Fan Connected notifications enabled');
+      } catch (error) {
+        console.warn('Could not enable Fan Connected notifications:', error);
+      }
+    }
+
+    // Register Viseme Advanced Parameters characteristics if available
+    if (visemeEnvelopeAttackCharacteristic) {
+      bleManager.register('visemeEnvelopeAttack', visemeEnvelopeAttackCharacteristic);
+    }
+    if (visemeEnvelopeReleaseCharacteristic) {
+      bleManager.register('visemeEnvelopeRelease', visemeEnvelopeReleaseCharacteristic);
+    }
+    if (visemeAttackThresholdCharacteristic) {
+      bleManager.register('visemeAttackThreshold', visemeAttackThresholdCharacteristic);
+    }
+    if (visemeMinSeparationCharacteristic) {
+      bleManager.register('visemeMinSeparation', visemeMinSeparationCharacteristic);
+    }
+    if (visemeNoiseFloorMinCharacteristic) {
+      bleManager.register('visemeNoiseFloorMin', visemeNoiseFloorMinCharacteristic);
+    }
+    if (visemeNoiseFloorMaxCharacteristic) {
+      bleManager.register('visemeNoiseFloorMax', visemeNoiseFloorMaxCharacteristic);
+    }
+    if (visemeNoiseAdaptSpeedCharacteristic) {
+      bleManager.register('visemeNoiseAdaptSpeed', visemeNoiseAdaptSpeedCharacteristic);
+    }
+    if (visemeAHScaleCharacteristic) {
+      bleManager.register('visemeAHScale', visemeAHScaleCharacteristic);
+    }
+    if (visemeEEScaleCharacteristic) {
+      bleManager.register('visemeEEScale', visemeEEScaleCharacteristic);
+    }
+    if (visemeOHScaleCharacteristic) {
+      bleManager.register('visemeOHScale', visemeOHScaleCharacteristic);
+    }
+    if (visemeOOScaleCharacteristic) {
+      bleManager.register('visemeOOScale', visemeOOScaleCharacteristic);
+    }
+    if (visemeTHScaleCharacteristic) {
+      bleManager.register('visemeTHScale', visemeTHScaleCharacteristic);
     }
 
     console.log('Reading value...');
@@ -283,6 +497,195 @@ async function connectToDevice(device, isReconnect = false, retryCount = 0) {
       glitchIntensityValue = await glitchIntensityCharacteristic.readValue();
     }
 
+    // Read Fan Control characteristics only if they exist (V4 only)
+    let fanSpeedValue = null;
+    let fanEnabledValue = null;
+    let fanRPMValue = null;
+    let fanConnectedValue = null;
+
+    if (fanSpeedCharacteristic) {
+      fanSpeedValue = await fanSpeedCharacteristic.readValue();
+    }
+    if (fanEnabledCharacteristic) {
+      fanEnabledValue = await fanEnabledCharacteristic.readValue();
+    }
+    if (fanRPMCharacteristic) {
+      fanRPMValue = await fanRPMCharacteristic.readValue();
+    }
+    if (fanConnectedCharacteristic) {
+      fanConnectedValue = await fanConnectedCharacteristic.readValue();
+    }
+
+    // Read Viseme Advanced Parameters characteristics only if they exist
+    if (visemeEnvelopeAttackCharacteristic) {
+      try {
+        const value = await visemeEnvelopeAttackCharacteristic.readValue();
+        const floatValue = value.getFloat32(0, true);
+        console.log(`✓ Viseme Envelope Attack: ${floatValue}`);
+        // Update UI
+        const slider = document.getElementById('visemeEnvelopeAttackSlider');
+        const display = document.getElementById('visemeEnvelopeAttackValue');
+        if (slider) slider.value = floatValue;
+        if (display) display.textContent = floatValue.toFixed(2);
+      } catch (err) {
+        console.warn('Could not read visemeEnvelopeAttack:', err);
+      }
+    }
+
+    if (visemeEnvelopeReleaseCharacteristic) {
+      try {
+        const value = await visemeEnvelopeReleaseCharacteristic.readValue();
+        const floatValue = value.getFloat32(0, true);
+        console.log(`✓ Viseme Envelope Release: ${floatValue}`);
+        const slider = document.getElementById('visemeEnvelopeReleaseSlider');
+        const display = document.getElementById('visemeEnvelopeReleaseValue');
+        if (slider) slider.value = floatValue;
+        if (display) display.textContent = floatValue.toFixed(2);
+      } catch (err) {
+        console.warn('Could not read visemeEnvelopeRelease:', err);
+      }
+    }
+
+    if (visemeAttackThresholdCharacteristic) {
+      try {
+        const value = await visemeAttackThresholdCharacteristic.readValue();
+        const floatValue = value.getFloat32(0, true);
+        console.log(`✓ Viseme Attack Threshold: ${floatValue}`);
+        const slider = document.getElementById('visemeAttackThresholdSlider');
+        const display = document.getElementById('visemeAttackThresholdValue');
+        if (slider) slider.value = floatValue;
+        if (display) display.textContent = floatValue.toFixed(1);
+      } catch (err) {
+        console.warn('Could not read visemeAttackThreshold:', err);
+      }
+    }
+
+    if (visemeMinSeparationCharacteristic) {
+      try {
+        const value = await visemeMinSeparationCharacteristic.readValue();
+        const floatValue = value.getFloat32(0, true);
+        console.log(`✓ Viseme Min Separation: ${floatValue}`);
+        const slider = document.getElementById('visemeMinSeparationSlider');
+        const display = document.getElementById('visemeMinSeparationValue');
+        if (slider) slider.value = floatValue;
+        if (display) display.textContent = floatValue.toFixed(1);
+      } catch (err) {
+        console.warn('Could not read visemeMinSeparation:', err);
+      }
+    }
+
+    if (visemeNoiseFloorMinCharacteristic) {
+      try {
+        const value = await visemeNoiseFloorMinCharacteristic.readValue();
+        const floatValue = value.getFloat32(0, true);
+        console.log(`✓ Viseme Noise Floor Min: ${floatValue}`);
+        const slider = document.getElementById('visemeNoiseFloorMinSlider');
+        const display = document.getElementById('visemeNoiseFloorMinValue');
+        if (slider) slider.value = floatValue;
+        if (display) display.textContent = floatValue.toFixed(0);
+      } catch (err) {
+        console.warn('Could not read visemeNoiseFloorMin:', err);
+      }
+    }
+
+    if (visemeNoiseFloorMaxCharacteristic) {
+      try {
+        const value = await visemeNoiseFloorMaxCharacteristic.readValue();
+        const floatValue = value.getFloat32(0, true);
+        console.log(`✓ Viseme Noise Floor Max: ${floatValue}`);
+        const slider = document.getElementById('visemeNoiseFloorMaxSlider');
+        const display = document.getElementById('visemeNoiseFloorMaxValue');
+        if (slider) slider.value = floatValue;
+        if (display) display.textContent = floatValue.toFixed(0);
+      } catch (err) {
+        console.warn('Could not read visemeNoiseFloorMax:', err);
+      }
+    }
+
+    if (visemeNoiseAdaptSpeedCharacteristic) {
+      try {
+        const value = await visemeNoiseAdaptSpeedCharacteristic.readValue();
+        const floatValue = value.getFloat32(0, true);
+        console.log(`✓ Viseme Noise Adapt Speed: ${floatValue}`);
+        const slider = document.getElementById('visemeNoiseAdaptSpeedSlider');
+        const display = document.getElementById('visemeNoiseAdaptSpeedValue');
+        if (slider) slider.value = floatValue;
+        if (display) display.textContent = floatValue.toFixed(4);
+      } catch (err) {
+        console.warn('Could not read visemeNoiseAdaptSpeed:', err);
+      }
+    }
+
+    if (visemeAHScaleCharacteristic) {
+      try {
+        const value = await visemeAHScaleCharacteristic.readValue();
+        const floatValue = value.getFloat32(0, true);
+        console.log(`✓ Viseme AH Scale: ${floatValue}`);
+        const slider = document.getElementById('visemeAHScaleSlider');
+        const display = document.getElementById('visemeAHScaleValue');
+        if (slider) slider.value = floatValue;
+        if (display) display.textContent = floatValue.toFixed(1);
+      } catch (err) {
+        console.warn('Could not read visemeAHScale:', err);
+      }
+    }
+
+    if (visemeEEScaleCharacteristic) {
+      try {
+        const value = await visemeEEScaleCharacteristic.readValue();
+        const floatValue = value.getFloat32(0, true);
+        console.log(`✓ Viseme EE Scale: ${floatValue}`);
+        const slider = document.getElementById('visemeEEScaleSlider');
+        const display = document.getElementById('visemeEEScaleValue');
+        if (slider) slider.value = floatValue;
+        if (display) display.textContent = floatValue.toFixed(1);
+      } catch (err) {
+        console.warn('Could not read visemeEEScale:', err);
+      }
+    }
+
+    if (visemeOHScaleCharacteristic) {
+      try {
+        const value = await visemeOHScaleCharacteristic.readValue();
+        const floatValue = value.getFloat32(0, true);
+        console.log(`✓ Viseme OH Scale: ${floatValue}`);
+        const slider = document.getElementById('visemeOHScaleSlider');
+        const display = document.getElementById('visemeOHScaleValue');
+        if (slider) slider.value = floatValue;
+        if (display) display.textContent = floatValue.toFixed(1);
+      } catch (err) {
+        console.warn('Could not read visemeOHScale:', err);
+      }
+    }
+
+    if (visemeOOScaleCharacteristic) {
+      try {
+        const value = await visemeOOScaleCharacteristic.readValue();
+        const floatValue = value.getFloat32(0, true);
+        console.log(`✓ Viseme OO Scale: ${floatValue}`);
+        const slider = document.getElementById('visemeOOScaleSlider');
+        const display = document.getElementById('visemeOOScaleValue');
+        if (slider) slider.value = floatValue;
+        if (display) display.textContent = floatValue.toFixed(1);
+      } catch (err) {
+        console.warn('Could not read visemeOOScale:', err);
+      }
+    }
+
+    if (visemeTHScaleCharacteristic) {
+      try {
+        const value = await visemeTHScaleCharacteristic.readValue();
+        const floatValue = value.getFloat32(0, true);
+        console.log(`✓ Viseme TH Scale: ${floatValue}`);
+        const slider = document.getElementById('visemeTHScaleSlider');
+        const display = document.getElementById('visemeTHScaleValue');
+        if (slider) slider.value = floatValue;
+        if (display) display.textContent = floatValue.toFixed(1);
+      } catch (err) {
+        console.warn('Could not read visemeTHScale:', err);
+      }
+    }
+
     console.log(`Eye state is ${eyeStateValue.getUint8(0)}`);
     console.log(`Display brightness is ${displayBrightnessValue.getUint8(0)}`);
     console.log(`Viseme value is ${visemeValue.getUint8(0)}`);
@@ -315,6 +718,18 @@ async function connectToDevice(device, isReconnect = false, retryCount = 0) {
     }
     if (glitchIntensityValue) {
       console.log(`Glitch Intensity: ${glitchIntensityValue.getUint8(0)}`);
+    }
+    if (fanSpeedValue) {
+      console.log(`Fan Speed: ${fanSpeedValue.getUint8(0)}%`);
+    }
+    if (fanEnabledValue) {
+      console.log(`Fan Enabled: ${fanEnabledValue.getUint8(0) ? 'Yes' : 'No'}`);
+    }
+    if (fanRPMValue) {
+      console.log(`Fan RPM: ${fanRPMValue.getUint16(0, true)}`); // true for little-endian
+    }
+    if (fanConnectedValue) {
+      console.log(`Fan Connected: ${fanConnectedValue.getUint8(0) ? 'Yes' : 'No'}`);
     }
 
     if (!isReconnect) {
@@ -364,6 +779,25 @@ async function connectToDevice(device, isReconnect = false, retryCount = 0) {
     }
     if (glitchIntensityValue) {
       setGlitchIntensityValue(glitchIntensityValue.getUint8(0));
+    }
+
+    // Set Fan Control values only if available (V4 only)
+    if (fanSpeedValue) {
+      setFanSpeedValue(fanSpeedValue.getUint8(0));
+    }
+    if (fanEnabledValue) {
+      setFanEnabledValue(fanEnabledValue.getUint8(0));
+    }
+    if (fanRPMValue) {
+      setFanRPMValue(fanRPMValue.getUint16(0, true)); // little-endian
+    }
+    if (fanConnectedValue) {
+      setFanConnectedValue(fanConnectedValue.getUint8(0));
+    }
+
+    // Show/hide fan control section based on availability
+    if (typeof updateFanControlVisibility === 'function') {
+      updateFanControlVisibility(fanSpeedCharacteristic !== null);
     }
 
     updateBLECharacteristicsDisplay(eyeStateValue.getUint8(0), displayBrightnessValue.getUint8(0), visemeValue.getUint8(0), mouthStateValue.getUint8(0), hornLedBrightnessValue.getUint8(0), cheekPanelBrightnessValue.getUint8(0), cheekBgColorValue, cheekFadeColorValue);
@@ -418,10 +852,7 @@ async function startBLE() {
     updateBLEProgress(30, 'Searching...');
 
     const device = await navigator.bluetooth.requestDevice({
-      filters: [
-        { name: bleUUID.name },
-        { services: [bleUUID.service] },
-      ],
+      filters: [{ services: [bleUUID.service] }],
     });
 
     bleDevice = device; // Store the device reference
@@ -439,9 +870,11 @@ async function startBLE() {
       return;
     }
 
-    // Show alert for all other errors (including other NotFoundError types)
     console.error('Error:', error);
-    alert(error);
+    const needsPairing = /auth|encrypt|security|permission/i.test(`${error.name} ${error.message}`);
+    alert(needsPairing
+      ? 'Bluetooth authentication failed. Pair the KMMX controller in your operating system using passkey 739241, then reconnect.'
+      : error);
   }
 }
 
@@ -531,6 +964,58 @@ function setGlitchIntensityCharacteristic(value) {
   bleManager.write('glitchIntensity', value);
 }
 
+// Fan Control Characteristics (V4 Only)
+function setFanSpeedCharacteristic(speed) {
+  bleManager.write('fanSpeed', speed);
+}
+
+function setFanEnabledCharacteristic(enabled) {
+  bleManager.write('fanEnabled', enabled);
+}
+
+// Viseme Advanced Parameters Characteristics
+function writeVisemeFloat(name, value) {
+  const buffer = new ArrayBuffer(4);
+  new DataView(buffer).setFloat32(0, value, true);
+  bleManager.writeBuffer(name, buffer, value);
+}
+
+const setVisemeEnvelopeAttackCharacteristic = value => writeVisemeFloat('visemeEnvelopeAttack', value);
+const setVisemeEnvelopeReleaseCharacteristic = value => writeVisemeFloat('visemeEnvelopeRelease', value);
+const setVisemeAttackThresholdCharacteristic = value => writeVisemeFloat('visemeAttackThreshold', value);
+const setVisemeMinSeparationCharacteristic = value => writeVisemeFloat('visemeMinSeparation', value);
+const setVisemeNoiseFloorMinCharacteristic = value => writeVisemeFloat('visemeNoiseFloorMin', value);
+const setVisemeNoiseFloorMaxCharacteristic = value => writeVisemeFloat('visemeNoiseFloorMax', value);
+const setVisemeNoiseAdaptSpeedCharacteristic = value => writeVisemeFloat('visemeNoiseAdaptSpeed', value);
+const setVisemeAHScaleCharacteristic = value => writeVisemeFloat('visemeAHScale', value);
+const setVisemeEEScaleCharacteristic = value => writeVisemeFloat('visemeEEScale', value);
+const setVisemeOHScaleCharacteristic = value => writeVisemeFloat('visemeOHScale', value);
+const setVisemeOOScaleCharacteristic = value => writeVisemeFloat('visemeOOScale', value);
+const setVisemeTHScaleCharacteristic = value => writeVisemeFloat('visemeTHScale', value);
+
+// Notification handlers for Fan Control
+function handleFanRPMChange(event) {
+  const value = event.target.value;
+  const rpm = value.getUint16(0, true); // little-endian
+  console.log(`Fan RPM updated: ${rpm}`);
+
+  // Update UI
+  if (typeof updateFanRPMDisplay === 'function') {
+    updateFanRPMDisplay(rpm);
+  }
+}
+
+function handleFanConnectedChange(event) {
+  const value = event.target.value;
+  const connected = value.getUint8(0);
+  console.log(`Fan connection status updated: ${connected ? 'Connected' : 'Disconnected'}`);
+
+  // Update UI
+  if (typeof updateFanConnectionDisplay === 'function') {
+    updateFanConnectionDisplay(connected);
+  }
+}
+
 // Throttled/debounced wrappers that use BLE Manager
 // These get the auto-created throttled functions from the manager
 const throttledAndDebouncedsetVisemeCharacteristic = (value) => bleManager.getThrottledWrite('viseme')(value);
@@ -546,6 +1031,42 @@ const throttledAndDebouncedSetDisplayEffectOption2 = (value) => bleManager.getTh
 const throttledAndDebouncedSetDisplayEffectOption3 = (value) => bleManager.getThrottledWrite('displayEffectOption3')(value);
 const throttledAndDebouncedSetTapSensitivity = (value) => bleManager.getThrottledWrite('tapSensitivity')(value);
 const throttledAndDebouncedSetGlitchIntensity = (value) => bleManager.getThrottledWrite('glitchIntensity')(value);
+
+// Viseme Advanced Parameters - using direct write with throttle/debounce
+const throttledAndDebouncedSetVisemeEnvelopeAttack = throttleAndDebounce(setVisemeEnvelopeAttackCharacteristic, 100, 50);
+const throttledAndDebouncedSetVisemeEnvelopeRelease = throttleAndDebounce(setVisemeEnvelopeReleaseCharacteristic, 100, 50);
+const throttledAndDebouncedSetVisemeAttackThreshold = throttleAndDebounce(setVisemeAttackThresholdCharacteristic, 100, 50);
+const throttledAndDebouncedSetVisemeMinSeparation = throttleAndDebounce(setVisemeMinSeparationCharacteristic, 100, 50);
+const throttledAndDebouncedSetVisemeNoiseFloorMin = throttleAndDebounce(setVisemeNoiseFloorMinCharacteristic, 100, 50);
+const throttledAndDebouncedSetVisemeNoiseFloorMax = throttleAndDebounce(setVisemeNoiseFloorMaxCharacteristic, 100, 50);
+const throttledAndDebouncedSetVisemeNoiseAdaptSpeed = throttleAndDebounce(setVisemeNoiseAdaptSpeedCharacteristic, 100, 50);
+const throttledAndDebouncedSetVisemeAHScale = throttleAndDebounce(setVisemeAHScaleCharacteristic, 100, 50);
+const throttledAndDebouncedSetVisemeEEScale = throttleAndDebounce(setVisemeEEScaleCharacteristic, 100, 50);
+const throttledAndDebouncedSetVisemeOHScale = throttleAndDebounce(setVisemeOHScaleCharacteristic, 100, 50);
+const throttledAndDebouncedSetVisemeOOScale = throttleAndDebounce(setVisemeOOScaleCharacteristic, 100, 50);
+const throttledAndDebouncedSetVisemeTHScale = throttleAndDebounce(setVisemeTHScaleCharacteristic, 100, 50);
+
+// Helper function for throttle and debounce
+function throttleAndDebounce(func, throttleMs, debounceMs) {
+  let timeout;
+  let lastRun = 0;
+
+  return function(...args) {
+    const now = Date.now();
+
+    clearTimeout(timeout);
+
+    if (now - lastRun >= throttleMs) {
+      func.apply(this, args);
+      lastRun = now;
+    } else {
+      timeout = setTimeout(() => {
+        func.apply(this, args);
+        lastRun = Date.now();
+      }, debounceMs);
+    }
+  };
+}
 
 // Update BLE characteristics display on About page
 function updateBLECharacteristicsDisplay(eyeState, brightness, viseme, mouthState, hornLed, cheekPanel, cheekBgColor, cheekFadeColor) {

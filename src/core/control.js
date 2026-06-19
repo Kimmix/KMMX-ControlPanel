@@ -20,6 +20,8 @@ let setDisplayEffectOption1Value, setDisplayEffectOption2Value, setDisplayEffect
 let setMotionEnableFlagsValue, setTapSensitivityValue, setGlitchIntensityValue;
 let switchControlMode, toggleViseme, setDisplayColorMode, toggleDirectionInvert;
 let resetCheekColors, resetDisplayColors, toggleMotionFeature, triggerGlitch;
+let setFanSpeedValue, setFanEnabledValue, setFanRPMValue, setFanConnectedValue;
+let toggleFan, updateFanControlVisibility, updateFanRPMDisplay, updateFanConnectionDisplay;
 
 //* --------- Expression ---------
 // Expression definitions imported from config/expressions.js
@@ -136,13 +138,21 @@ const visemeBtn = document.getElementById('visemeBtn');
 const visemeOn = document.getElementById('visemeOn');
 const visemeOff = document.getElementById('visemeOff');
 const visemeSilder = document.getElementById('vsmSlider');
-toggleViseme = function() {
+
+// Core toggle function
+function toggleVisemeCore() {
     visemeBtn.classList.toggle('active');
     visemeOn.classList.toggle('active');
     visemeOff.classList.toggle('active');
     visemeSilder.classList.toggle('disable');
     vibrateDevice();
     updateViseme();
+}
+
+// Public toggle function with advanced parameters visibility update
+toggleViseme = function() {
+    toggleVisemeCore();
+    updateVisemeAdvancedVisibility();
 };
 window.toggleViseme = toggleViseme;
 
@@ -183,6 +193,217 @@ rangeInput.addEventListener('input', () => {
 
 function isVisemeOn() {
     return visemeBtn.classList.contains('active')
+}
+
+//* --------- Viseme Advanced Parameters ---------
+// Toggle Advanced Section
+window.toggleVisemeAdvanced = function() {
+    const content = document.getElementById('visemeAdvancedContent');
+    const button = document.getElementById('visemeAdvancedToggleBtn');
+    const icon = button?.querySelector('.toggle-icon');
+
+    if (!content) {
+        console.error('visemeAdvancedContent not found');
+        return;
+    }
+
+    // Toggle the display
+    const isCurrentlyVisible = content.style.display !== 'none';
+
+    if (isCurrentlyVisible) {
+        content.style.display = 'none';
+        if (icon) icon.style.transform = 'rotate(0deg)';
+        if (button) button.classList.remove('expanded');
+    } else {
+        content.style.display = 'block';
+        if (icon) icon.style.transform = 'rotate(180deg)';
+        if (button) button.classList.add('expanded');
+    }
+
+    vibrateDevice();
+};
+
+// Show/hide advanced section based on viseme state
+function updateVisemeAdvancedVisibility() {
+    const advancedSection = document.getElementById('visemeAdvancedSection');
+    const content = document.getElementById('visemeAdvancedContent');
+    const button = document.getElementById('visemeAdvancedToggleBtn');
+    const icon = button?.querySelector('.toggle-icon');
+
+    if (advancedSection) {
+        if (isVisemeOn()) {
+            // Show advanced section when viseme is ON
+            advancedSection.style.display = 'block';
+
+            // If showing for the first time, expand the content
+            if (content && !content.hasAttribute('data-initialized')) {
+                content.style.display = 'block';
+                content.setAttribute('data-initialized', 'true');
+                if (icon) icon.style.transform = 'rotate(180deg)';
+                if (button) button.classList.add('expanded');
+            }
+        } else {
+            // Hide advanced section and collapse content when viseme is OFF
+            advancedSection.style.display = 'none';
+
+            // Reset the collapsed state
+            if (content) {
+                content.style.display = 'none';
+                content.removeAttribute('data-initialized');
+            }
+            if (icon) icon.style.transform = 'rotate(0deg)';
+            if (button) button.classList.remove('expanded');
+        }
+    }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+    updateVisemeAdvancedVisibility();
+});
+
+// Envelope Attack
+const visemeEnvelopeAttackSlider = document.getElementById('visemeEnvelopeAttackSlider');
+const visemeEnvelopeAttackValue = document.getElementById('visemeEnvelopeAttackValue');
+if (visemeEnvelopeAttackSlider) {
+    visemeEnvelopeAttackSlider.addEventListener('input', (e) => {
+        const value = parseFloat(e.target.value);
+        visemeEnvelopeAttackValue.textContent = value.toFixed(2);
+        vibrateDevice();
+        throttledAndDebouncedSetVisemeEnvelopeAttack(value);
+    });
+}
+
+// Envelope Release
+const visemeEnvelopeReleaseSlider = document.getElementById('visemeEnvelopeReleaseSlider');
+const visemeEnvelopeReleaseValue = document.getElementById('visemeEnvelopeReleaseValue');
+if (visemeEnvelopeReleaseSlider) {
+    visemeEnvelopeReleaseSlider.addEventListener('input', (e) => {
+        const value = parseFloat(e.target.value);
+        visemeEnvelopeReleaseValue.textContent = value.toFixed(2);
+        vibrateDevice();
+        throttledAndDebouncedSetVisemeEnvelopeRelease(value);
+    });
+}
+
+// Attack Threshold
+const visemeAttackThresholdSlider = document.getElementById('visemeAttackThresholdSlider');
+const visemeAttackThresholdValue = document.getElementById('visemeAttackThresholdValue');
+if (visemeAttackThresholdSlider) {
+    visemeAttackThresholdSlider.addEventListener('input', (e) => {
+        const value = parseFloat(e.target.value);
+        visemeAttackThresholdValue.textContent = value.toFixed(1);
+        vibrateDevice();
+        throttledAndDebouncedSetVisemeAttackThreshold(value);
+    });
+}
+
+// Min Separation
+const visemeMinSeparationSlider = document.getElementById('visemeMinSeparationSlider');
+const visemeMinSeparationValue = document.getElementById('visemeMinSeparationValue');
+if (visemeMinSeparationSlider) {
+    visemeMinSeparationSlider.addEventListener('input', (e) => {
+        const value = parseFloat(e.target.value);
+        visemeMinSeparationValue.textContent = value.toFixed(1);
+        vibrateDevice();
+        throttledAndDebouncedSetVisemeMinSeparation(value);
+    });
+}
+
+// Noise Floor Min
+const visemeNoiseFloorMinSlider = document.getElementById('visemeNoiseFloorMinSlider');
+const visemeNoiseFloorMinValue = document.getElementById('visemeNoiseFloorMinValue');
+if (visemeNoiseFloorMinSlider) {
+    visemeNoiseFloorMinSlider.addEventListener('input', (e) => {
+        const value = parseFloat(e.target.value);
+        visemeNoiseFloorMinValue.textContent = value.toFixed(0);
+        vibrateDevice();
+        throttledAndDebouncedSetVisemeNoiseFloorMin(value);
+    });
+}
+
+// Noise Floor Max
+const visemeNoiseFloorMaxSlider = document.getElementById('visemeNoiseFloorMaxSlider');
+const visemeNoiseFloorMaxValue = document.getElementById('visemeNoiseFloorMaxValue');
+if (visemeNoiseFloorMaxSlider) {
+    visemeNoiseFloorMaxSlider.addEventListener('input', (e) => {
+        const value = parseFloat(e.target.value);
+        visemeNoiseFloorMaxValue.textContent = value.toFixed(0);
+        vibrateDevice();
+        throttledAndDebouncedSetVisemeNoiseFloorMax(value);
+    });
+}
+
+// Noise Adapt Speed
+const visemeNoiseAdaptSpeedSlider = document.getElementById('visemeNoiseAdaptSpeedSlider');
+const visemeNoiseAdaptSpeedValue = document.getElementById('visemeNoiseAdaptSpeedValue');
+if (visemeNoiseAdaptSpeedSlider) {
+    visemeNoiseAdaptSpeedSlider.addEventListener('input', (e) => {
+        const value = parseFloat(e.target.value);
+        visemeNoiseAdaptSpeedValue.textContent = value.toFixed(4);
+        vibrateDevice();
+        throttledAndDebouncedSetVisemeNoiseAdaptSpeed(value);
+    });
+}
+
+// AH Scale
+const visemeAHScaleSlider = document.getElementById('visemeAHScaleSlider');
+const visemeAHScaleValue = document.getElementById('visemeAHScaleValue');
+if (visemeAHScaleSlider) {
+    visemeAHScaleSlider.addEventListener('input', (e) => {
+        const value = parseFloat(e.target.value);
+        visemeAHScaleValue.textContent = value.toFixed(1);
+        vibrateDevice();
+        throttledAndDebouncedSetVisemeAHScale(value);
+    });
+}
+
+// EE Scale
+const visemeEEScaleSlider = document.getElementById('visemeEEScaleSlider');
+const visemeEEScaleValue = document.getElementById('visemeEEScaleValue');
+if (visemeEEScaleSlider) {
+    visemeEEScaleSlider.addEventListener('input', (e) => {
+        const value = parseFloat(e.target.value);
+        visemeEEScaleValue.textContent = value.toFixed(1);
+        vibrateDevice();
+        throttledAndDebouncedSetVisemeEEScale(value);
+    });
+}
+
+// OH Scale
+const visemeOHScaleSlider = document.getElementById('visemeOHScaleSlider');
+const visemeOHScaleValue = document.getElementById('visemeOHScaleValue');
+if (visemeOHScaleSlider) {
+    visemeOHScaleSlider.addEventListener('input', (e) => {
+        const value = parseFloat(e.target.value);
+        visemeOHScaleValue.textContent = value.toFixed(1);
+        vibrateDevice();
+        throttledAndDebouncedSetVisemeOHScale(value);
+    });
+}
+
+// OO Scale
+const visemeOOScaleSlider = document.getElementById('visemeOOScaleSlider');
+const visemeOOScaleValue = document.getElementById('visemeOOScaleValue');
+if (visemeOOScaleSlider) {
+    visemeOOScaleSlider.addEventListener('input', (e) => {
+        const value = parseFloat(e.target.value);
+        visemeOOScaleValue.textContent = value.toFixed(1);
+        vibrateDevice();
+        throttledAndDebouncedSetVisemeOOScale(value);
+    });
+}
+
+// TH Scale
+const visemeTHScaleSlider = document.getElementById('visemeTHScaleSlider');
+const visemeTHScaleValue = document.getElementById('visemeTHScaleValue');
+if (visemeTHScaleSlider) {
+    visemeTHScaleSlider.addEventListener('input', (e) => {
+        const value = parseFloat(e.target.value);
+        visemeTHScaleValue.textContent = value.toFixed(1);
+        vibrateDevice();
+        throttledAndDebouncedSetVisemeTHScale(value);
+    });
 }
 
 //* --------- Matrix Brightness - Disabled ---------
@@ -865,3 +1086,162 @@ triggerGlitch = function() {
     console.log(`Glitch triggered with intensity: ${intensity}`);
 };
 window.triggerGlitch = triggerGlitch;
+
+//* --------- Fan Control (V4 Only) ---------
+let fanEnabled = false;
+let fanSpeed = 0;
+
+// Toggle fan on/off
+toggleFan = function() {
+    fanEnabled = !fanEnabled;
+
+    // Update UI toggle state
+    const fanOnBtn = document.getElementById('fanOn');
+    const fanOffBtn = document.getElementById('fanOff');
+    const fanIcon = document.getElementById('fanIcon');
+    const fanSpeedSlider = document.getElementById('fanSpeedSlider');
+    const fanSpeedContainer = document.getElementById('fanSpeedSliderContainer');
+
+    if (fanEnabled) {
+        fanOnBtn.classList.add('active');
+        fanOffBtn.classList.remove('active');
+        fanSpeedSlider.disabled = false;
+        fanSpeedContainer.style.opacity = '1';
+
+        // Add rotation animation to fan icon
+        if (fanIcon) {
+            fanIcon.style.animation = 'fan-spin 1s linear infinite';
+        }
+    } else {
+        fanOnBtn.classList.remove('active');
+        fanOffBtn.classList.add('active');
+        fanSpeedSlider.disabled = true;
+        fanSpeedContainer.style.opacity = '0.5';
+
+        // Remove rotation animation
+        if (fanIcon) {
+            fanIcon.style.animation = 'none';
+        }
+    }
+
+    // Send to BLE
+    setFanEnabledCharacteristic(fanEnabled ? 1 : 0);
+
+    // Haptic feedback
+    vibrateDevice();
+
+    console.log(`Fan ${fanEnabled ? 'enabled' : 'disabled'}`);
+};
+window.toggleFan = toggleFan;
+
+// Set fan speed from slider
+document.addEventListener('DOMContentLoaded', function() {
+    const fanSpeedSlider = document.getElementById('fanSpeedSlider');
+    const fanSpeedValue = document.getElementById('fanSpeedValue');
+
+    if (fanSpeedSlider && fanSpeedValue) {
+        fanSpeedSlider.addEventListener('input', function() {
+            const speed = parseInt(this.value);
+            fanSpeed = speed;
+            fanSpeedValue.textContent = speed;
+
+            // Update fan icon rotation speed
+            const fanIcon = document.getElementById('fanIcon');
+            if (fanIcon && fanEnabled) {
+                const rotationSpeed = speed > 0 ? Math.max(0.2, 2 - (speed / 50)) : 0;
+                fanIcon.style.animation = speed > 0 ? `fan-spin ${rotationSpeed}s linear infinite` : 'none';
+            }
+
+        });
+        fanSpeedSlider.addEventListener('change', () => setFanSpeedCharacteristic(fanSpeed));
+    }
+});
+
+// Initialize fan speed value (called from BLE when connection established)
+setFanSpeedValue = function(value) {
+    fanSpeed = value;
+    const fanSpeedSlider = document.getElementById('fanSpeedSlider');
+    const fanSpeedValue = document.getElementById('fanSpeedValue');
+
+    if (fanSpeedSlider) fanSpeedSlider.value = value;
+    if (fanSpeedValue) fanSpeedValue.textContent = value;
+
+    console.log(`Fan speed set to: ${value}%`);
+};
+window.setFanSpeedValue = setFanSpeedValue;
+
+// Initialize fan enabled state (called from BLE when connection established)
+setFanEnabledValue = function(value) {
+    fanEnabled = value === 1;
+
+    const fanOnBtn = document.getElementById('fanOn');
+    const fanOffBtn = document.getElementById('fanOff');
+    const fanSpeedSlider = document.getElementById('fanSpeedSlider');
+    const fanSpeedContainer = document.getElementById('fanSpeedSliderContainer');
+    const fanIcon = document.getElementById('fanIcon');
+
+    if (fanEnabled) {
+        fanOnBtn?.classList.add('active');
+        fanOffBtn?.classList.remove('active');
+        if (fanSpeedSlider) fanSpeedSlider.disabled = false;
+        if (fanSpeedContainer) fanSpeedContainer.style.opacity = '1';
+        if (fanIcon && fanSpeed > 0) {
+            const rotationSpeed = Math.max(0.2, 2 - (fanSpeed / 50));
+            fanIcon.style.animation = `fan-spin ${rotationSpeed}s linear infinite`;
+        }
+    } else {
+        fanOnBtn?.classList.remove('active');
+        fanOffBtn?.classList.add('active');
+        if (fanSpeedSlider) fanSpeedSlider.disabled = true;
+        if (fanSpeedContainer) fanSpeedContainer.style.opacity = '0.5';
+        if (fanIcon) fanIcon.style.animation = 'none';
+    }
+
+    console.log(`Fan enabled state set to: ${fanEnabled}`);
+};
+window.setFanEnabledValue = setFanEnabledValue;
+
+// Update RPM display (called from BLE notification)
+setFanRPMValue = function(rpm) {
+    const fanRPMValue = document.getElementById('fanRPMValue');
+    if (fanRPMValue) {
+        fanRPMValue.textContent = rpm;
+    }
+};
+window.setFanRPMValue = setFanRPMValue;
+
+updateFanRPMDisplay = function(rpm) {
+    setFanRPMValue(rpm);
+};
+window.updateFanRPMDisplay = updateFanRPMDisplay;
+
+// Update connection status (called from BLE notification)
+setFanConnectedValue = function(connected) {
+    const fanConnectionDot = document.getElementById('fanConnectionDot');
+    const fanConnectionText = document.getElementById('fanConnectionText');
+
+    if (fanConnectionDot) {
+        fanConnectionDot.className = connected ? 'connection-dot connected' : 'connection-dot disconnected';
+    }
+    if (fanConnectionText) {
+        fanConnectionText.textContent = connected ? 'Connected' : 'Disconnected';
+    }
+
+    console.log(`Fan connection status: ${connected ? 'Connected' : 'Disconnected'}`);
+};
+window.setFanConnectedValue = setFanConnectedValue;
+
+updateFanConnectionDisplay = function(connected) {
+    setFanConnectedValue(connected);
+};
+window.updateFanConnectionDisplay = updateFanConnectionDisplay;
+
+// Show/hide fan control section based on hardware version
+updateFanControlVisibility = function(isAvailable) {
+    const fanControlSection = document.getElementById('fanControlSection');
+    if (fanControlSection) {
+        fanControlSection.style.display = isAvailable ? 'block' : 'none';
+        console.log(`Fan control ${isAvailable ? 'available (V4 hardware)' : 'not available (V2 hardware)'}`);
+    }
+};
+window.updateFanControlVisibility = updateFanControlVisibility;
