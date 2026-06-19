@@ -48,7 +48,30 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Show pairing UI
         await startBLEWithProgress();
     });
+
+    window.addEventListener('load', () => reconnectBLEWithProgress(), { once: true });
 });
+
+async function reconnectBLEWithProgress(event) {
+    event?.stopPropagation();
+    const progressContainer = document.getElementById('progressContainer');
+    const loaderProgress = document.getElementById('loaderProgress');
+    progressContainer?.classList.add('active');
+    loaderProgress?.classList.add('active');
+    updateProgress(30, 'Reconnecting...');
+
+    try {
+        if (await window.reconnectBLE?.()) return;
+        if (event) await startBLEWithProgress();
+    } catch (error) {
+        console.warn('BLE reconnect failed:', error);
+    }
+
+    progressContainer?.classList.remove('active');
+    loaderProgress?.classList.remove('active');
+    updateProgress(0);
+}
+window.reconnectBLEWithProgress = reconnectBLEWithProgress;
 
 //? Start BLE with progress feedback
 async function startBLEWithProgress() {

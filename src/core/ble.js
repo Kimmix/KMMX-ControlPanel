@@ -36,6 +36,72 @@ let visemeTHScaleCharacteristic;
 let bleDevice; // Store the connected device
 let isConnecting = false; // Prevent multiple simultaneous connection attempts
 
+const characteristicDefinitions = [
+  ['eyeState', 'eyeState', value => eyeStateCharacteristic = value, true, { displayId: 'ble-eyestate' }],
+  ['displayBrightness', 'display', value => displayBrightnessCharacteristic = value, true, { displayId: 'ble-brightness' }],
+  ['viseme', 'viseme', value => visemeCharacteristic = value, true, { displayId: 'ble-viseme' }, handleVisemeChange],
+  ['mouthState', 'mouthState', value => mouthStateCharacteristic = value, true, { displayId: 'ble-mouthstate' }],
+  ['hornLedBrightness', 'hornLedBrightness', value => hornLedBrightnessCharacteristic = value, true, { displayId: 'ble-hornled' }],
+  ['cheekPanelBrightness', 'cheekPanelBrightness', value => cheekPanelBrightnessCharacteristic = value, true, { displayId: 'ble-cheekpanel' }],
+  ['cheekBgColor', 'cheekBgColor', value => cheekBgColorCharacteristic = value, true, { displayId: 'ble-cheekbgcolor', isColor: true, throttleMs: 150 }],
+  ['cheekFadeColor', 'cheekFadeColor', value => cheekFadeColorCharacteristic = value, true, { displayId: 'ble-cheekfadecolor', isColor: true, throttleMs: 150 }],
+  ['reboot', 'reboot', value => rebootCharacteristic = value, true],
+  ['displayColorMode', 'displayColorMode', value => displayColorModeCharacteristic = value, false, { displayId: 'ble-displaycolormode' }],
+  ['displayEffectColor1', 'displayEffectColor1', value => displayEffectColor1Characteristic = value, false, { displayId: 'ble-displayeffectcolor1', isColor: true, throttleMs: 150 }],
+  ['displayEffectColor2', 'displayEffectColor2', value => displayEffectColor2Characteristic = value, false, { displayId: 'ble-displayeffectcolor2', isColor: true, throttleMs: 150 }],
+  ['displayEffectOption1', 'displayEffectOption1', value => displayEffectOption1Characteristic = value, false, { displayId: 'ble-displayeffectoption1' }],
+  ['displayEffectOption2', 'displayEffectOption2', value => displayEffectOption2Characteristic = value, false, { displayId: 'ble-displayeffectoption2' }],
+  ['displayEffectOption3', 'displayEffectOption3', value => displayEffectOption3Characteristic = value, false, { displayId: 'ble-displayeffectoption3' }],
+  ['glitchTrigger', 'glitchTrigger', value => glitchTriggerCharacteristic = value, false, { isTrigger: true }],
+  ['motionEnableFlags', 'motionEnableFlags', value => motionEnableFlagsCharacteristic = value, false, { displayId: 'ble-motionenableflags' }],
+  ['tapSensitivity', 'tapSensitivity', value => tapSensitivityCharacteristic = value, false, { displayId: 'ble-tapsensitivity' }],
+  ['glitchIntensity', 'glitchIntensity', value => glitchIntensityCharacteristic = value, false, { displayId: 'ble-glitchintensity' }],
+  ['fanSpeed', 'fanSpeed', value => fanSpeedCharacteristic = value, false, { displayId: 'ble-fanspeed' }],
+  ['fanEnabled', 'fanEnabled', value => fanEnabledCharacteristic = value, false, { displayId: 'ble-fanenabled' }],
+  ['fanRPM', 'fanRPM', value => fanRPMCharacteristic = value, false, { displayId: 'ble-fanrpm' }, handleFanRPMChange],
+  ['fanConnected', 'fanConnected', value => fanConnectedCharacteristic = value, false, { displayId: 'ble-fanconnected' }, handleFanConnectedChange],
+  ['visemeEnvelopeAttack', 'visemeEnvelopeAttack', value => visemeEnvelopeAttackCharacteristic = value],
+  ['visemeEnvelopeRelease', 'visemeEnvelopeRelease', value => visemeEnvelopeReleaseCharacteristic = value],
+  ['visemeAttackThreshold', 'visemeAttackThreshold', value => visemeAttackThresholdCharacteristic = value],
+  ['visemeMinSeparation', 'visemeMinSeparation', value => visemeMinSeparationCharacteristic = value],
+  ['visemeNoiseFloorMin', 'visemeNoiseFloorMin', value => visemeNoiseFloorMinCharacteristic = value],
+  ['visemeNoiseFloorMax', 'visemeNoiseFloorMax', value => visemeNoiseFloorMaxCharacteristic = value],
+  ['visemeNoiseAdaptSpeed', 'visemeNoiseAdaptSpeed', value => visemeNoiseAdaptSpeedCharacteristic = value],
+  ['visemeAHScale', 'visemeAHScale', value => visemeAHScaleCharacteristic = value],
+  ['visemeEEScale', 'visemeEEScale', value => visemeEEScaleCharacteristic = value],
+  ['visemeOHScale', 'visemeOHScale', value => visemeOHScaleCharacteristic = value],
+  ['visemeOOScale', 'visemeOOScale', value => visemeOOScaleCharacteristic = value],
+  ['visemeTHScale', 'visemeTHScale', value => visemeTHScaleCharacteristic = value]
+];
+
+async function discoverCharacteristics(service) {
+  for (const [name, uuidKey, setCharacteristic, required, options, notificationHandler] of characteristicDefinitions) {
+    let characteristic;
+    try {
+      characteristic = await service.getCharacteristic(bleUUID.characteristic[uuidKey]);
+    } catch (error) {
+      setCharacteristic(null);
+      if (required) throw error;
+      console.warn(`${name} characteristic not available:`, error);
+      continue;
+    }
+
+    setCharacteristic(characteristic);
+    bleManager.register(name, characteristic, options);
+    console.log(`✓ ${name} characteristic found`);
+
+    if (notificationHandler) {
+      try {
+        await characteristic.startNotifications();
+        characteristic.addEventListener('characteristicvaluechanged', notificationHandler);
+        console.log(`✓ ${name} notifications enabled`);
+      } catch (error) {
+        console.warn(`Could not enable ${name} notifications:`, error);
+      }
+    }
+  }
+}
+
 //? Connect to a BLE device (new or existing)
 async function connectToDevice(device, isReconnect = false, retryCount = 0) {
   // Prevent concurrent connection attempts
@@ -101,340 +167,7 @@ async function connectToDevice(device, isReconnect = false, retryCount = 0) {
       updateBLEProgress(75, 'Syncing...');
     }
 
-    eyeStateCharacteristic = await service.getCharacteristic(bleUUID.characteristic.eyeState);
-    displayBrightnessCharacteristic = await service.getCharacteristic(bleUUID.characteristic.display);
-    visemeCharacteristic = await service.getCharacteristic(bleUUID.characteristic.viseme);
-    mouthStateCharacteristic = await service.getCharacteristic(bleUUID.characteristic.mouthState);
-    hornLedBrightnessCharacteristic = await service.getCharacteristic(bleUUID.characteristic.hornLedBrightness);
-    cheekPanelBrightnessCharacteristic = await service.getCharacteristic(bleUUID.characteristic.cheekPanelBrightness);
-    cheekBgColorCharacteristic = await service.getCharacteristic(bleUUID.characteristic.cheekBgColor);
-    cheekFadeColorCharacteristic = await service.getCharacteristic(bleUUID.characteristic.cheekFadeColor);
-    rebootCharacteristic = await service.getCharacteristic(bleUUID.characteristic.reboot);
-
-    // Try to get new Hub75 display color characteristics (may not exist on older firmware)
-    try {
-      displayColorModeCharacteristic = await service.getCharacteristic(bleUUID.characteristic.displayColorMode);
-      console.log('Hub75 Display Color Mode characteristic found');
-    } catch (error) {
-      console.warn('Hub75 Display Color Mode characteristic not available on this device');
-      displayColorModeCharacteristic = null;
-    }
-
-    try {
-      displayEffectColor1Characteristic = await service.getCharacteristic(bleUUID.characteristic.displayEffectColor1);
-      console.log('Hub75 Display Effect Color 1 characteristic found');
-    } catch (error) {
-      console.warn('Hub75 Display Effect Color 1 characteristic not available on this device');
-      displayEffectColor1Characteristic = null;
-    }
-
-    try {
-      displayEffectColor2Characteristic = await service.getCharacteristic(bleUUID.characteristic.displayEffectColor2);
-      console.log('Hub75 Display Effect Color 2 characteristic found');
-    } catch (error) {
-      console.warn('Hub75 Display Effect Color 2 characteristic not available on this device');
-      displayEffectColor2Characteristic = null;
-    }
-
-    try {
-      displayEffectOption1Characteristic = await service.getCharacteristic(bleUUID.characteristic.displayEffectOption1);
-      console.log('Hub75 Display Effect Option 1 characteristic found');
-    } catch (error) {
-      console.warn('Hub75 Display Effect Option 1 characteristic not available on this device');
-      displayEffectOption1Characteristic = null;
-    }
-
-    try {
-      displayEffectOption2Characteristic = await service.getCharacteristic(bleUUID.characteristic.displayEffectOption2);
-      console.log('Hub75 Display Effect Option 2 characteristic found');
-    } catch (error) {
-      console.warn('Hub75 Display Effect Option 2 characteristic not available on this device');
-      displayEffectOption2Characteristic = null;
-    }
-
-    try {
-      displayEffectOption3Characteristic = await service.getCharacteristic(bleUUID.characteristic.displayEffectOption3);
-      console.log('Hub75 Display Effect Option 3 characteristic found');
-    } catch (error) {
-      console.warn('Hub75 Display Effect Option 3 characteristic not available on this device');
-      displayEffectOption3Characteristic = null;
-    }
-
-    // Try to get new Motion Detection & Glitch Control characteristics (may not exist on older firmware)
-    try {
-      glitchTriggerCharacteristic = await service.getCharacteristic(bleUUID.characteristic.glitchTrigger);
-      console.log('Glitch Trigger characteristic found');
-    } catch (error) {
-      console.warn('Glitch Trigger characteristic not available on this device');
-      glitchTriggerCharacteristic = null;
-    }
-
-    try {
-      motionEnableFlagsCharacteristic = await service.getCharacteristic(bleUUID.characteristic.motionEnableFlags);
-      console.log('Motion Enable Flags characteristic found');
-    } catch (error) {
-      console.warn('Motion Enable Flags characteristic not available on this device');
-      motionEnableFlagsCharacteristic = null;
-    }
-
-    try {
-      tapSensitivityCharacteristic = await service.getCharacteristic(bleUUID.characteristic.tapSensitivity);
-      console.log('Tap Sensitivity characteristic found');
-    } catch (error) {
-      console.warn('Tap Sensitivity characteristic not available on this device');
-      tapSensitivityCharacteristic = null;
-    }
-
-    try {
-      glitchIntensityCharacteristic = await service.getCharacteristic(bleUUID.characteristic.glitchIntensity);
-      console.log('Glitch Intensity characteristic found');
-    } catch (error) {
-      console.warn('Glitch Intensity characteristic not available on this device');
-      glitchIntensityCharacteristic = null;
-    }
-
-    // Try to get Fan Control characteristics (V4 only - may not exist on V2 hardware)
-    try {
-      fanSpeedCharacteristic = await service.getCharacteristic(bleUUID.characteristic.fanSpeed);
-      console.log('Fan Speed characteristic found (V4 hardware detected)');
-    } catch (error) {
-      console.warn('Fan Speed characteristic not available (V2 hardware or not supported)');
-      fanSpeedCharacteristic = null;
-    }
-
-    try {
-      fanEnabledCharacteristic = await service.getCharacteristic(bleUUID.characteristic.fanEnabled);
-      console.log('Fan Enabled characteristic found');
-    } catch (error) {
-      console.warn('Fan Enabled characteristic not available');
-      fanEnabledCharacteristic = null;
-    }
-
-    try {
-      fanRPMCharacteristic = await service.getCharacteristic(bleUUID.characteristic.fanRPM);
-      console.log('Fan RPM characteristic found');
-    } catch (error) {
-      console.warn('Fan RPM characteristic not available');
-      fanRPMCharacteristic = null;
-    }
-
-    try {
-      fanConnectedCharacteristic = await service.getCharacteristic(bleUUID.characteristic.fanConnected);
-      console.log('Fan Connected characteristic found');
-    } catch (error) {
-      console.warn('Fan Connected characteristic not available');
-      fanConnectedCharacteristic = null;
-    }
-
-    // Try to get Viseme Advanced Parameters characteristics (may not exist on older firmware)
-    try {
-      visemeEnvelopeAttackCharacteristic = await service.getCharacteristic(bleUUID.characteristic.visemeEnvelopeAttack);
-      console.log('Viseme Envelope Attack characteristic found');
-    } catch (error) {
-      console.warn('Viseme Envelope Attack characteristic not available');
-      visemeEnvelopeAttackCharacteristic = null;
-    }
-
-    try {
-      visemeEnvelopeReleaseCharacteristic = await service.getCharacteristic(bleUUID.characteristic.visemeEnvelopeRelease);
-      console.log('Viseme Envelope Release characteristic found');
-    } catch (error) {
-      console.warn('Viseme Envelope Release characteristic not available');
-      visemeEnvelopeReleaseCharacteristic = null;
-    }
-
-    try {
-      visemeAttackThresholdCharacteristic = await service.getCharacteristic(bleUUID.characteristic.visemeAttackThreshold);
-      console.log('Viseme Attack Threshold characteristic found');
-    } catch (error) {
-      console.warn('Viseme Attack Threshold characteristic not available');
-      visemeAttackThresholdCharacteristic = null;
-    }
-
-    try {
-      visemeMinSeparationCharacteristic = await service.getCharacteristic(bleUUID.characteristic.visemeMinSeparation);
-      console.log('Viseme Min Separation characteristic found');
-    } catch (error) {
-      console.warn('Viseme Min Separation characteristic not available');
-      visemeMinSeparationCharacteristic = null;
-    }
-
-    try {
-      visemeNoiseFloorMinCharacteristic = await service.getCharacteristic(bleUUID.characteristic.visemeNoiseFloorMin);
-      console.log('Viseme Noise Floor Min characteristic found');
-    } catch (error) {
-      console.warn('Viseme Noise Floor Min characteristic not available');
-      visemeNoiseFloorMinCharacteristic = null;
-    }
-
-    try {
-      visemeNoiseFloorMaxCharacteristic = await service.getCharacteristic(bleUUID.characteristic.visemeNoiseFloorMax);
-      console.log('Viseme Noise Floor Max characteristic found');
-    } catch (error) {
-      console.warn('Viseme Noise Floor Max characteristic not available');
-      visemeNoiseFloorMaxCharacteristic = null;
-    }
-
-    try {
-      visemeNoiseAdaptSpeedCharacteristic = await service.getCharacteristic(bleUUID.characteristic.visemeNoiseAdaptSpeed);
-      console.log('Viseme Noise Adapt Speed characteristic found');
-    } catch (error) {
-      console.warn('Viseme Noise Adapt Speed characteristic not available');
-      visemeNoiseAdaptSpeedCharacteristic = null;
-    }
-
-    try {
-      visemeAHScaleCharacteristic = await service.getCharacteristic(bleUUID.characteristic.visemeAHScale);
-      console.log('Viseme AH Scale characteristic found');
-    } catch (error) {
-      console.warn('Viseme AH Scale characteristic not available');
-      visemeAHScaleCharacteristic = null;
-    }
-
-    try {
-      visemeEEScaleCharacteristic = await service.getCharacteristic(bleUUID.characteristic.visemeEEScale);
-      console.log('Viseme EE Scale characteristic found');
-    } catch (error) {
-      console.warn('Viseme EE Scale characteristic not available');
-      visemeEEScaleCharacteristic = null;
-    }
-
-    try {
-      visemeOHScaleCharacteristic = await service.getCharacteristic(bleUUID.characteristic.visemeOHScale);
-      console.log('Viseme OH Scale characteristic found');
-    } catch (error) {
-      console.warn('Viseme OH Scale characteristic not available');
-      visemeOHScaleCharacteristic = null;
-    }
-
-    try {
-      visemeOOScaleCharacteristic = await service.getCharacteristic(bleUUID.characteristic.visemeOOScale);
-      console.log('Viseme OO Scale characteristic found');
-    } catch (error) {
-      console.warn('Viseme OO Scale characteristic not available');
-      visemeOOScaleCharacteristic = null;
-    }
-
-    try {
-      visemeTHScaleCharacteristic = await service.getCharacteristic(bleUUID.characteristic.visemeTHScale);
-      console.log('Viseme TH Scale characteristic found');
-    } catch (error) {
-      console.warn('Viseme TH Scale characteristic not available');
-      visemeTHScaleCharacteristic = null;
-    }
-
-    // Register all characteristics with BLE Manager
-    bleManager.register('eyeState', eyeStateCharacteristic, { displayId: 'ble-eyestate' });
-    bleManager.register('displayBrightness', displayBrightnessCharacteristic, { displayId: 'ble-brightness' });
-    bleManager.register('viseme', visemeCharacteristic, { displayId: 'ble-viseme' });
-    bleManager.register('mouthState', mouthStateCharacteristic, { displayId: 'ble-mouthstate' });
-    bleManager.register('hornLedBrightness', hornLedBrightnessCharacteristic, { displayId: 'ble-hornled' });
-    bleManager.register('cheekPanelBrightness', cheekPanelBrightnessCharacteristic, { displayId: 'ble-cheekpanel' });
-    bleManager.register('cheekBgColor', cheekBgColorCharacteristic, { displayId: 'ble-cheekbgcolor', isColor: true, throttleMs: 150 });
-    bleManager.register('cheekFadeColor', cheekFadeColorCharacteristic, { displayId: 'ble-cheekfadecolor', isColor: true, throttleMs: 150 });
-    bleManager.register('reboot', rebootCharacteristic);
-
-    // Register Hub75 characteristics if available
-    if (displayColorModeCharacteristic) {
-      bleManager.register('displayColorMode', displayColorModeCharacteristic, { displayId: 'ble-displaycolormode' });
-    }
-    if (displayEffectColor1Characteristic) {
-      bleManager.register('displayEffectColor1', displayEffectColor1Characteristic, { displayId: 'ble-displayeffectcolor1', isColor: true, throttleMs: 150 });
-    }
-    if (displayEffectColor2Characteristic) {
-      bleManager.register('displayEffectColor2', displayEffectColor2Characteristic, { displayId: 'ble-displayeffectcolor2', isColor: true, throttleMs: 150 });
-    }
-    if (displayEffectOption1Characteristic) {
-      bleManager.register('displayEffectOption1', displayEffectOption1Characteristic, { displayId: 'ble-displayeffectoption1' });
-    }
-    if (displayEffectOption2Characteristic) {
-      bleManager.register('displayEffectOption2', displayEffectOption2Characteristic, { displayId: 'ble-displayeffectoption2' });
-    }
-    if (displayEffectOption3Characteristic) {
-      bleManager.register('displayEffectOption3', displayEffectOption3Characteristic, { displayId: 'ble-displayeffectoption3' });
-    }
-
-    // Register Motion & Glitch characteristics if available
-    if (glitchTriggerCharacteristic) {
-      bleManager.register('glitchTrigger', glitchTriggerCharacteristic, { isTrigger: true });
-    }
-    if (motionEnableFlagsCharacteristic) {
-      bleManager.register('motionEnableFlags', motionEnableFlagsCharacteristic, { displayId: 'ble-motionenableflags' });
-    }
-    if (tapSensitivityCharacteristic) {
-      bleManager.register('tapSensitivity', tapSensitivityCharacteristic, { displayId: 'ble-tapsensitivity' });
-    }
-    if (glitchIntensityCharacteristic) {
-      bleManager.register('glitchIntensity', glitchIntensityCharacteristic, { displayId: 'ble-glitchintensity' });
-    }
-
-    // Register Fan Control characteristics if available (V4 only)
-    if (fanSpeedCharacteristic) {
-      bleManager.register('fanSpeed', fanSpeedCharacteristic, { displayId: 'ble-fanspeed' });
-    }
-    if (fanEnabledCharacteristic) {
-      bleManager.register('fanEnabled', fanEnabledCharacteristic, { displayId: 'ble-fanenabled' });
-    }
-    if (fanRPMCharacteristic) {
-      bleManager.register('fanRPM', fanRPMCharacteristic, { displayId: 'ble-fanrpm' });
-      // Setup notification for real-time RPM updates
-      try {
-        await fanRPMCharacteristic.startNotifications();
-        fanRPMCharacteristic.addEventListener('characteristicvaluechanged', handleFanRPMChange);
-        console.log('Fan RPM notifications enabled');
-      } catch (error) {
-        console.warn('Could not enable Fan RPM notifications:', error);
-      }
-    }
-    if (fanConnectedCharacteristic) {
-      bleManager.register('fanConnected', fanConnectedCharacteristic, { displayId: 'ble-fanconnected' });
-      // Setup notification for fan connection status
-      try {
-        await fanConnectedCharacteristic.startNotifications();
-        fanConnectedCharacteristic.addEventListener('characteristicvaluechanged', handleFanConnectedChange);
-        console.log('Fan Connected notifications enabled');
-      } catch (error) {
-        console.warn('Could not enable Fan Connected notifications:', error);
-      }
-    }
-
-    // Register Viseme Advanced Parameters characteristics if available
-    if (visemeEnvelopeAttackCharacteristic) {
-      bleManager.register('visemeEnvelopeAttack', visemeEnvelopeAttackCharacteristic);
-    }
-    if (visemeEnvelopeReleaseCharacteristic) {
-      bleManager.register('visemeEnvelopeRelease', visemeEnvelopeReleaseCharacteristic);
-    }
-    if (visemeAttackThresholdCharacteristic) {
-      bleManager.register('visemeAttackThreshold', visemeAttackThresholdCharacteristic);
-    }
-    if (visemeMinSeparationCharacteristic) {
-      bleManager.register('visemeMinSeparation', visemeMinSeparationCharacteristic);
-    }
-    if (visemeNoiseFloorMinCharacteristic) {
-      bleManager.register('visemeNoiseFloorMin', visemeNoiseFloorMinCharacteristic);
-    }
-    if (visemeNoiseFloorMaxCharacteristic) {
-      bleManager.register('visemeNoiseFloorMax', visemeNoiseFloorMaxCharacteristic);
-    }
-    if (visemeNoiseAdaptSpeedCharacteristic) {
-      bleManager.register('visemeNoiseAdaptSpeed', visemeNoiseAdaptSpeedCharacteristic);
-    }
-    if (visemeAHScaleCharacteristic) {
-      bleManager.register('visemeAHScale', visemeAHScaleCharacteristic);
-    }
-    if (visemeEEScaleCharacteristic) {
-      bleManager.register('visemeEEScale', visemeEEScaleCharacteristic);
-    }
-    if (visemeOHScaleCharacteristic) {
-      bleManager.register('visemeOHScale', visemeOHScaleCharacteristic);
-    }
-    if (visemeOOScaleCharacteristic) {
-      bleManager.register('visemeOOScale', visemeOOScaleCharacteristic);
-    }
-    if (visemeTHScaleCharacteristic) {
-      bleManager.register('visemeTHScale', visemeTHScaleCharacteristic);
-    }
+    await discoverCharacteristics(service);
 
     console.log('Reading value...');
     if (!isReconnect) {
@@ -576,7 +309,7 @@ async function connectToDevice(device, isReconnect = false, retryCount = 0) {
         console.log(`✓ Viseme Noise Floor Min: ${floatValue}`);
         const slider = document.getElementById('visemeNoiseFloorMinSlider');
         const display = document.getElementById('visemeNoiseFloorMinValue');
-        if (slider) slider.value = floatValue;
+        if (slider) window.setVisemeNoiseFloorSlider?.('NoiseFloorMin', floatValue);
         if (display) display.textContent = floatValue.toFixed(0);
       } catch (err) {
         console.warn('Could not read visemeNoiseFloorMin:', err);
@@ -590,7 +323,7 @@ async function connectToDevice(device, isReconnect = false, retryCount = 0) {
         console.log(`✓ Viseme Noise Floor Max: ${floatValue}`);
         const slider = document.getElementById('visemeNoiseFloorMaxSlider');
         const display = document.getElementById('visemeNoiseFloorMaxValue');
-        if (slider) slider.value = floatValue;
+        if (slider) window.setVisemeNoiseFloorSlider?.('NoiseFloorMax', floatValue);
         if (display) display.textContent = floatValue.toFixed(0);
       } catch (err) {
         console.warn('Could not read visemeNoiseFloorMax:', err);
@@ -846,6 +579,8 @@ async function startBLE() {
 
     updateBLEProgress(30, 'Searching...');
 
+    if (await reconnectBLE()) return;
+
     const device = await navigator.bluetooth.requestDevice({
       filters: [{ services: [bleUUID.service] }],
     });
@@ -873,10 +608,26 @@ async function startBLE() {
   }
 }
 
+async function reconnectBLE() {
+  if (!navigator.bluetooth?.getDevices) return false;
+
+  const devices = await navigator.bluetooth.getDevices();
+  const device = devices.find(({ name }) => name?.startsWith('KimmixController'))
+    || (devices.length === 1 ? devices[0] : null);
+  if (!device) return false;
+
+  bleDevice = device;
+  device.addEventListener('gattserverdisconnected', onDisconnected);
+  await connectToDevice(device, false);
+  return true;
+}
+window.reconnectBLE = reconnectBLE;
 
 function onDisconnected(event) {
   const device = event.target;
   console.log(`Device ${device.name} is disconnected.`);
+
+  if (isConnecting) return;
 
   // Clear BLE Manager on disconnect
   bleManager.clear();
@@ -892,6 +643,12 @@ async function setEyeStateCharacteristic(value) {
 
 function setVisemeCharacteristic(value) {
   bleManager.write('viseme', value);
+}
+
+function handleVisemeChange(event) {
+  const value = event.target.value.getUint8(0);
+  setViseme(value);
+  updateBLECharValue('ble-viseme', value);
 }
 
 function setMouthStateCharacteristic(value) {
@@ -1014,7 +771,6 @@ function handleFanConnectedChange(event) {
 const throttledWrite = name => value => bleManager.getThrottledWrite(name)(value);
 const throttledColorWrite = name => (r, g, b) => bleManager.getThrottledWrite(name)([r, g, b]);
 
-const throttledAndDebouncedsetVisemeCharacteristic = throttledWrite('viseme');
 const throttledAndDebouncedSetDisplayBrightness = throttledWrite('displayBrightness');
 const throttledAndDebouncedSetHornLedBrightness = throttledWrite('hornLedBrightness');
 const throttledAndDebouncedSetCheekPanelBrightness = throttledWrite('cheekPanelBrightness');

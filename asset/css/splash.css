@@ -175,6 +175,29 @@
   transform: translateY(0);
 }
 
+.reconnect-btn {
+  position: absolute;
+  bottom: 4%;
+  left: 4%;
+  padding: 8px 16px;
+  height: 36px;
+  border: 1px solid var(--white-color);
+  border-radius: 8px;
+  background: var(--white-color);
+  color: var(--black-color);
+  font: 600 0.85rem "Montserrat", sans-serif;
+  cursor: pointer;
+}
+
+.reconnect-btn:hover {
+  transform: translateY(-2px);
+}
+
+.progress-container.active ~ .reconnect-btn {
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* Hide skip button when progress is active */
 .progress-container.active ~ .skip-pairing-btn {
   opacity: 0;

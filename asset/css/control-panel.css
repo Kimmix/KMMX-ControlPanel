@@ -502,7 +502,7 @@ hr.cenhr {
       display: flex;
       justify-content: space-between;
       width: 100%;
-      align-items: flex-end;
+      align-items: center;
 
       .viseme-title-container {
         display: flex;
@@ -518,6 +518,27 @@ hr.cenhr {
           height: 2em;
           transform: scaleY(0.2);
           transition: transform 800ms ease;
+        }
+      }
+
+      .viseme-title-copy {
+        text-align: left;
+
+        >h2,
+        >p {
+          margin: 0;
+        }
+
+        >h2 {
+          font-size: 1.8em;
+        }
+
+        >p {
+          margin-top: 3px;
+          color: var(--white2-color);
+          font-size: 0.65rem;
+          font-weight: 500;
+          white-space: nowrap;
         }
       }
 
@@ -556,83 +577,52 @@ hr.cenhr {
   }
 }
 
-.viseme-value-slider {
-  display: flex;
-  /* height: 120px; */
-  text-align: center;
-  flex-direction: column;
-  margin-top: 12px;
-  font-size: 10px;
-  max-height: 100%;
-  transition: filter 300ms ease-out,
-    opacity 300ms ease-out,
-    max-height 500ms ease-out;
+.viseme-compact {
+  min-height: 0;
+  margin-bottom: 20px;
+}
 
-  &.disable {
-    pointer-events: none;
-    filter: grayscale(1);
-    opacity: 0.1;
-    max-height: 0%;
+.viseme-configure {
+  align-self: flex-end;
+  margin-top: 8px;
+  padding: 8px 0;
+  border: 0;
+  background: transparent;
+  color: var(--white-color);
+  font: 500 0.8rem "Montserrat", sans-serif;
+  cursor: pointer;
+  transition: color 180ms ease, transform 180ms ease;
+}
+
+.viseme-configure::after {
+  content: " \2192";
+  display: inline-block;
+  margin-left: 5px;
+  transition: transform 180ms ease;
+}
+
+.mouth-state-buttons.disabled {
+  opacity: 0.35;
+}
+
+.mouth-state-buttons button:disabled {
+  cursor: not-allowed;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .viseme-configure:hover {
+    color: var(--acc1-color);
+    transform: translateX(2px);
   }
 
-  >h3 {
-    color: var(--white-color);
-  }
-
-  .number-slider {
-    display: flex;
-    position: relative;
-    justify-content: space-around;
-    align-items: center;
-    background-color: var(--black3-color);
-    border-radius: 8px;
-    height: 26px;
-    width: 100%;
-    margin: 5px auto;
-    padding: 3px 0;
-    font-size: 18px;
-
-    >span {
-      color: var(--black4-color);
-      font-weight: 600;
-      display: inline-block;
-      position: relative;
-      padding: 8px 10px;
-      border-radius: 4px;
-      transition: background-color 0.3s, color 0.3s;
-      width: 20px;
-
-      &.active {
-        background-color: var(--acc2-color);
-        color: var(--white-color);
-      }
-
-      &.default-dot::before {
-        content: '.';
-        display: inline-block;
-        position: absolute;
-        bottom: -2px;
-        left: 0;
-        text-align: center;
-        width: 100%;
-        font-size: 1.3em;
-      }
-    }
-  }
-
-  .vsm-slider {
-    position: absolute;
-    bottom: 0;
-    height: 50px;
-    width: calc(100% - 40px);
-    opacity: 0;
+  .viseme-configure:hover::after {
+    transform: translateX(3px);
   }
 }
 
 /* Viseme Advanced Parameters */
 .viseme-advanced-section {
   width: 100%;
-  margin-top: 20px;
   overflow: visible;
 }
 

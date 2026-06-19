@@ -135,63 +135,46 @@ function updateMouthStateDisplay(name) {
 const visemeBtn = document.getElementById('visemeBtn');
 const visemeOn = document.getElementById('visemeOn');
 const visemeOff = document.getElementById('visemeOff');
-const visemeSilder = document.getElementById('vsmSlider');
 
-// Core toggle function
-function toggleVisemeCore() {
-    visemeBtn.classList.toggle('active');
-    visemeOn.classList.toggle('active');
-    visemeOff.classList.toggle('active');
-    visemeSilder.classList.toggle('disable');
-    vibrateDevice();
-    updateViseme();
+function renderViseme(enabled) {
+    visemeBtn.classList.toggle('active', enabled);
+    visemeBtn.setAttribute('aria-pressed', enabled);
+    visemeOn.classList.toggle('active', enabled);
+    visemeOff.classList.toggle('active', !enabled);
+    document.querySelectorAll('#mouthStateButtons button').forEach(button => button.disabled = enabled);
+    document.getElementById('mouthStateButtons')?.classList.toggle('disabled', enabled);
+    updateVisemeAdvancedVisibility();
 }
 
-// Public toggle function with advanced parameters visibility update
 toggleViseme = function() {
-    toggleVisemeCore();
-    updateVisemeAdvancedVisibility();
+    const enabled = !isVisemeOn();
+    renderViseme(enabled);
+    setVisemeCharacteristic(enabled ? 1 : 0);
+    vibrateDevice();
 };
 window.toggleViseme = toggleViseme;
 
-setViseme = function(i) {
-    if (i && !isVisemeOn()) {
-        toggleViseme();
-    } else if (!i && isVisemeOn()) {
-        toggleViseme();
-    }
+// BLE synchronization updates the UI without writing the value back.
+setViseme = function(value) {
+    renderViseme(value !== 0);
 };
 window.setViseme = setViseme;
-
-function updateViseme() {
-    if (isVisemeOn()) {
-        setVisemeCharacteristic(1);
-    } else {
-        setVisemeCharacteristic(0);
-    }
-}
-
-//* Visme slider
-const sliderNumbers = document.querySelectorAll('.sliderNumber');
-const rangeInput = document.getElementById('vsmValue');
-
-rangeInput.addEventListener('input', () => {
-    const inputValue = parseInt(rangeInput.value, 10);
-
-    sliderNumbers.forEach((number, index) => {
-        if (index + 1 === inputValue) {
-            number.classList.add('active');
-        } else {
-            number.classList.remove('active');
-        }
-    });
-    vibrateDevice();
-    throttledAndDebouncedsetVisemeCharacteristic(inputValue + 1);
-});
 
 function isVisemeOn() {
     return visemeBtn.classList.contains('active')
 }
+
+window.openVisemeSettings = function() {
+    document.querySelector('.nav-icon[data-page="settings"]')?.click();
+    const section = document.getElementById('visemeAdvancedSection');
+    const content = document.getElementById('visemeAdvancedContent');
+    const button = document.getElementById('visemeAdvancedToggleBtn');
+    section.style.display = 'block';
+    content.style.display = 'block';
+    button.classList.add('expanded');
+    button.querySelector('.toggle-icon').style.transform = 'rotate(180deg)';
+    setTimeout(() => section.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+};
 
 //* --------- Viseme Advanced Parameters ---------
 // Toggle Advanced Section
@@ -224,40 +207,12 @@ window.toggleVisemeAdvanced = function() {
 // Show/hide advanced section based on viseme state
 function updateVisemeAdvancedVisibility() {
     const advancedSection = document.getElementById('visemeAdvancedSection');
-    const content = document.getElementById('visemeAdvancedContent');
-    const button = document.getElementById('visemeAdvancedToggleBtn');
-    const icon = button?.querySelector('.toggle-icon');
-
-    if (advancedSection) {
-        if (isVisemeOn()) {
-            // Show advanced section when viseme is ON
-            advancedSection.style.display = 'block';
-
-            // If showing for the first time, expand the content
-            if (content && !content.hasAttribute('data-initialized')) {
-                content.style.display = 'block';
-                content.setAttribute('data-initialized', 'true');
-                if (icon) icon.style.transform = 'rotate(180deg)';
-                if (button) button.classList.add('expanded');
-            }
-        } else {
-            // Hide advanced section and collapse content when viseme is OFF
-            advancedSection.style.display = 'none';
-
-            // Reset the collapsed state
-            if (content) {
-                content.style.display = 'none';
-                content.removeAttribute('data-initialized');
-            }
-            if (icon) icon.style.transform = 'rotate(0deg)';
-            if (button) button.classList.remove('expanded');
-        }
-    }
+    if (advancedSection) advancedSection.style.display = isVisemeOn() ? 'block' : 'none';
 }
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
-    updateVisemeAdvancedVisibility();
+    renderViseme(isVisemeOn());
 });
 
 [
@@ -277,12 +232,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const slider = document.getElementById(`viseme${name}Slider`);
     const display = document.getElementById(`viseme${name}Value`);
     slider?.addEventListener('input', (event) => {
-        const value = parseFloat(event.target.value);
+        const position = parseFloat(event.target.value);
+        const value = event.target.dataset.nonlinear === 'noise-floor'
+            ? 5 * Math.pow(40, position / 100)
+            : position;
         if (display) display.textContent = value.toFixed(decimals);
         vibrateDevice();
         window.throttledVisemeFloatWriters[name](value);
     });
 });
+
+window.setVisemeNoiseFloorSlider = (name, value) => {
+    const slider = document.getElementById(`viseme${name}Slider`);
+    if (slider) slider.value = Math.log(Math.max(5, Math.min(200, value)) / 5) / Math.log(40) * 100;
+};
 
 //* --------- Horn LED Brightness ---------
 //* --------- Horn LED Brightness Slider ---------

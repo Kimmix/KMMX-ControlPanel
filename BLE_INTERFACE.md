@@ -50,12 +50,11 @@ The KMMX controller supports two hardware versions with different capabilities:
 |------|------|------------|-------------|-------------|
 | Eye State | `49a36bb2-1c66-4e5c-8ff3-28e55a64beb3` | READ, WRITE | `uint8_t` | Changes eye expression state. See expression mapping below. |
 | Mouth State | `f6a7b8c9-d0e1-4f5a-b1c2-3d4e5f6a7b8c` | READ, WRITE | `uint8_t` | Changes mouth expression state. See expression mapping below. |
-| Viseme | `493d06f3-0fa0-4a90-88f1-ebaed0da9b80` | READ, WRITE | `uint8_t` (0-10) | Controls automatic viseme/lip-sync system. See values below. |
+| Viseme | `493d06f3-0fa0-4a90-88f1-ebaed0da9b80` | READ, WRITE, NOTIFY | `uint8_t` (0-1) | Controls automatic viseme/lip-sync. |
 
 **Viseme Control Values:**
 - **0**: Disable viseme (mouth returns to IDLE)
 - **1**: Enable viseme (mouth enters TALKING mode with automatic lip-sync)
-- **2-10**: Enable viseme and set noise threshold sensitivity (2 = lowest/400, 10 = highest/25000)
 
 *Note: When enabled, the system automatically analyzes microphone input and generates mouth shapes (AH, EE, OH, OO, TH) based on frequency analysis.*
 

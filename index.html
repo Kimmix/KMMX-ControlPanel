@@ -49,8 +49,8 @@
   <link defer rel="stylesheet" href="asset/css/normalize.css" />
   <link defer rel="stylesheet" href="asset/css/styles-main.css" />
   <link defer rel="stylesheet" href="asset/css/high-refresh-rate.css" />
-  <link defer rel="stylesheet" href="asset/css/splash.css" />
-  <link defer rel="stylesheet" href="asset/css/control-panel.css" />
+  <link defer rel="stylesheet" href="asset/css/splash.css?v=1.0.10" />
+  <link defer rel="stylesheet" href="asset/css/control-panel.css?v=1.0.12" />
   <link defer rel="stylesheet" href="asset/css/navigation.css" />
   <link defer rel="stylesheet" href="asset/css/pages.css" />
 </head>
@@ -70,6 +70,8 @@
   <div class="progress-container" id="progressContainer">
     <div class="progress-bar" id="progressBar"></div>
   </div>
+
+  <button class="reconnect-btn" type="button" onclick="reconnectBLEWithProgress(event)">Reconnect</button>
 
   <!-- Skip Pairing Button -->
   <button class="skip-pairing-btn" id="skipPairingBtn" onclick="skipPairing(event)">
@@ -167,6 +169,24 @@
 
               <!-- Mouth Control Section -->
               <div id="mouthControlSection" class="control-section">
+                <div class="viseme viseme-compact">
+                  <button id="visemeBtn" onclick="toggleViseme()" class="viseme-btn active" type="button"
+                    aria-pressed="true">
+                    <div class="viseme-title">
+                      <div class="viseme-title-container">
+                        <img class="inline-icn" src="asset/svg/wave-icon.svg" alt="">
+                        <div class="viseme-title-copy">
+                          <h2>Viseme</h2>
+                          <p>Automatic microphone lip-sync</p>
+                        </div>
+                      </div>
+                      <div class="viseme-toggle">
+                        <span id="visemeOn" class="active">on</span>&nbsp;|&nbsp;<span id="visemeOff">off</span>
+                      </div>
+                    </div>
+                  </button>
+                  <button class="viseme-configure" type="button" onclick="openVisemeSettings()">Configure audio processing</button>
+                </div>
                 <div id="mouthStateButtons" class="mouth-state-buttons">
                   <!-- Mouth state buttons will be dynamically created by ButtonGrid component -->
                 </div>
@@ -186,49 +206,19 @@
         <!-- Page Content Container (Scrollable) -->
         <div class="page-content-container">
           <!-- Settings Section: Audio -->
-          <div class="settings-section">
+          <div id="audioProcessingSection" class="settings-section">
             <h3 class="section-title">Audio Processing</h3>
-            <div class="viseme">
-              <button id="visemeBtn" onclick="toggleViseme()" class="viseme-btn active">
-                <div class="bitrate">
-                  <p>I<span class="superscript">2</span>S 16bit / 8KHz<br><span class="fade">256 sample</span></p>
-                </div>
-                <div class="viseme-title">
-                  <div class="viseme-title-container">
-                    <img class="inline-icn" src="asset/svg/wave-icon.svg" alt="Wave icon">
-                    <h2>Viseme</h2>
-                  </div>
-                  <div class="viseme-toggle">
-                    <span id="visemeOn" class="active">on</span>&nbsp;|&nbsp;<span id="visemeOff">off</span>
-                  </div>
-                </div>
-              </button>
-              <div id="vsmSlider" class="viseme-value-slider">
-                <h3>Noise threshold</h3>
-                <div class="number-slider">
-                  <span class="sliderNumber">1</span>
-                  <span class="sliderNumber default-dot active">2</span>
-                  <span class="sliderNumber">3</span>
-                  <span class="sliderNumber">4</span>
-                  <span class="sliderNumber">5</span>
-                  <span class="sliderNumber">6</span>
-                  <span class="sliderNumber">7</span>
-                  <span class="sliderNumber">8</span>
-                  <span class="sliderNumber">9</span>
-                  <input class="vsm-slider" type="range" min="1" max="9" value="1" id="vsmValue">
-                </div>
-              </div>
-
+            <div>
               <!-- Advanced Viseme Parameters Section -->
-              <div id="visemeAdvancedSection" class="viseme-advanced-section" style="margin-top: 20px;">
-                <button id="visemeAdvancedToggleBtn" class="section-toggle-button expanded" onclick="toggleVisemeAdvanced()" style="margin-bottom: 15px;">
+              <div id="visemeAdvancedSection" class="viseme-advanced-section">
+                <button id="visemeAdvancedToggleBtn" class="section-toggle-button" onclick="toggleVisemeAdvanced()" style="margin-bottom: 15px;">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="toggle-icon" style="transition: transform 0.3s ease; transform: rotate(180deg);">
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="toggle-icon">
                     <path d="M6 9l6 6 6-6" />
                   </svg>
                   <span>Advanced Parameters</span>
                 </button>
-                <div id="visemeAdvancedContent" class="collapsible-content" style="display: block;">
+                <div id="visemeAdvancedContent" class="collapsible-content" style="display: none;">
 
                   <!-- Envelope Controls -->
                   <div style="margin-bottom: 25px;">
@@ -305,13 +295,13 @@
                     <div style="margin-bottom: 20px;">
                       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
                         <h3 style="margin: 0; font-size: 0.9rem;">Minimum</h3>
-                        <span id="visemeNoiseFloorMinValue" class="fade" style="font-size: 0.9rem;">0</span>
+                        <span id="visemeNoiseFloorMinValue" class="fade" style="font-size: 0.9rem;">20</span>
                       </div>
                       <input type="range" id="visemeNoiseFloorMinSlider" class="spiral-thickness-slider"
-                        min="100" max="500" step="5" value="200" style="width: 100%;">
+                        min="0" max="100" step="1" value="38" data-nonlinear="noise-floor" style="width: 100%;">
                       <div style="display: flex; justify-content: space-between; margin-top: 5px;">
-                        <span class="fade" style="font-size: 0.75rem;">100</span>
-                        <span class="fade" style="font-size: 0.75rem;">500</span>
+                        <span class="fade" style="font-size: 0.75rem;">5</span>
+                        <span class="fade" style="font-size: 0.75rem;">200</span>
                       </div>
                     </div>
 
@@ -319,13 +309,13 @@
                     <div style="margin-bottom: 20px;">
                       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
                         <h3 style="margin: 0; font-size: 0.9rem;">Maximum</h3>
-                        <span id="visemeNoiseFloorMaxValue" class="fade" style="font-size: 0.9rem;">0</span>
+                        <span id="visemeNoiseFloorMaxValue" class="fade" style="font-size: 0.9rem;">100</span>
                       </div>
                       <input type="range" id="visemeNoiseFloorMaxSlider" class="spiral-thickness-slider"
-                        min="500" max="2000" step="10" value="1000" style="width: 100%;">
+                        min="0" max="100" step="1" value="81" data-nonlinear="noise-floor" style="width: 100%;">
                       <div style="display: flex; justify-content: space-between; margin-top: 5px;">
-                        <span class="fade" style="font-size: 0.75rem;">500</span>
-                        <span class="fade" style="font-size: 0.75rem;">2000</span>
+                        <span class="fade" style="font-size: 0.75rem;">5</span>
+                        <span class="fade" style="font-size: 0.75rem;">200</span>
                       </div>
                     </div>
 
@@ -1225,9 +1215,9 @@
   <script defer src="src/components/button-grid.js"></script>
 
   <!-- Main application files -->
-  <script type="module" src="src/core/app.js"></script>
-  <script type="module" src="src/core/control.js"></script>
-  <script defer src="src/core/ble.js"></script>
+  <script type="module" src="src/core/app.js?v=1.0.11"></script>
+  <script type="module" src="src/core/control.js?v=1.0.11"></script>
+  <script defer src="src/core/ble.js?v=1.0.11"></script>
   <script defer src="src/core/navigation.js"></script>
 </body>
 
