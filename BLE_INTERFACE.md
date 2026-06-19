@@ -7,8 +7,6 @@ This document defines the Bluetooth Low Energy (BLE) GATT profile for controllin
 **Manufacturer ID:** `0xFFFF` (Custom)
 **Manufacturer Data:** `KMMX` + Version `1.0`
 
-Writes require authenticated operating-system BLE pairing. Use passkey `739241` unless the firmware build overrides `BLE_PASSKEY`.
-
 ## Hardware Versions
 
 The KMMX controller supports two hardware versions with different capabilities:

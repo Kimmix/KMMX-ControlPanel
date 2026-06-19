@@ -601,10 +601,7 @@ async function startBLE() {
     }
 
     console.error('Error:', error);
-    const needsPairing = /auth|encrypt|security|permission/i.test(`${error.name} ${error.message}`);
-    alert(needsPairing
-      ? 'Bluetooth authentication failed. Pair the KMMX controller in your operating system using passkey 739241, then reconnect.'
-      : error);
+    alert(error);
   }
 }
 
