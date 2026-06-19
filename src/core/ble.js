@@ -1,6 +1,3 @@
-// BLE UUID configuration imported from config/ble-config.js
-// bleUUID is now available globally via window.bleUUID
-
 let eyeStateCharacteristic;
 let displayBrightnessCharacteristic;
 let visemeCharacteristic;
@@ -38,8 +35,6 @@ let visemeOOScaleCharacteristic;
 let visemeTHScaleCharacteristic;
 let bleDevice; // Store the connected device
 let isConnecting = false; // Prevent multiple simultaneous connection attempts
-
-// BLE Write Queue is now handled by bleManager
 
 //? Connect to a BLE device (new or existing)
 async function connectToDevice(device, isReconnect = false, retryCount = 0) {
@@ -1016,57 +1011,38 @@ function handleFanConnectedChange(event) {
   }
 }
 
-// Throttled/debounced wrappers that use BLE Manager
-// These get the auto-created throttled functions from the manager
-const throttledAndDebouncedsetVisemeCharacteristic = (value) => bleManager.getThrottledWrite('viseme')(value);
-const throttledAndDebouncedSetDisplayBrightness = (value) => bleManager.getThrottledWrite('displayBrightness')(value);
-const throttledAndDebouncedSetHornLedBrightness = (value) => bleManager.getThrottledWrite('hornLedBrightness')(value);
-const throttledAndDebouncedSetCheekPanelBrightness = (value) => bleManager.getThrottledWrite('cheekPanelBrightness')(value);
-const throttledAndDebouncedSetCheekBgColor = (r, g, b) => bleManager.getThrottledWrite('cheekBgColor')([r, g, b]);
-const throttledAndDebouncedSetCheekFadeColor = (r, g, b) => bleManager.getThrottledWrite('cheekFadeColor')([r, g, b]);
-const throttledAndDebouncedSetDisplayEffectColor1 = (r, g, b) => bleManager.getThrottledWrite('displayEffectColor1')([r, g, b]);
-const throttledAndDebouncedSetDisplayEffectColor2 = (r, g, b) => bleManager.getThrottledWrite('displayEffectColor2')([r, g, b]);
-const throttledAndDebouncedSetDisplayEffectOption1 = (value) => bleManager.getThrottledWrite('displayEffectOption1')(value);
-const throttledAndDebouncedSetDisplayEffectOption2 = (value) => bleManager.getThrottledWrite('displayEffectOption2')(value);
-const throttledAndDebouncedSetDisplayEffectOption3 = (value) => bleManager.getThrottledWrite('displayEffectOption3')(value);
-const throttledAndDebouncedSetTapSensitivity = (value) => bleManager.getThrottledWrite('tapSensitivity')(value);
-const throttledAndDebouncedSetGlitchIntensity = (value) => bleManager.getThrottledWrite('glitchIntensity')(value);
+const throttledWrite = name => value => bleManager.getThrottledWrite(name)(value);
+const throttledColorWrite = name => (r, g, b) => bleManager.getThrottledWrite(name)([r, g, b]);
 
-// Viseme Advanced Parameters - using direct write with throttle/debounce
-const throttledAndDebouncedSetVisemeEnvelopeAttack = throttleAndDebounce(setVisemeEnvelopeAttackCharacteristic, 100, 50);
-const throttledAndDebouncedSetVisemeEnvelopeRelease = throttleAndDebounce(setVisemeEnvelopeReleaseCharacteristic, 100, 50);
-const throttledAndDebouncedSetVisemeAttackThreshold = throttleAndDebounce(setVisemeAttackThresholdCharacteristic, 100, 50);
-const throttledAndDebouncedSetVisemeMinSeparation = throttleAndDebounce(setVisemeMinSeparationCharacteristic, 100, 50);
-const throttledAndDebouncedSetVisemeNoiseFloorMin = throttleAndDebounce(setVisemeNoiseFloorMinCharacteristic, 100, 50);
-const throttledAndDebouncedSetVisemeNoiseFloorMax = throttleAndDebounce(setVisemeNoiseFloorMaxCharacteristic, 100, 50);
-const throttledAndDebouncedSetVisemeNoiseAdaptSpeed = throttleAndDebounce(setVisemeNoiseAdaptSpeedCharacteristic, 100, 50);
-const throttledAndDebouncedSetVisemeAHScale = throttleAndDebounce(setVisemeAHScaleCharacteristic, 100, 50);
-const throttledAndDebouncedSetVisemeEEScale = throttleAndDebounce(setVisemeEEScaleCharacteristic, 100, 50);
-const throttledAndDebouncedSetVisemeOHScale = throttleAndDebounce(setVisemeOHScaleCharacteristic, 100, 50);
-const throttledAndDebouncedSetVisemeOOScale = throttleAndDebounce(setVisemeOOScaleCharacteristic, 100, 50);
-const throttledAndDebouncedSetVisemeTHScale = throttleAndDebounce(setVisemeTHScaleCharacteristic, 100, 50);
+const throttledAndDebouncedsetVisemeCharacteristic = throttledWrite('viseme');
+const throttledAndDebouncedSetDisplayBrightness = throttledWrite('displayBrightness');
+const throttledAndDebouncedSetHornLedBrightness = throttledWrite('hornLedBrightness');
+const throttledAndDebouncedSetCheekPanelBrightness = throttledWrite('cheekPanelBrightness');
+const throttledAndDebouncedSetCheekBgColor = throttledColorWrite('cheekBgColor');
+const throttledAndDebouncedSetCheekFadeColor = throttledColorWrite('cheekFadeColor');
+const throttledAndDebouncedSetDisplayEffectColor1 = throttledColorWrite('displayEffectColor1');
+const throttledAndDebouncedSetDisplayEffectColor2 = throttledColorWrite('displayEffectColor2');
+const throttledAndDebouncedSetDisplayEffectOption1 = throttledWrite('displayEffectOption1');
+const throttledAndDebouncedSetDisplayEffectOption2 = throttledWrite('displayEffectOption2');
+const throttledAndDebouncedSetDisplayEffectOption3 = throttledWrite('displayEffectOption3');
+const throttledAndDebouncedSetTapSensitivity = throttledWrite('tapSensitivity');
+const throttledAndDebouncedSetGlitchIntensity = throttledWrite('glitchIntensity');
 
-// Helper function for throttle and debounce
-function throttleAndDebounce(func, throttleMs, debounceMs) {
-  let timeout;
-  let lastRun = 0;
-
-  return function(...args) {
-    const now = Date.now();
-
-    clearTimeout(timeout);
-
-    if (now - lastRun >= throttleMs) {
-      func.apply(this, args);
-      lastRun = now;
-    } else {
-      timeout = setTimeout(() => {
-        func.apply(this, args);
-        lastRun = Date.now();
-      }, debounceMs);
-    }
-  };
-}
+const throttledVisemeFloatWriters = Object.fromEntries([
+  ['EnvelopeAttack', setVisemeEnvelopeAttackCharacteristic],
+  ['EnvelopeRelease', setVisemeEnvelopeReleaseCharacteristic],
+  ['AttackThreshold', setVisemeAttackThresholdCharacteristic],
+  ['MinSeparation', setVisemeMinSeparationCharacteristic],
+  ['NoiseFloorMin', setVisemeNoiseFloorMinCharacteristic],
+  ['NoiseFloorMax', setVisemeNoiseFloorMaxCharacteristic],
+  ['NoiseAdaptSpeed', setVisemeNoiseAdaptSpeedCharacteristic],
+  ['AHScale', setVisemeAHScaleCharacteristic],
+  ['EEScale', setVisemeEEScaleCharacteristic],
+  ['OHScale', setVisemeOHScaleCharacteristic],
+  ['OOScale', setVisemeOOScaleCharacteristic],
+  ['THScale', setVisemeTHScaleCharacteristic]
+].map(([name, write]) => [name, bleManager.throttleAndDebounce(write, 100, 50)]));
+window.throttledVisemeFloatWriters = throttledVisemeFloatWriters;
 
 // Update BLE characteristics display on About page
 function updateBLECharacteristicsDisplay(eyeState, brightness, viseme, mouthState, hornLed, cheekPanel, cheekBgColor, cheekFadeColor) {

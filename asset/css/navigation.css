@@ -10,7 +10,7 @@
   }
 }
 
-@keyframes fadeIn {
+@keyframes navFadeIn {
   from {
     opacity: 0;
     transform: translateX(20px);
@@ -107,7 +107,7 @@
 /* Page Management */
 .page {
   display: none;
-  animation: fadeIn 0.4s ease-in-out;
+  animation: navFadeIn 0.4s ease-in-out;
 }
 
 .page.active {

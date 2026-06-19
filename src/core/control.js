@@ -1,10 +1,8 @@
 // Import utilities
 import { hexToRgb, rgbToHex, vibrateDevice } from '../utils/helpers.js';
 
-// Import configurations
 import { expressions } from '../config/expressions.js';
 import { mouthStates } from '../config/mouth-states.js';
-import { displayModeNames } from '../config/display-modes.js';
 
 // Make utilities globally available for non-module scripts
 window.hexToRgb = hexToRgb;
@@ -262,200 +260,29 @@ document.addEventListener('DOMContentLoaded', () => {
     updateVisemeAdvancedVisibility();
 });
 
-// Envelope Attack
-const visemeEnvelopeAttackSlider = document.getElementById('visemeEnvelopeAttackSlider');
-const visemeEnvelopeAttackValue = document.getElementById('visemeEnvelopeAttackValue');
-if (visemeEnvelopeAttackSlider) {
-    visemeEnvelopeAttackSlider.addEventListener('input', (e) => {
-        const value = parseFloat(e.target.value);
-        visemeEnvelopeAttackValue.textContent = value.toFixed(2);
+[
+    ['EnvelopeAttack', 2],
+    ['EnvelopeRelease', 2],
+    ['AttackThreshold', 1],
+    ['MinSeparation', 1],
+    ['NoiseFloorMin', 0],
+    ['NoiseFloorMax', 0],
+    ['NoiseAdaptSpeed', 4],
+    ['AHScale', 1],
+    ['EEScale', 1],
+    ['OHScale', 1],
+    ['OOScale', 1],
+    ['THScale', 1]
+].forEach(([name, decimals]) => {
+    const slider = document.getElementById(`viseme${name}Slider`);
+    const display = document.getElementById(`viseme${name}Value`);
+    slider?.addEventListener('input', (event) => {
+        const value = parseFloat(event.target.value);
+        if (display) display.textContent = value.toFixed(decimals);
         vibrateDevice();
-        throttledAndDebouncedSetVisemeEnvelopeAttack(value);
+        window.throttledVisemeFloatWriters[name](value);
     });
-}
-
-// Envelope Release
-const visemeEnvelopeReleaseSlider = document.getElementById('visemeEnvelopeReleaseSlider');
-const visemeEnvelopeReleaseValue = document.getElementById('visemeEnvelopeReleaseValue');
-if (visemeEnvelopeReleaseSlider) {
-    visemeEnvelopeReleaseSlider.addEventListener('input', (e) => {
-        const value = parseFloat(e.target.value);
-        visemeEnvelopeReleaseValue.textContent = value.toFixed(2);
-        vibrateDevice();
-        throttledAndDebouncedSetVisemeEnvelopeRelease(value);
-    });
-}
-
-// Attack Threshold
-const visemeAttackThresholdSlider = document.getElementById('visemeAttackThresholdSlider');
-const visemeAttackThresholdValue = document.getElementById('visemeAttackThresholdValue');
-if (visemeAttackThresholdSlider) {
-    visemeAttackThresholdSlider.addEventListener('input', (e) => {
-        const value = parseFloat(e.target.value);
-        visemeAttackThresholdValue.textContent = value.toFixed(1);
-        vibrateDevice();
-        throttledAndDebouncedSetVisemeAttackThreshold(value);
-    });
-}
-
-// Min Separation
-const visemeMinSeparationSlider = document.getElementById('visemeMinSeparationSlider');
-const visemeMinSeparationValue = document.getElementById('visemeMinSeparationValue');
-if (visemeMinSeparationSlider) {
-    visemeMinSeparationSlider.addEventListener('input', (e) => {
-        const value = parseFloat(e.target.value);
-        visemeMinSeparationValue.textContent = value.toFixed(1);
-        vibrateDevice();
-        throttledAndDebouncedSetVisemeMinSeparation(value);
-    });
-}
-
-// Noise Floor Min
-const visemeNoiseFloorMinSlider = document.getElementById('visemeNoiseFloorMinSlider');
-const visemeNoiseFloorMinValue = document.getElementById('visemeNoiseFloorMinValue');
-if (visemeNoiseFloorMinSlider) {
-    visemeNoiseFloorMinSlider.addEventListener('input', (e) => {
-        const value = parseFloat(e.target.value);
-        visemeNoiseFloorMinValue.textContent = value.toFixed(0);
-        vibrateDevice();
-        throttledAndDebouncedSetVisemeNoiseFloorMin(value);
-    });
-}
-
-// Noise Floor Max
-const visemeNoiseFloorMaxSlider = document.getElementById('visemeNoiseFloorMaxSlider');
-const visemeNoiseFloorMaxValue = document.getElementById('visemeNoiseFloorMaxValue');
-if (visemeNoiseFloorMaxSlider) {
-    visemeNoiseFloorMaxSlider.addEventListener('input', (e) => {
-        const value = parseFloat(e.target.value);
-        visemeNoiseFloorMaxValue.textContent = value.toFixed(0);
-        vibrateDevice();
-        throttledAndDebouncedSetVisemeNoiseFloorMax(value);
-    });
-}
-
-// Noise Adapt Speed
-const visemeNoiseAdaptSpeedSlider = document.getElementById('visemeNoiseAdaptSpeedSlider');
-const visemeNoiseAdaptSpeedValue = document.getElementById('visemeNoiseAdaptSpeedValue');
-if (visemeNoiseAdaptSpeedSlider) {
-    visemeNoiseAdaptSpeedSlider.addEventListener('input', (e) => {
-        const value = parseFloat(e.target.value);
-        visemeNoiseAdaptSpeedValue.textContent = value.toFixed(4);
-        vibrateDevice();
-        throttledAndDebouncedSetVisemeNoiseAdaptSpeed(value);
-    });
-}
-
-// AH Scale
-const visemeAHScaleSlider = document.getElementById('visemeAHScaleSlider');
-const visemeAHScaleValue = document.getElementById('visemeAHScaleValue');
-if (visemeAHScaleSlider) {
-    visemeAHScaleSlider.addEventListener('input', (e) => {
-        const value = parseFloat(e.target.value);
-        visemeAHScaleValue.textContent = value.toFixed(1);
-        vibrateDevice();
-        throttledAndDebouncedSetVisemeAHScale(value);
-    });
-}
-
-// EE Scale
-const visemeEEScaleSlider = document.getElementById('visemeEEScaleSlider');
-const visemeEEScaleValue = document.getElementById('visemeEEScaleValue');
-if (visemeEEScaleSlider) {
-    visemeEEScaleSlider.addEventListener('input', (e) => {
-        const value = parseFloat(e.target.value);
-        visemeEEScaleValue.textContent = value.toFixed(1);
-        vibrateDevice();
-        throttledAndDebouncedSetVisemeEEScale(value);
-    });
-}
-
-// OH Scale
-const visemeOHScaleSlider = document.getElementById('visemeOHScaleSlider');
-const visemeOHScaleValue = document.getElementById('visemeOHScaleValue');
-if (visemeOHScaleSlider) {
-    visemeOHScaleSlider.addEventListener('input', (e) => {
-        const value = parseFloat(e.target.value);
-        visemeOHScaleValue.textContent = value.toFixed(1);
-        vibrateDevice();
-        throttledAndDebouncedSetVisemeOHScale(value);
-    });
-}
-
-// OO Scale
-const visemeOOScaleSlider = document.getElementById('visemeOOScaleSlider');
-const visemeOOScaleValue = document.getElementById('visemeOOScaleValue');
-if (visemeOOScaleSlider) {
-    visemeOOScaleSlider.addEventListener('input', (e) => {
-        const value = parseFloat(e.target.value);
-        visemeOOScaleValue.textContent = value.toFixed(1);
-        vibrateDevice();
-        throttledAndDebouncedSetVisemeOOScale(value);
-    });
-}
-
-// TH Scale
-const visemeTHScaleSlider = document.getElementById('visemeTHScaleSlider');
-const visemeTHScaleValue = document.getElementById('visemeTHScaleValue');
-if (visemeTHScaleSlider) {
-    visemeTHScaleSlider.addEventListener('input', (e) => {
-        const value = parseFloat(e.target.value);
-        visemeTHScaleValue.textContent = value.toFixed(1);
-        vibrateDevice();
-        throttledAndDebouncedSetVisemeTHScale(value);
-    });
-}
-
-//* --------- Matrix Brightness - Disabled ---------
-// function createDots(numDots) {
-//     const dotsContainer = document.getElementById('dots-container');
-//     for (let i = 0; i < numDots; i++) {
-//         const dot = document.createElement('div');
-//         dot.className = 'dot';
-//         dotsContainer.appendChild(dot);
-//     }
-// }
-
-// function renderTotalDots() {
-//     const deviceWidth = window.innerWidth;
-//     const numDots = Math.floor(deviceWidth / 30); // Adjust as needed
-//     const dotsContainer = document.getElementById('dots-container');
-//     dotsContainer.innerHTML = ''; // Clear previous dots
-//     createDots(numDots);
-// }
-// renderTotalDots(); // On page load
-
-// let dotValueInput = document.getElementById('dotValue');
-// function setBrightnessvalue(i) {
-//     dotValueInput.value = i;
-//     renderWhiteDots(dotValueInput.value);
-// }
-
-// dotValueInput.addEventListener('input', () => {
-//     let value = dotValueInput.value
-//     renderWhiteDots(value);
-//     throttledAndDebouncedSetDisplayBrightness(value);
-// });
-
-// let prevNumOfWhiteDots = 0;
-// function renderWhiteDots(value, firstTime) {
-//     const dotsContainer = document.getElementById('dots-container');
-//     let dots = dotsContainer.querySelectorAll('.dot');
-//     const numOfWhiteDots = Math.ceil((value / 100) * dots.length);
-//     if ((numOfWhiteDots !== prevNumOfWhiteDots) && !firstTime) {
-//         vibrateDevice();
-//         prevNumOfWhiteDots = numOfWhiteDots;
-//     }
-//     dots.forEach((dot, index) => {
-//         if (index < numOfWhiteDots) {
-//             dot.classList.add('white-dot');
-//         } else {
-//             dot.classList.remove('white-dot');
-//         }
-//     });
-//     const sliderValueElement = document.getElementById('sliderValue');
-//     sliderValueElement.textContent = value;
-// }
+});
 
 //* --------- Horn LED Brightness ---------
 //* --------- Horn LED Brightness Slider ---------
@@ -494,9 +321,6 @@ setCheekPanelBrightnessValue = function(value) {
     cheekPanelSlider.setValue(value);
 };
 window.setCheekPanelBrightnessValue = setCheekPanelBrightnessValue;
-
-//* --------- Consolidated Resize Handler ---------
-// Resize handling is now managed by individual Slider components
 
 //* --------- Cheek Panel Color Controls ---------
 const bgColorPicker = document.getElementById('bgColorPicker');
@@ -624,31 +448,30 @@ const directionInvertText = document.getElementById('directionInvertText');
 const gradientBottomColorContainer = document.getElementById('gradientBottomColorContainer');
 const gradientPreviewContainer = document.getElementById('gradientPreviewContainer');
 
-// Display mode names imported from config/display-modes.js
+const displayModeButtons = [
+    displayColorModeGradient,
+    displayColorModeSpiral,
+    displayColorModePlasma,
+    displayColorModeRadial,
+    displayColorModeDualSpiral,
+    displayColorModeDualCircle
+];
 
-// Initialize Display Mode Manager
-const displayModeManager = new DisplayModeManager({
-    modeButtons: [
-        displayColorModeGradient,
-        displayColorModeSpiral,
-        displayColorModePlasma,
-        displayColorModeRadial,
-        displayColorModeDualSpiral,
-        displayColorModeDualCircle
-    ],
-    customGradientColors,
-    gradientBottomColorContainer,
-    gradientTopColorLabel,
-    gradientBottomColorLabel,
-    gradientPreview,
-    gradientPreviewTitle,
-    gradientPreviewContainer,
-    gradientTopColorPicker,
-    gradientBottomColorPicker,
-    dualSpiralThicknessControl,
-    dualCircleThicknessControl,
-    directionInvertControl
-});
+function updateDisplayModeUI(mode) {
+    const showColors = mode === 0 || mode === 4 || mode === 5;
+    const showOptions = mode === 4 || mode === 5;
+    const shape = mode === 4 ? 'Spiral' : mode === 5 ? 'Circle' : 'Gradient';
+
+    displayModeButtons.forEach((button, index) => button?.classList.toggle('active', index === mode));
+    if (customGradientColors) customGradientColors.style.display = showColors ? 'block' : 'none';
+    if (gradientBottomColorContainer) gradientBottomColorContainer.style.display = showColors ? 'block' : 'none';
+    if (gradientPreviewContainer) gradientPreviewContainer.style.display = mode === 0 ? 'block' : 'none';
+    if (dualSpiralThicknessControl) dualSpiralThicknessControl.style.display = showOptions ? 'block' : 'none';
+    if (dualCircleThicknessControl) dualCircleThicknessControl.style.display = showOptions ? 'block' : 'none';
+    if (directionInvertControl) directionInvertControl.style.display = showOptions ? 'block' : 'none';
+    if (gradientTopColorLabel) gradientTopColorLabel.textContent = mode === 0 ? 'Top Gradient Color' : `Primary ${shape} Color`;
+    if (gradientBottomColorLabel) gradientBottomColorLabel.textContent = mode === 0 ? 'Bottom Gradient Color' : `Secondary ${shape} Color`;
+}
 
 // Event delegation for display mode buttons
 // Map button IDs to mode values
@@ -674,8 +497,7 @@ setDisplayColorMode = function(mode) {
     // Update BLE characteristic
     setDisplayColorModeCharacteristic(mode);
 
-    // Update UI using DisplayModeManager
-    displayModeManager.updateUI(mode);
+    updateDisplayModeUI(mode);
 
     // Provide haptic feedback
     vibrateDevice();
@@ -684,20 +506,17 @@ window.setDisplayColorMode = setDisplayColorMode;
 
 // Set color mode value from BLE (called when connecting to device)
 setDisplayColorModeValue = function(mode) {
-    // Update UI using DisplayModeManager (no BLE write, no haptic feedback)
-    displayModeManager.updateUI(mode);
+    updateDisplayModeUI(mode);
 };
 window.setDisplayColorModeValue = setDisplayColorModeValue;
 
-// Update gradient preview (wrapper for DisplayModeManager)
 function updateGradientPreview(topColor, bottomColor, mode = null) {
-    // If mode is not provided, get current active mode from manager
     if (mode === null) {
-        mode = displayModeManager.getCurrentMode();
+        mode = displayModeButtons.findIndex(button => button?.classList.contains('active'));
     }
-
-    // Use the manager's updatePreview method
-    displayModeManager.updatePreview(mode);
+    if (mode !== 0 || !gradientPreview) return;
+    gradientPreview.style.background = `linear-gradient(to bottom, ${topColor}, ${bottomColor})`;
+    if (gradientPreviewTitle) gradientPreviewTitle.textContent = 'Preview';
 }
 
 // Effect Color 1 (top/gradient/spiral/circle color) picker handler

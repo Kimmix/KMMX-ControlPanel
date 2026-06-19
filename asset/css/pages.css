@@ -1,7 +1,7 @@
 /* Page-specific styles */
 
 /* Animations */
-@keyframes fadeIn {
+@keyframes pageFadeIn {
   from {
     opacity: 0;
     transform: translateY(-10px);
@@ -414,7 +414,7 @@
 
 .collapsible-content {
   padding: 0 6px 25px;
-  animation: fadeIn 0.3s ease-in-out;
+  animation: pageFadeIn 0.3s ease-in-out;
 }
 
 .card-title {
@@ -499,4 +499,3 @@
   max-width: 900px;
   margin: 0 auto;
 }
-

@@ -112,7 +112,6 @@ document.addEventListener("visibilitychange", () => {
     favicon.setAttribute("href", `/favicon${hidden ? "-hidden" : ""}.png`)
 })
 
-// vibrateDevice() is now imported from utils/helpers.js
 
 //? Timer
 let isConnected = true;
@@ -348,7 +347,6 @@ document.addEventListener('DOMContentLoaded', function() {
         element.style.transform = "translate(" + yRotation + "px, " + xRotation + "px)";
     }
 
-    // clamp() is now imported from utils/helpers.js and available globally
 
     // Add event listener for device orientation
     window.addEventListener("deviceorientation", handleOrientation);
@@ -432,7 +430,6 @@ function getDisplayMode() {
     return 'Browser';
 }
 
-// vibrateDevice() with pattern support is now imported from utils/helpers.js
 
 //? BLE Write Visual Feedback
 function triggerBLEWriteFeedback() {

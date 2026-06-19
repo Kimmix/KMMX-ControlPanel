@@ -148,12 +148,4 @@ class ButtonGrid {
     }
   }
 
-  /**
-   * Get currently active item
-   * @returns {Object|null} The active item or null
-   */
-  getActiveItem() {
-    if (!this.activeButton) return null;
-    return this.items.find(item => item.buttonId === this.activeButton.id);
-  }
 }

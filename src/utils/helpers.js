@@ -57,38 +57,3 @@ export function vibrateDevice(pattern = 'light') {
 
     navigator.vibrate(patterns[pattern] || patterns.light);
 }
-
-/**
- * Throttle and debounce utility
- * Combines throttling (limit call frequency) and debouncing (wait for pause)
- * @param {Function} func - Function to throttle/debounce
- * @param {number} throttleDelay - Throttle delay in ms
- * @param {number} debounceDelay - Debounce delay in ms
- * @returns {Function} Throttled and debounced function
- */
-export function throttleAndDebounce(func, throttleDelay, debounceDelay) {
-    let isThrottled = false;
-    let lastCallTime = 0;
-    let timeoutId;
-
-    return function throttledAndDebounced(...args) {
-        const currentTime = Date.now();
-
-        // Throttle: Execute immediately if not throttled
-        if (!isThrottled || currentTime - lastCallTime >= throttleDelay) {
-            func.apply(this, args);
-            lastCallTime = currentTime;
-            isThrottled = true;
-        }
-
-        // Debounce: Execute after delay when calls stop
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => {
-            isThrottled = false;
-            if (Date.now() - lastCallTime >= debounceDelay) {
-                func.apply(this, args);
-                lastCallTime = Date.now();
-            }
-        }, debounceDelay);
-    };
-}

@@ -235,15 +235,6 @@ class BLECharacteristicManager {
     console.log('BLE Manager cleared');
   }
 
-  /**
-   * Check if a characteristic is registered and ready
-   * @param {string} name - Name of the characteristic
-   * @returns {boolean} True if characteristic is ready
-   */
-  isReady(name) {
-    const config = this.characteristics.get(name);
-    return config?.char != null;
-  }
 }
 
 // Create global instance

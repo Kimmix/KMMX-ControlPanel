@@ -1,8 +1,8 @@
 // KMMX Control Panel - Service Worker
-// Version 1.0.3
+// Version 1.0.4
 
-const CACHE_NAME = 'kmmx-control-v1.0.3';
-const RUNTIME_CACHE = 'kmmx-runtime-v1.0.3';
+const CACHE_NAME = 'kmmx-control-v1.0.4';
+const RUNTIME_CACHE = 'kmmx-runtime-v1.0.4';
 
 // Assets to cache on install
 const PRECACHE_ASSETS = [
@@ -26,9 +26,7 @@ const PRECACHE_ASSETS = [
   '/src/config/ble-config.js',
   '/src/config/expressions.js',
   '/src/config/mouth-states.js',
-  '/src/config/display-modes.js',
   '/src/managers/ble-manager.js',
-  '/src/managers/display-mode-manager.js',
   '/src/components/slider.js',
   '/src/components/button-grid.js',
   '/src/core/app.js',
