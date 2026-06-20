@@ -137,7 +137,6 @@ document.addEventListener("visibilitychange", () => {
 
 
 //? Timer
-let isConnected = true;
 let timerValue = 0;
 let timerInterval;
 const timerElement = document.getElementById("timer");
@@ -306,30 +305,8 @@ function skipPairing(event) {
         event.stopPropagation();
     }
 
-    const splash = document.getElementById('splash');
-    const mainContent = document.getElementById('mainContent');
-    const statusHeader = document.querySelector('.status-header');
-    const staticHeader = document.querySelector('.static-header');
-
-    // Vibrate on tap
     vibrateDevice();
-
-    // Hide splash and show control panel
-    if (splash) {
-        splash.style.display = 'none';
-    }
-    if (mainContent) {
-        mainContent.style.display = 'flex';
-    }
-
-    // Show headers with animation
-    if (statusHeader) {
-        statusHeader.style.display = 'block';
-    }
-    if (staticHeader) {
-        staticHeader.style.display = 'block';
-    }
-
+    showControlPanel();
     console.log('Pairing skipped - running in offline mode');
 }
 window.skipPairing = skipPairing;
@@ -451,19 +428,4 @@ function getDisplayMode() {
     if (isStandalone || isIOSStandalone) return 'Standalone (PWA)';
     if (isMinimalUI) return 'Minimal UI (PWA)';
     return 'Browser';
-}
-
-
-//? BLE Write Visual Feedback
-function triggerBLEWriteFeedback() {
-    const statusPill = document.getElementById('s-pill');
-    if (!statusPill) return;
-
-    // Add the pulse animation class
-    statusPill.classList.add('ble-writing');
-
-    // Remove the class after animation completes (0.4s * 2 iterations = 0.8s)
-    setTimeout(() => {
-        statusPill.classList.remove('ble-writing');
-    }, 800);
 }

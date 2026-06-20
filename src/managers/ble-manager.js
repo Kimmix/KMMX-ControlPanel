@@ -51,6 +51,10 @@ class BLECharacteristicManager {
    * @param {string} name - Name of the registered characteristic
    * @param {number|Array} value - Value(s) to write (single byte or RGB array)
    */
+  get(name) {
+    return this.characteristics.get(name)?.char;
+  }
+
   write(name, value) {
     const config = this.characteristics.get(name);
 
@@ -221,6 +225,7 @@ class BLECharacteristicManager {
   clear() {
     this.writeQueue = [];
     this.isProcessing = false;
+    this.characteristics.clear();
     this.previousValues.clear();
     this.throttledWrites.clear();
     console.log('BLE Manager cleared');

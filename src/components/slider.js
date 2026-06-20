@@ -23,6 +23,7 @@ class Slider {
     this.onChange = config.onChange;
     this.vibrate = config.vibrate !== false;
     this.convertToPercentage = config.convertToPercentage || false;
+    this.valueSuffix = config.valueSuffix || '';
     
     this.sliderElement = document.getElementById(this.sliderId);
     this.dotsContainer = this.dotsContainerId ? document.getElementById(this.dotsContainerId) : null;
@@ -121,7 +122,7 @@ class Slider {
       if (this.convertToPercentage) {
         displayValue = Math.round((value / this.maxValue) * 100);
       }
-      this.valueDisplay.textContent = displayValue;
+      this.valueDisplay.textContent = `${displayValue}${this.valueSuffix}`;
     }
   }
 

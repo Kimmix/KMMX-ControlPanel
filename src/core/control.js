@@ -19,7 +19,7 @@ let setMotionEnableFlagsValue, setTapSensitivityValue, setGlitchIntensityValue;
 let switchControlMode, toggleViseme, setDisplayColorMode, toggleDirectionInvert;
 let resetCheekColors, resetDisplayColors, toggleMotionFeature, triggerGlitch;
 let setFanSpeedValue, setFanEnabledValue, setFanRPMValue, setFanConnectedValue;
-let toggleFan, updateFanControlVisibility, updateFanRPMDisplay, updateFanConnectionDisplay;
+let toggleFan, updateFanControlVisibility;
 
 //* --------- Expression ---------
 // Expression definitions imported from config/expressions.js
@@ -32,7 +32,7 @@ const expressionGrid = new ButtonGrid({
     countElementId: 'expBtnCount',
     initialActiveIndex: 0,
     onClick: (item) => {
-        setEyeStateCharacteristic(item.id);
+        window.writeBLE('eyeState', item.id);
         updateEyeStateDisplay(item.name);
         vibrateDevice();
     }
@@ -42,7 +42,7 @@ setExpression = function(i) {
     expressionGrid.setActiveById(i);
     const item = expressions.find(({ id }) => id === i);
     if (item) {
-        setEyeStateCharacteristic(item.id);
+        window.writeBLE('eyeState', item.id);
         updateEyeStateDisplay(item.name);
         vibrateDevice();
     }
@@ -107,7 +107,7 @@ const mouthStateGrid = new ButtonGrid({
     buttonClass: 'mouth-state-btn',
     initialActiveIndex: 0,
     onClick: (item) => {
-        setMouthStateCharacteristic(item.id);
+        window.writeBLE('mouthState', item.id);
         updateMouthStateDisplay(item.name);
         vibrateDevice();
     }
@@ -117,7 +117,7 @@ setMouthState = function(state) {
     mouthStateGrid.setActiveById(state);
     const item = mouthStates.find(s => s.id === state);
     if (item) {
-        setMouthStateCharacteristic(state);
+        window.writeBLE('mouthState', state);
         updateMouthStateDisplay(item.name);
         vibrateDevice();
     }
@@ -149,7 +149,7 @@ function renderViseme(enabled) {
 toggleViseme = function() {
     const enabled = !isVisemeOn();
     renderViseme(enabled);
-    setVisemeCharacteristic(enabled ? 1 : 0);
+    window.writeBLE('viseme', enabled ? 1 : 0);
     vibrateDevice();
 };
 window.toggleViseme = toggleViseme;
@@ -458,7 +458,7 @@ document.addEventListener('click', (e) => {
 // Set display color mode (called when user changes mode)
 setDisplayColorMode = function(mode) {
     // Update BLE characteristic
-    setDisplayColorModeCharacteristic(mode);
+    window.writeBLE('displayColorMode', mode);
 
     updateDisplayModeUI(mode);
 
@@ -637,7 +637,7 @@ toggleDirectionInvert = function() {
     }
 
     // Send to BLE
-    setDisplayEffectOption3Characteristic(value);
+    window.writeBLE('displayEffectOption3', value);
     vibrateDevice();
 };
 window.toggleDirectionInvert = toggleDirectionInvert;
@@ -657,15 +657,6 @@ window.setDisplayEffectOption3Value = setDisplayEffectOption3Value;
 
 // Motion feature state (bit flags)
 let motionEnableFlags = 0x0F; // All features enabled by default (binary: 1111)
-
-// Motion feature bit positions
-const MOTION_FLAGS = {
-    TAP_DETECTION: 0,      // Bit 0 (0x01)
-    PETTING_DETECTION: 1,  // Bit 1 (0x02)
-    TILT_DETECTION: 2,     // Bit 2 (0x04)
-    UPSIDE_DOWN: 3,        // Bit 3 (0x08)
-    BOOP_TOGGLE: 4         // Bit 4 (0x10)
-};
 
 // Event delegation for motion feature buttons
 // Map button IDs to feature bit positions
@@ -694,7 +685,7 @@ toggleMotionFeature = function(featureBit) {
     updateMotionFeatureUI(featureBit);
 
     // Send to BLE
-    setMotionEnableFlagsCharacteristic(motionEnableFlags);
+    window.writeBLE('motionEnableFlags', motionEnableFlags);
 
     // Haptic feedback
     vibrateDevice();
@@ -736,122 +727,42 @@ setMotionEnableFlagsValue = function(value) {
 };
 window.setMotionEnableFlagsValue = setMotionEnableFlagsValue;
 
-// Tap Sensitivity slider
-const tapSensitivitySlider = document.getElementById('tapSensitivitySlider');
-const tapSensitivityValue = document.getElementById('tapSensitivityValue');
+const tapSensitivitySlider = new Slider({
+    sliderId: 'tapSensitivitySlider',
+    valueDisplayId: 'tapSensitivityValue',
+    type: 'gradient',
+    valueSuffix: '%',
+    onChange: value => throttledAndDebouncedSetTapSensitivity(value)
+});
 
-if (tapSensitivitySlider && tapSensitivityValue) {
-    tapSensitivitySlider.addEventListener('input', (e) => {
-        const value = parseInt(e.target.value);
-        updateTapSensitivitySlider(value);
-
-        // Send to BLE with throttle/debounce
-        throttledAndDebouncedSetTapSensitivity(value);
-
-        vibrateDevice();
-    });
-}
-
-// Update tap sensitivity slider display
-function updateTapSensitivitySlider(value) {
-    if (tapSensitivityValue) {
-        tapSensitivityValue.textContent = value + '%';
-    }
-
-    // Update slider fill
-    if (tapSensitivitySlider) {
-        const min = parseInt(tapSensitivitySlider.min) || 0;
-        const max = parseInt(tapSensitivitySlider.max) || 100;
-        const percentage = ((value - min) / (max - min)) * 100;
-        tapSensitivitySlider.style.background = `linear-gradient(to right, white 0%, white ${percentage}%, rgba(255, 255, 255, 0.1) ${percentage}%, rgba(255, 255, 255, 0.1) 100%)`;
-    }
-}
-
-// Set tap sensitivity value from BLE (called when connecting to device)
-setTapSensitivityValue = function(value) {
-    if (tapSensitivitySlider && tapSensitivityValue) {
-        tapSensitivitySlider.value = value;
-        updateTapSensitivitySlider(value);
-    }
-};
+setTapSensitivityValue = value => tapSensitivitySlider.setValue(value);
 window.setTapSensitivityValue = setTapSensitivityValue;
 
-// Glitch Intensity slider (for automatic glitches)
-const glitchIntensitySlider = document.getElementById('glitchIntensitySlider');
-const glitchIntensityValue = document.getElementById('glitchIntensityValue');
+const glitchIntensitySlider = new Slider({
+    sliderId: 'glitchIntensitySlider',
+    valueDisplayId: 'glitchIntensityValue',
+    type: 'gradient',
+    valueSuffix: '%',
+    onChange: value => throttledAndDebouncedSetGlitchIntensity(value)
+});
 
-if (glitchIntensitySlider && glitchIntensityValue) {
-    glitchIntensitySlider.addEventListener('input', (e) => {
-        const value = parseInt(e.target.value);
-        updateGlitchIntensitySlider(value);
-
-        // Send to BLE with throttle/debounce
-        throttledAndDebouncedSetGlitchIntensity(value);
-
-        vibrateDevice();
-    });
-}
-
-// Update glitch intensity slider display
-function updateGlitchIntensitySlider(value) {
-    if (glitchIntensityValue) {
-        glitchIntensityValue.textContent = value + '%';
-    }
-
-    // Update slider fill
-    if (glitchIntensitySlider) {
-        const min = parseInt(glitchIntensitySlider.min) || 0;
-        const max = parseInt(glitchIntensitySlider.max) || 100;
-        const percentage = ((value - min) / (max - min)) * 100;
-        glitchIntensitySlider.style.background = `linear-gradient(to right, white 0%, white ${percentage}%, rgba(255, 255, 255, 0.1) ${percentage}%, rgba(255, 255, 255, 0.1) 100%)`;
-    }
-}
-
-// Set glitch intensity value from BLE (called when connecting to device)
-setGlitchIntensityValue = function(value) {
-    if (glitchIntensitySlider && glitchIntensityValue) {
-        glitchIntensitySlider.value = value;
-        updateGlitchIntensitySlider(value);
-    }
-};
+setGlitchIntensityValue = value => glitchIntensitySlider.setValue(value);
 window.setGlitchIntensityValue = setGlitchIntensityValue;
 
-// Manual Glitch Intensity slider (for trigger button)
+new Slider({
+    sliderId: 'manualGlitchIntensitySlider',
+    valueDisplayId: 'manualGlitchIntensityValue',
+    type: 'gradient',
+    valueSuffix: '%'
+});
 const manualGlitchIntensitySlider = document.getElementById('manualGlitchIntensitySlider');
-const manualGlitchIntensityValue = document.getElementById('manualGlitchIntensityValue');
-
-if (manualGlitchIntensitySlider && manualGlitchIntensityValue) {
-    manualGlitchIntensitySlider.addEventListener('input', (e) => {
-        const value = parseInt(e.target.value);
-        updateManualGlitchIntensitySlider(value);
-        vibrateDevice();
-    });
-
-    // Initialize display with current slider value
-    updateManualGlitchIntensitySlider(parseInt(manualGlitchIntensitySlider.value));
-}
-
-// Update manual glitch intensity slider display
-function updateManualGlitchIntensitySlider(value) {
-    if (manualGlitchIntensityValue) {
-        manualGlitchIntensityValue.textContent = value + '%';
-    }
-
-    // Update slider fill
-    if (manualGlitchIntensitySlider) {
-        const min = parseInt(manualGlitchIntensitySlider.min) || 0;
-        const max = parseInt(manualGlitchIntensitySlider.max) || 100;
-        const percentage = ((value - min) / (max - min)) * 100;
-        manualGlitchIntensitySlider.style.background = `linear-gradient(to right, white 0%, white ${percentage}%, rgba(255, 255, 255, 0.1) ${percentage}%, rgba(255, 255, 255, 0.1) 100%)`;
-    }
-}
 
 // Trigger Glitch Effect
 triggerGlitch = function() {
     const intensity = manualGlitchIntensitySlider ? parseInt(manualGlitchIntensitySlider.value) : 50;
 
     // Send glitch trigger to BLE
-    setGlitchTriggerCharacteristic(intensity);
+    window.writeBLE('glitchTrigger', intensity);
 
     // Visual feedback - pulse animation
     const btn = document.getElementById('triggerGlitchBtn');
@@ -873,45 +784,28 @@ window.triggerGlitch = triggerGlitch;
 let fanEnabled = false;
 let fanSpeed = 0;
 
-// Toggle fan on/off
-toggleFan = function() {
-    fanEnabled = !fanEnabled;
-
-    // Update UI toggle state
+function renderFan() {
     const fanOnBtn = document.getElementById('fanOn');
     const fanOffBtn = document.getElementById('fanOff');
     const fanIcon = document.getElementById('fanIcon');
     const fanSpeedSlider = document.getElementById('fanSpeedSlider');
     const fanSpeedContainer = document.getElementById('fanSpeedSliderContainer');
-
-    if (fanEnabled) {
-        fanOnBtn.classList.add('active');
-        fanOffBtn.classList.remove('active');
-        fanSpeedSlider.disabled = false;
-        fanSpeedContainer.style.opacity = '1';
-
-        // Add rotation animation to fan icon
-        if (fanIcon) {
-            fanIcon.style.animation = 'fan-spin 1s linear infinite';
-        }
-    } else {
-        fanOnBtn.classList.remove('active');
-        fanOffBtn.classList.add('active');
-        fanSpeedSlider.disabled = true;
-        fanSpeedContainer.style.opacity = '0.5';
-
-        // Remove rotation animation
-        if (fanIcon) {
-            fanIcon.style.animation = 'none';
-        }
+    fanOnBtn?.classList.toggle('active', fanEnabled);
+    fanOffBtn?.classList.toggle('active', !fanEnabled);
+    if (fanSpeedSlider) fanSpeedSlider.disabled = !fanEnabled;
+    if (fanSpeedContainer) fanSpeedContainer.style.opacity = fanEnabled ? '1' : '0.5';
+    if (fanIcon) {
+        const rotationSpeed = Math.max(0.2, 2 - (fanSpeed / 50));
+        fanIcon.style.animation = fanEnabled && fanSpeed > 0 ? `fan-spin ${rotationSpeed}s linear infinite` : 'none';
     }
+}
 
-    // Send to BLE
-    setFanEnabledCharacteristic(fanEnabled ? 1 : 0);
-
-    // Haptic feedback
+// Toggle fan on/off
+toggleFan = function() {
+    fanEnabled = !fanEnabled;
+    renderFan();
+    window.writeBLE('fanEnabled', fanEnabled ? 1 : 0);
     vibrateDevice();
-
     console.log(`Fan ${fanEnabled ? 'enabled' : 'disabled'}`);
 };
 window.toggleFan = toggleFan;
@@ -926,16 +820,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const speed = parseInt(this.value);
             fanSpeed = speed;
             fanSpeedValue.textContent = speed;
-
-            // Update fan icon rotation speed
-            const fanIcon = document.getElementById('fanIcon');
-            if (fanIcon && fanEnabled) {
-                const rotationSpeed = speed > 0 ? Math.max(0.2, 2 - (speed / 50)) : 0;
-                fanIcon.style.animation = speed > 0 ? `fan-spin ${rotationSpeed}s linear infinite` : 'none';
-            }
-
+            renderFan();
         });
-        fanSpeedSlider.addEventListener('change', () => setFanSpeedCharacteristic(fanSpeed));
+        fanSpeedSlider.addEventListener('change', () => window.writeBLE('fanSpeed', fanSpeed));
     }
 });
 
@@ -955,30 +842,7 @@ window.setFanSpeedValue = setFanSpeedValue;
 // Initialize fan enabled state (called from BLE when connection established)
 setFanEnabledValue = function(value) {
     fanEnabled = value === 1;
-
-    const fanOnBtn = document.getElementById('fanOn');
-    const fanOffBtn = document.getElementById('fanOff');
-    const fanSpeedSlider = document.getElementById('fanSpeedSlider');
-    const fanSpeedContainer = document.getElementById('fanSpeedSliderContainer');
-    const fanIcon = document.getElementById('fanIcon');
-
-    if (fanEnabled) {
-        fanOnBtn?.classList.add('active');
-        fanOffBtn?.classList.remove('active');
-        if (fanSpeedSlider) fanSpeedSlider.disabled = false;
-        if (fanSpeedContainer) fanSpeedContainer.style.opacity = '1';
-        if (fanIcon && fanSpeed > 0) {
-            const rotationSpeed = Math.max(0.2, 2 - (fanSpeed / 50));
-            fanIcon.style.animation = `fan-spin ${rotationSpeed}s linear infinite`;
-        }
-    } else {
-        fanOnBtn?.classList.remove('active');
-        fanOffBtn?.classList.add('active');
-        if (fanSpeedSlider) fanSpeedSlider.disabled = true;
-        if (fanSpeedContainer) fanSpeedContainer.style.opacity = '0.5';
-        if (fanIcon) fanIcon.style.animation = 'none';
-    }
-
+    renderFan();
     console.log(`Fan enabled state set to: ${fanEnabled}`);
 };
 window.setFanEnabledValue = setFanEnabledValue;
@@ -991,11 +855,6 @@ setFanRPMValue = function(rpm) {
     }
 };
 window.setFanRPMValue = setFanRPMValue;
-
-updateFanRPMDisplay = function(rpm) {
-    setFanRPMValue(rpm);
-};
-window.updateFanRPMDisplay = updateFanRPMDisplay;
 
 // Update connection status (called from BLE notification)
 setFanConnectedValue = function(connected) {
@@ -1012,11 +871,6 @@ setFanConnectedValue = function(connected) {
     console.log(`Fan connection status: ${connected ? 'Connected' : 'Disconnected'}`);
 };
 window.setFanConnectedValue = setFanConnectedValue;
-
-updateFanConnectionDisplay = function(connected) {
-    setFanConnectedValue(connected);
-};
-window.updateFanConnectionDisplay = updateFanConnectionDisplay;
 
 // Show/hide fan control section based on hardware version
 updateFanControlVisibility = function(isAvailable) {

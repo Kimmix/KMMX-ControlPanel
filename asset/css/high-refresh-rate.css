@@ -1,121 +1,4 @@
-/**
- * High Refresh Rate Optimizations
- * Enables smooth 120Hz display support for PWA
- */
-
-/* Enable GPU acceleration for all elements */
-* {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Ensure all scrollable areas have native-like momentum scrolling */
-*[style*="overflow-y: auto"],
-*[style*="overflow: auto"],
-.page-content-container,
-.expression-container,
-.about-content,
-.settings-section {
-  -webkit-overflow-scrolling: touch !important;
-  overscroll-behavior-y: contain;
-  /* Remove scroll-behavior: smooth to allow native momentum scrolling */
-}
-
-/* Optimize interactive elements */
-button,
-a,
-input,
-select,
-textarea,
-[role="button"],
-.nav-icon,
-.expression-btn,
-.mouth-state-button,
-.display-color-mode-btn,
-.color-preset-btn {
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  -webkit-perspective: 1000;
-  perspective: 1000;
-  will-change: transform, opacity;
-}
-
-/* Optimize all animated elements */
-[class*="animation"],
-[class*="transition"],
-.fade,
-.slide,
-.scale {
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-}
-
-/* Optimize SVG rendering */
-svg {
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-}
-
-/* Optimize grid containers */
-.expression-grid,
-.mouth-state-buttons,
-.display-mode-grid,
-.ble-char-grid {
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-}
-
-/* Optimize floating navigation */
-.floating-nav {
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  will-change: transform;
-}
-
-/* Optimize header elements */
-.static-header,
-.status-header {
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-}
-
-/* Enable smooth transitions at high refresh rates */
-@media (prefers-reduced-motion: no-preference) {
-  * {
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  }
-}
-
-/* Force GPU rendering for animations */
-@keyframes gpuAccelerate {
-  0% {
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-  }
-  100% {
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-  }
-}
-
-/* Apply to body for overall performance */
-body {
-  animation: gpuAccelerate 0.001s;
-}
-
-/* Optimize touch interactions */
 @media (hover: none) and (pointer: coarse) {
-  /* Prevent double-tap zoom on buttons */
   button,
   a,
   [role="button"],
@@ -129,13 +12,11 @@ body {
     touch-action: manipulation;
   }
 
-  /* Allow native momentum scrolling on scroll containers */
   .page-content-container,
   .expression-container {
     touch-action: pan-y !important;
   }
 
-  /* Optimize sliders for touch */
   input[type="range"],
   .vsm-slider,
   .bn-slider,
@@ -144,7 +25,6 @@ body {
     cursor: pointer;
   }
 
-  /* Larger touch targets for slider thumbs */
   input[type="range"]::-webkit-slider-thumb,
   .spiral-thickness-slider::-webkit-slider-thumb {
     width: 24px;
@@ -157,24 +37,14 @@ body {
     height: 24px;
   }
 
-  /* Optimize toggle switches */
   .direction-toggle-switch {
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Optimize color pickers */
   input[type="color"] {
     touch-action: manipulation;
     min-width: 44px;
     min-height: 44px;
-  }
-}
-
-/* Optimize for high DPI screens */
-@media (-webkit-min-device-pixel-ratio: 2),
-       (min-resolution: 192dpi) {
-  body {
-    -webkit-font-smoothing: subpixel-antialiased;
   }
 }
