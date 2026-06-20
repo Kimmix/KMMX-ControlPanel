@@ -41,11 +41,7 @@ const expressionGrid = new ButtonGrid({
 setExpression = function(i) {
     expressionGrid.setActiveById(i);
     const item = expressions.find(({ id }) => id === i);
-    if (item) {
-        window.writeBLE('eyeState', item.id);
-        updateEyeStateDisplay(item.name);
-        vibrateDevice();
-    }
+    if (item) updateEyeStateDisplay(item.name);
 };
 window.setExpression = setExpression;
 
@@ -116,11 +112,7 @@ const mouthStateGrid = new ButtonGrid({
 setMouthState = function(state) {
     mouthStateGrid.setActiveById(state);
     const item = mouthStates.find(s => s.id === state);
-    if (item) {
-        window.writeBLE('mouthState', state);
-        updateMouthStateDisplay(item.name);
-        vibrateDevice();
-    }
+    if (item) updateMouthStateDisplay(item.name);
 };
 window.setMouthState = setMouthState;
 
@@ -148,14 +140,16 @@ function renderViseme(enabled) {
 
 toggleViseme = function() {
     const enabled = !isVisemeOn();
+    window.bleVisemeValue = enabled ? 1 : 0;
     renderViseme(enabled);
-    window.writeBLE('viseme', enabled ? 1 : 0);
+    window.writeBLE('viseme', window.bleVisemeValue);
     vibrateDevice();
 };
 window.toggleViseme = toggleViseme;
 
 // BLE synchronization updates the UI without writing the value back.
 setViseme = function(value) {
+    window.bleVisemeValue = value;
     renderViseme(value !== 0);
 };
 window.setViseme = setViseme;
@@ -170,7 +164,7 @@ window.openVisemeSettings = function() {
     const content = document.getElementById('visemeAdvancedContent');
     const button = document.getElementById('visemeAdvancedToggleBtn');
     section.style.display = 'block';
-    content.style.display = 'block';
+    content.style.display = 'flex';
     button.classList.add('expanded');
     button.querySelector('.toggle-icon').style.transform = 'rotate(180deg)';
     setTimeout(() => section.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
@@ -196,7 +190,7 @@ window.toggleVisemeAdvanced = function() {
         if (icon) icon.style.transform = 'rotate(0deg)';
         if (button) button.classList.remove('expanded');
     } else {
-        content.style.display = 'block';
+        content.style.display = 'flex';
         if (icon) icon.style.transform = 'rotate(180deg)';
         if (button) button.classList.add('expanded');
     }
@@ -212,39 +206,74 @@ function updateVisemeAdvancedVisibility() {
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
-    renderViseme(isVisemeOn());
+    renderViseme(window.bleVisemeValue === undefined ? isVisemeOn() : window.bleVisemeValue !== 0);
 });
 
-[
-    ['EnvelopeAttack', 2],
-    ['EnvelopeRelease', 2],
-    ['AttackThreshold', 1],
-    ['MinSeparation', 1],
-    ['NoiseFloorMin', 0],
-    ['NoiseFloorMax', 0],
-    ['NoiseAdaptSpeed', 4],
-    ['AHScale', 1],
-    ['EEScale', 1],
-    ['OHScale', 1],
-    ['OOScale', 1],
-    ['THScale', 1]
-].forEach(([name, decimals]) => {
+const visemeParameterUI = {
+    EnvelopeAttack: [2, t => 0.1 + t * 0.8, value => (value - 0.1) / 0.8],
+    EnvelopeRelease: [2, t => 0.01 * Math.pow(50, t), value => Math.log(value / 0.01) / Math.log(50)],
+    NoiseGateMultiplier: [2, t => 1 + 2 * t * t, value => Math.sqrt((value - 1) / 2)],
+    NoiseFloorMin: [1, t => 5 * Math.pow(40, t), value => Math.log(value / 5) / Math.log(40)],
+    AHScale: [2, t => 0.1 * Math.pow(50, t), value => Math.log(value / 0.1) / Math.log(50)],
+    EEScale: [2, t => 0.1 * Math.pow(50, t), value => Math.log(value / 0.1) / Math.log(50)],
+    OHScale: [2, t => 0.1 * Math.pow(50, t), value => Math.log(value / 0.1) / Math.log(50)],
+    OOScale: [2, t => 0.1 * Math.pow(50, t), value => Math.log(value / 0.1) / Math.log(50)],
+    THScale: [2, t => 0.1 * Math.pow(50, t), value => Math.log(value / 0.1) / Math.log(50)],
+    LoudnessExponent: [2, t => 0.2 * Math.pow(10, t), value => Math.log(value / 0.2) / Math.log(10)],
+    LoudnessSmoothing: [2, t => 0.05 + t * 0.95, value => (value - 0.05) / 0.95],
+    LoudnessMax: [2, t => Math.pow(20, t), value => Math.log(value) / Math.log(20)],
+    LoudnessMidBoost: [2, t => 0.5 + t * 1.5, value => (value - 0.5) / 1.5]
+};
+
+Object.entries(visemeParameterUI).forEach(([name, [decimals, fromSlider]]) => {
     const slider = document.getElementById(`viseme${name}Slider`);
     const display = document.getElementById(`viseme${name}Value`);
     slider?.addEventListener('input', (event) => {
-        const position = parseFloat(event.target.value);
-        const value = event.target.dataset.nonlinear === 'noise-floor'
-            ? 5 * Math.pow(40, position / 100)
-            : position;
+        const value = fromSlider(parseFloat(event.target.value) / 100);
         if (display) display.textContent = value.toFixed(decimals);
         vibrateDevice();
         window.throttledVisemeFloatWriters[name](value);
     });
 });
 
-window.setVisemeNoiseFloorSlider = (name, value) => {
+window.setVisemeParameterSlider = (name, value) => {
     const slider = document.getElementById(`viseme${name}Slider`);
-    if (slider) slider.value = Math.log(Math.max(5, Math.min(200, value)) / 5) / Math.log(40) * 100;
+    const toSlider = visemeParameterUI[name]?.[2];
+    if (slider && toSlider) slider.value = Math.max(0, Math.min(100, toSlider(value) * 100));
+};
+
+const visemeDefaults = {
+    EnvelopeAttack: 0.5,
+    EnvelopeRelease: 0.4,
+    NoiseGateMultiplier: 1.2,
+    NoiseFloorMin: 5,
+    AHScale: 3.3,
+    EEScale: 1.3,
+    OHScale: 1.5,
+    OOScale: 1.4,
+    THScale: 1,
+    LoudnessExponent: 0.8,
+    LoudnessSmoothing: 0.65,
+    LoudnessMax: 5,
+    LoudnessMidBoost: 1.2
+};
+
+const visemeSections = {
+    envelope: ['EnvelopeAttack', 'EnvelopeRelease'],
+    noiseFloor: ['NoiseFloorMin', 'NoiseGateMultiplier'],
+    sensitivity: ['AHScale', 'EEScale', 'OHScale', 'OOScale', 'THScale'],
+    loudness: ['LoudnessExponent', 'LoudnessSmoothing', 'LoudnessMax', 'LoudnessMidBoost']
+};
+
+window.resetVisemeSection = section => {
+    visemeSections[section].forEach(name => {
+        const value = visemeDefaults[name];
+        const decimals = visemeParameterUI[name][0];
+        window.setVisemeParameterSlider(name, value);
+        document.getElementById(`viseme${name}Value`).textContent = value.toFixed(decimals);
+        window.throttledVisemeFloatWriters?.[name](value);
+    });
+    vibrateDevice();
 };
 
 //* --------- Horn LED Brightness ---------

@@ -218,20 +218,21 @@
                   </svg>
                   <span>Advanced Parameters</span>
                 </button>
-                <div id="visemeAdvancedContent" class="collapsible-content" style="display: none;">
+                <div id="visemeAdvancedContent" class="collapsible-content" style="display: none; flex-direction: column;">
 
                   <!-- Envelope Controls -->
-                  <div style="margin-bottom: 25px;">
+                  <div style="margin-bottom: 25px; position: relative; order: 3;">
                     <h3 style="margin: 0 0 15px 0; font-size: 1rem; color: var(--acc1-color);">Envelope</h3>
+                    <button class="reset-colors-btn" type="button" onclick="resetVisemeSection('envelope')">Reset</button>
 
                     <!-- Envelope Attack -->
                     <div style="margin-bottom: 20px;">
                       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
                         <h3 style="margin: 0; font-size: 0.9rem;">Attack</h3>
-                        <span id="visemeEnvelopeAttackValue" class="fade" style="font-size: 0.9rem;">0.00</span>
+                        <span id="visemeEnvelopeAttackValue" class="fade" style="font-size: 0.9rem;">0.50</span>
                       </div>
                       <input type="range" id="visemeEnvelopeAttackSlider" class="spiral-thickness-slider"
-                        min="0.1" max="0.9" step="0.01" value="0" style="width: 100%;">
+                        min="0" max="100" step="1" value="50" style="width: 100%;">
                       <div style="display: flex; justify-content: space-between; margin-top: 5px;">
                         <span class="fade" style="font-size: 0.75rem;">0.1 (Slower)</span>
                         <span class="fade" style="font-size: 0.75rem;">0.9 (Faster)</span>
@@ -242,10 +243,10 @@
                     <div style="margin-bottom: 20px;">
                       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
                         <h3 style="margin: 0; font-size: 0.9rem;">Release</h3>
-                        <span id="visemeEnvelopeReleaseValue" class="fade" style="font-size: 0.9rem;">0.00</span>
+                        <span id="visemeEnvelopeReleaseValue" class="fade" style="font-size: 0.9rem;">0.40</span>
                       </div>
                       <input type="range" id="visemeEnvelopeReleaseSlider" class="spiral-thickness-slider"
-                        min="0.01" max="0.5" step="0.01" value="0" style="width: 100%;">
+                        min="0" max="100" step="1" value="94" style="width: 100%;">
                       <div style="display: flex; justify-content: space-between; margin-top: 5px;">
                         <span class="fade" style="font-size: 0.75rem;">0.01 (Faster)</span>
                         <span class="fade" style="font-size: 0.75rem;">0.5 (Slower)</span>
@@ -253,99 +254,54 @@
                     </div>
                   </div>
 
-                  <!-- Detection Controls -->
-                  <div style="margin-bottom: 25px;">
-                    <h3 style="margin: 0 0 15px 0; font-size: 1rem; color: var(--acc1-color);">Detection</h3>
+                  <!-- Noise Floor Controls -->
+                  <div style="margin-bottom: 25px; position: relative; order: 1;">
+                    <h3 style="margin: 0 0 15px 0; font-size: 1rem; color: var(--acc1-color);">Adaptive Noise Floor</h3>
+                    <button class="reset-colors-btn" type="button" onclick="resetVisemeSection('noiseFloor')">Reset</button>
 
-                    <!-- Attack Threshold -->
+                    <!-- Noise Floor Min -->
                     <div style="margin-bottom: 20px;">
                       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                        <h3 style="margin: 0; font-size: 0.9rem;">Attack Threshold</h3>
-                        <span id="visemeAttackThresholdValue" class="fade" style="font-size: 0.9rem;">0.0</span>
+                        <h3 style="margin: 0; font-size: 0.9rem;">Minimum</h3>
+                        <span id="visemeNoiseFloorMinValue" class="fade" style="font-size: 0.9rem;">5.0</span>
                       </div>
-                      <input type="range" id="visemeAttackThresholdSlider" class="spiral-thickness-slider"
-                        min="1.0" max="3.0" step="0.01" value="0" style="width: 100%;">
+                      <input type="range" id="visemeNoiseFloorMinSlider" class="spiral-thickness-slider"
+                        min="0" max="100" step="1" value="0" style="width: 100%;">
+                      <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                        <span class="fade" style="font-size: 0.75rem;">5</span>
+                        <span class="fade" style="font-size: 0.75rem;">200</span>
+                      </div>
+                    </div>
+
+                    <!-- Noise Gate Multiplier -->
+                    <div style="margin-bottom: 20px;">
+                      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                        <h3 style="margin: 0; font-size: 0.9rem;">Noise Gate Multiplier</h3>
+                        <span id="visemeNoiseGateMultiplierValue" class="fade" style="font-size: 0.9rem;">1.20</span>
+                      </div>
+                      <input type="range" id="visemeNoiseGateMultiplierSlider" class="spiral-thickness-slider"
+                        min="0" max="100" step="1" value="32" style="width: 100%;">
                       <div style="display: flex; justify-content: space-between; margin-top: 5px;">
                         <span class="fade" style="font-size: 0.75rem;">1.0</span>
                         <span class="fade" style="font-size: 0.75rem;">3.0</span>
                       </div>
                     </div>
 
-                    <!-- Min Separation -->
-                    <div style="margin-bottom: 20px;">
-                      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                        <h3 style="margin: 0; font-size: 0.9rem;">Min Separation</h3>
-                        <span id="visemeMinSeparationValue" class="fade" style="font-size: 0.9rem;">0.00</span>
-                      </div>
-                      <input type="range" id="visemeMinSeparationSlider" class="spiral-thickness-slider"
-                        min="1.0" max="2.0" step="0.01" value="0" style="width: 100%;">
-                      <div style="display: flex; justify-content: space-between; margin-top: 5px;">
-                        <span class="fade" style="font-size: 0.75rem;">1.0</span>
-                        <span class="fade" style="font-size: 0.75rem;">2.0</span>
-                      </div>
-                    </div>
-
-                  </div>
-
-                  <!-- Noise Floor Controls -->
-                  <div style="margin-bottom: 25px;">
-                    <h3 style="margin: 0 0 15px 0; font-size: 1rem; color: var(--acc1-color);">Adaptive Noise Floor</h3>
-
-                    <!-- Noise Floor Min -->
-                    <div style="margin-bottom: 20px;">
-                      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                        <h3 style="margin: 0; font-size: 0.9rem;">Minimum</h3>
-                        <span id="visemeNoiseFloorMinValue" class="fade" style="font-size: 0.9rem;">20</span>
-                      </div>
-                      <input type="range" id="visemeNoiseFloorMinSlider" class="spiral-thickness-slider"
-                        min="0" max="100" step="1" value="38" data-nonlinear="noise-floor" style="width: 100%;">
-                      <div style="display: flex; justify-content: space-between; margin-top: 5px;">
-                        <span class="fade" style="font-size: 0.75rem;">5</span>
-                        <span class="fade" style="font-size: 0.75rem;">200</span>
-                      </div>
-                    </div>
-
-                    <!-- Noise Floor Max -->
-                    <div style="margin-bottom: 20px;">
-                      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                        <h3 style="margin: 0; font-size: 0.9rem;">Maximum</h3>
-                        <span id="visemeNoiseFloorMaxValue" class="fade" style="font-size: 0.9rem;">100</span>
-                      </div>
-                      <input type="range" id="visemeNoiseFloorMaxSlider" class="spiral-thickness-slider"
-                        min="0" max="100" step="1" value="81" data-nonlinear="noise-floor" style="width: 100%;">
-                      <div style="display: flex; justify-content: space-between; margin-top: 5px;">
-                        <span class="fade" style="font-size: 0.75rem;">5</span>
-                        <span class="fade" style="font-size: 0.75rem;">200</span>
-                      </div>
-                    </div>
-
-                    <!-- Noise Adapt Speed -->
-                    <div style="margin-bottom: 20px;">
-                      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                        <h3 style="margin: 0; font-size: 0.9rem;">Adapt Speed</h3>
-                        <span id="visemeNoiseAdaptSpeedValue" class="fade" style="font-size: 0.9rem;">0.0000</span>
-                      </div>
-                      <input type="range" id="visemeNoiseAdaptSpeedSlider" class="spiral-thickness-slider"
-                        min="0.0001" max="0.01" step="0.0001" value="0" style="width: 100%;">
-                      <div style="display: flex; justify-content: space-between; margin-top: 5px;">
-                        <span class="fade" style="font-size: 0.75rem;">0.0001 (Slow)</span>
-                        <span class="fade" style="font-size: 0.75rem;">0.01 (Fast)</span>
-                      </div>
-                    </div>
                   </div>
 
                   <!-- Viseme Sensitivity Scales -->
-                  <div style="margin-bottom: 15px;">
+                  <div style="margin-bottom: 15px; position: relative; order: 5;">
                     <h3 style="margin: 0 0 15px 0; font-size: 1rem; color: var(--acc1-color);">Viseme Sensitivity</h3>
+                    <button class="reset-colors-btn" type="button" onclick="resetVisemeSection('sensitivity')">Reset</button>
 
                     <!-- AH Scale -->
                     <div style="margin-bottom: 20px;">
                       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
                         <h3 style="margin: 0; font-size: 0.9rem;">AH Scale</h3>
-                        <span id="visemeAHScaleValue" class="fade" style="font-size: 0.9rem;">0.0</span>
+                        <span id="visemeAHScaleValue" class="fade" style="font-size: 0.9rem;">3.30</span>
                       </div>
                       <input type="range" id="visemeAHScaleSlider" class="spiral-thickness-slider"
-                        min="0.1" max="5.0" step="0.1" value="0" style="width: 100%;">
+                        min="0" max="100" step="1" value="89" style="width: 100%;">
                       <div style="display: flex; justify-content: space-between; margin-top: 5px;">
                         <span class="fade" style="font-size: 0.75rem;">0.1</span>
                         <span class="fade" style="font-size: 0.75rem;">5.0</span>
@@ -356,10 +312,10 @@
                     <div style="margin-bottom: 20px;">
                       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
                         <h3 style="margin: 0; font-size: 0.9rem;">EE Scale</h3>
-                        <span id="visemeEEScaleValue" class="fade" style="font-size: 0.9rem;">0.0</span>
+                        <span id="visemeEEScaleValue" class="fade" style="font-size: 0.9rem;">1.30</span>
                       </div>
                       <input type="range" id="visemeEEScaleSlider" class="spiral-thickness-slider"
-                        min="0.1" max="5.0" step="0.1" value="0" style="width: 100%;">
+                        min="0" max="100" step="1" value="66" style="width: 100%;">
                       <div style="display: flex; justify-content: space-between; margin-top: 5px;">
                         <span class="fade" style="font-size: 0.75rem;">0.1</span>
                         <span class="fade" style="font-size: 0.75rem;">5.0</span>
@@ -370,10 +326,10 @@
                     <div style="margin-bottom: 20px;">
                       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
                         <h3 style="margin: 0; font-size: 0.9rem;">OH Scale</h3>
-                        <span id="visemeOHScaleValue" class="fade" style="font-size: 0.9rem;">0.0</span>
+                        <span id="visemeOHScaleValue" class="fade" style="font-size: 0.9rem;">1.50</span>
                       </div>
                       <input type="range" id="visemeOHScaleSlider" class="spiral-thickness-slider"
-                        min="0.1" max="5.0" step="0.1" value="0" style="width: 100%;">
+                        min="0" max="100" step="1" value="69" style="width: 100%;">
                       <div style="display: flex; justify-content: space-between; margin-top: 5px;">
                         <span class="fade" style="font-size: 0.75rem;">0.1</span>
                         <span class="fade" style="font-size: 0.75rem;">5.0</span>
@@ -384,10 +340,10 @@
                     <div style="margin-bottom: 20px;">
                       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
                         <h3 style="margin: 0; font-size: 0.9rem;">OO Scale</h3>
-                        <span id="visemeOOScaleValue" class="fade" style="font-size: 0.9rem;">0.0</span>
+                        <span id="visemeOOScaleValue" class="fade" style="font-size: 0.9rem;">1.40</span>
                       </div>
                       <input type="range" id="visemeOOScaleSlider" class="spiral-thickness-slider"
-                        min="0.1" max="5.0" step="0.1" value="0" style="width: 100%;">
+                        min="0" max="100" step="1" value="67" style="width: 100%;">
                       <div style="display: flex; justify-content: space-between; margin-top: 5px;">
                         <span class="fade" style="font-size: 0.75rem;">0.1</span>
                         <span class="fade" style="font-size: 0.75rem;">5.0</span>
@@ -398,14 +354,76 @@
                     <div style="margin-bottom: 0px;">
                       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
                         <h3 style="margin: 0; font-size: 0.9rem;">TH Scale</h3>
-                        <span id="visemeTHScaleValue" class="fade" style="font-size: 0.9rem;">0.0</span>
+                        <span id="visemeTHScaleValue" class="fade" style="font-size: 0.9rem;">1.00</span>
                       </div>
                       <input type="range" id="visemeTHScaleSlider" class="spiral-thickness-slider"
-                        min="0.1" max="5.0" step="0.1" value="0" style="width: 100%;">
+                        min="0" max="100" step="1" value="59" style="width: 100%;">
                       <div style="display: flex; justify-content: space-between; margin-top: 5px;">
                         <span class="fade" style="font-size: 0.75rem;">0.1</span>
                         <span class="fade" style="font-size: 0.75rem;">5.0</span>
                       </div>
+                    </div>
+                  </div>
+
+                  <!-- Loudness Controls -->
+                  <div style="margin-bottom: 15px; position: relative; order: 4;">
+                    <h3 style="margin: 0 0 15px 0; font-size: 1rem; color: var(--acc1-color);">Mouth Opening</h3>
+                    <button class="reset-colors-btn" type="button" onclick="resetVisemeSection('loudness')">Reset</button>
+
+                    <div style="margin-bottom: 20px;">
+                      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                        <h3 style="margin: 0; font-size: 0.9rem;">Loudness Exponent</h3>
+                        <span id="visemeLoudnessExponentValue" class="fade" style="font-size: 0.9rem;">0.80</span>
+                      </div>
+                      <input type="range" id="visemeLoudnessExponentSlider" class="spiral-thickness-slider"
+                        min="0" max="100" step="1" value="60" style="width: 100%;">
+                      <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                        <span class="fade" style="font-size: 0.75rem;">0.2</span>
+                        <span class="fade" style="font-size: 0.75rem;">2.0</span>
+                      </div>
+                      <p class="fade" style="font-size: 0.75rem; margin: 6px 0 0;">Lower opens the mouth more for quiet sounds; higher favors louder sounds.</p>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                        <h3 style="margin: 0; font-size: 0.9rem;">Loudness Smoothing</h3>
+                        <span id="visemeLoudnessSmoothingValue" class="fade" style="font-size: 0.9rem;">0.65</span>
+                      </div>
+                      <input type="range" id="visemeLoudnessSmoothingSlider" class="spiral-thickness-slider"
+                        min="0" max="100" step="1" value="63" style="width: 100%;">
+                      <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                        <span class="fade" style="font-size: 0.75rem;">0.05</span>
+                        <span class="fade" style="font-size: 0.75rem;">1.0</span>
+                      </div>
+                      <p class="fade" style="font-size: 0.75rem; margin: 6px 0 0;">Higher follows speech faster; lower produces smoother, slower movement.</p>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                        <h3 style="margin: 0; font-size: 0.9rem;">Loudness Max</h3>
+                        <span id="visemeLoudnessMaxValue" class="fade" style="font-size: 0.9rem;">5.00</span>
+                      </div>
+                      <input type="range" id="visemeLoudnessMaxSlider" class="spiral-thickness-slider"
+                        min="0" max="100" step="1" value="54" style="width: 100%;">
+                      <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                        <span class="fade" style="font-size: 0.75rem;">1.0</span>
+                        <span class="fade" style="font-size: 0.75rem;">20.0</span>
+                      </div>
+                      <p class="fade" style="font-size: 0.75rem; margin: 6px 0 0;">Lower reaches full opening sooner; higher requires a louder voice.</p>
+                    </div>
+
+                    <div>
+                      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                        <h3 style="margin: 0; font-size: 0.9rem;">Loudness Mid Boost</h3>
+                        <span id="visemeLoudnessMidBoostValue" class="fade" style="font-size: 0.9rem;">1.20</span>
+                      </div>
+                      <input type="range" id="visemeLoudnessMidBoostSlider" class="spiral-thickness-slider"
+                        min="0" max="100" step="1" value="47" style="width: 100%;">
+                      <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                        <span class="fade" style="font-size: 0.75rem;">0.5</span>
+                        <span class="fade" style="font-size: 0.75rem;">2.0</span>
+                      </div>
+                      <p class="fade" style="font-size: 0.75rem; margin: 6px 0 0;">Higher exaggerates medium openings; 1.0 applies no boost.</p>
                     </div>
                   </div>
 

@@ -33,16 +33,17 @@ export const bleUUID = {
     // Viseme Advanced Parameters
     visemeEnvelopeAttack: "d1e2f3a4-b5c6-47d8-9e0f-1a2b3c4d5e6f",
     visemeEnvelopeRelease: "d2e3f4a5-b6c7-48d9-9f0a-1b2c3d4e5f6a",
-    visemeAttackThreshold: "d3e4f5a6-b7c8-49da-a0b1-2c3d4e5f6a7b",
-    visemeMinSeparation: "d4e5f6a7-b8c9-4adb-a1b2-3d4e5f6a7b8c",
+    visemeNoiseGateMultiplier: "d4e5f6a7-b8c9-4adb-a1b2-3d4e5f6a7b8c",
     visemeNoiseFloorMin: "d6e7f8a9-bacb-4cdd-a3b4-5f6a7b8c9d0e",
-    visemeNoiseFloorMax: "d7e8f9aa-bbcc-4dde-a4b5-6a7b8c9d0e1f",
-    visemeNoiseAdaptSpeed: "d8e9faab-bccd-4edf-a5b6-7b8c9d0e1f2a",
     visemeAHScale: "d9eafbac-bdce-4fe0-a6b7-8c9d0e1f2a3b",
     visemeEEScale: "dafbfcad-becf-4ae1-a7b8-9d0e1f2a3b4c",
     visemeOHScale: "dbfcfdae-bfd0-4be2-a8b9-0e1f2a3b4c5d",
     visemeOOScale: "dcfdfebf-c0d1-4ce3-a9ba-1f2a3b4c5d6e",
-    visemeTHScale: "ddfeafc0-c1d2-4de4-aabb-2a3b4c5d6e7f"
+    visemeTHScale: "ddfeafc0-c1d2-4de4-aabb-2a3b4c5d6e7f",
+    visemeLoudnessExponent: "deafc0d1-c2d3-4ef5-abcc-3b4c5d6e7f80",
+    visemeLoudnessSmoothing: "dfb0c1d2-c3d4-4fa6-abdd-4c5d6e7f8091",
+    visemeLoudnessMax: "e0c1d2e3-d4e5-40b7-acee-5d6e7f8091a2",
+    visemeLoudnessMidBoost: "e1d2e3f4-e5f6-41c8-adff-6e7f8091a2b3"
   }
 };
 

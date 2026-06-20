@@ -4,22 +4,23 @@ let isConnecting = false; // Prevent multiple simultaneous connection attempts
 const visemeParameters = [
   ['EnvelopeAttack', 2],
   ['EnvelopeRelease', 2],
-  ['AttackThreshold', 1],
-  ['MinSeparation', 1],
-  ['NoiseFloorMin', 0],
-  ['NoiseFloorMax', 0],
-  ['NoiseAdaptSpeed', 4],
-  ['AHScale', 1],
-  ['EEScale', 1],
-  ['OHScale', 1],
-  ['OOScale', 1],
-  ['THScale', 1]
+  ['NoiseGateMultiplier', 2],
+  ['NoiseFloorMin', 1],
+  ['AHScale', 2],
+  ['EEScale', 2],
+  ['OHScale', 2],
+  ['OOScale', 2],
+  ['THScale', 2],
+  ['LoudnessExponent', 2],
+  ['LoudnessSmoothing', 2],
+  ['LoudnessMax', 2],
+  ['LoudnessMidBoost', 2]
 ];
 
 const characteristicDefinitions = [
   ['eyeState', 'eyeState', true, { displayId: 'ble-eyestate' }],
   ['displayBrightness', 'display', true, { displayId: 'ble-brightness' }],
-  ['viseme', 'viseme', true, { displayId: 'ble-viseme' }, handleVisemeChange],
+  ['viseme', 'viseme', true, { displayId: 'ble-viseme' }],
   ['mouthState', 'mouthState', true, { displayId: 'ble-mouthstate' }],
   ['hornLedBrightness', 'hornLedBrightness', true, { displayId: 'ble-hornled' }],
   ['cheekPanelBrightness', 'cheekPanelBrightness', true, { displayId: 'ble-cheekpanel' }],
@@ -174,11 +175,7 @@ async function connectToDevice(device, isReconnect = false, retryCount = 0) {
         const floatValue = value.getFloat32(0, true);
         const slider = document.getElementById(`${name}Slider`);
         const display = document.getElementById(`${name}Value`);
-        if (suffix.startsWith('NoiseFloor')) {
-          window.setVisemeNoiseFloorSlider?.(suffix, floatValue);
-        } else if (slider) {
-          slider.value = floatValue;
-        }
+        window.setVisemeParameterSlider?.(suffix, floatValue);
         if (display) display.textContent = floatValue.toFixed(decimals);
       } catch (error) {
         console.warn(`Could not read ${name}:`, error);
@@ -242,7 +239,8 @@ async function connectToDevice(device, isReconnect = false, retryCount = 0) {
     }
     // setBrightnessvalue(displayBrightnessValue.getUint8(0)); // Matrix brightness - Disabled
     setExpression(eyeStateValue.getUint8(0));
-    setViseme(visemeValue.getUint8(0));
+    window.bleVisemeValue = visemeValue.getUint8(0);
+    window.setViseme?.(window.bleVisemeValue);
     setMouthState(mouthStateValue.getUint8(0));
     setHornLedBrightnessValue(hornLedBrightnessValue.getUint8(0));
     setCheekPanelBrightnessValue(cheekPanelBrightnessValue.getUint8(0));
@@ -380,7 +378,7 @@ async function reconnectBLE() {
   if (!navigator.bluetooth?.getDevices) return false;
 
   const devices = await navigator.bluetooth.getDevices();
-  const device = devices.find(({ name }) => name?.startsWith('KimmixController'))
+  const device = devices.find(({ name }) => name === 'KMMX-Fursuit')
     || (devices.length === 1 ? devices[0] : null);
   if (!device) return false;
 
@@ -403,12 +401,6 @@ function onDisconnected(event) {
   isStatusConnected(false);
   updateBLECharacteristicsDisplay('-', '-', '-', '-', '-', '-', null, null);
   showDisconnectPopup();
-}
-
-function handleVisemeChange(event) {
-  const value = event.target.value.getUint8(0);
-  setViseme(value);
-  updateBLECharValue('ble-viseme', value);
 }
 
 // Viseme Advanced Parameters Characteristics

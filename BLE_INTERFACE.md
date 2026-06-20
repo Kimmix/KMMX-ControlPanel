@@ -3,7 +3,7 @@
 ## Overview
 This document defines the Bluetooth Low Energy (BLE) GATT profile for controlling the KMMX-Fursuit system. Client applications should implement this specification to communicate with the fursuit controller.
 
-**Device Names:** `KimmixControllerV2`, `KimmixControllerV4`
+**Device Name:** `KMMX-Fursuit`
 **Manufacturer ID:** `0xFFFF` (Custom)
 **Manufacturer Data:** `KMMX` + Version `1.0`
 
@@ -48,7 +48,7 @@ The KMMX controller supports two hardware versions with different capabilities:
 |------|------|------------|-------------|-------------|
 | Eye State | `49a36bb2-1c66-4e5c-8ff3-28e55a64beb3` | READ, WRITE | `uint8_t` | Changes eye expression state. See expression mapping below. |
 | Mouth State | `f6a7b8c9-d0e1-4f5a-b1c2-3d4e5f6a7b8c` | READ, WRITE | `uint8_t` | Changes mouth expression state. See expression mapping below. |
-| Viseme | `493d06f3-0fa0-4a90-88f1-ebaed0da9b80` | READ, WRITE, NOTIFY | `uint8_t` (0-1) | Controls automatic viseme/lip-sync. |
+| Viseme | `493d06f3-0fa0-4a90-88f1-ebaed0da9b80` | READ, WRITE | `uint8_t` (0-1) | Controls automatic viseme/lip-sync system. See values below. |
 
 **Viseme Control Values:**
 - **0**: Disable viseme (mouth returns to IDLE)
@@ -58,22 +58,48 @@ The KMMX controller supports two hardware versions with different capabilities:
 
 ### Viseme Advanced Parameters
 
-Values are little-endian IEEE-754 `float`.
+**Note:** These characteristics provide fine-grained control over the viseme detector. Values are little-endian `float`.
 
-| Name | UUID | Range |
-|------|------|-------|
-| Envelope Attack | `d1e2f3a4-b5c6-47d8-9e0f-1a2b3c4d5e6f` | 0.1-0.9 |
-| Envelope Release | `d2e3f4a5-b6c7-48d9-9f0a-1b2c3d4e5f6a` | 0.01-0.5 |
-| Attack Threshold | `d3e4f5a6-b7c8-49da-a0b1-2c3d4e5f6a7b` | 1.0-3.0 |
-| Min Separation | `d4e5f6a7-b8c9-4adb-a1b2-3d4e5f6a7b8c` | 1.0-2.0 |
-| Noise Floor Min | `d6e7f8a9-bacb-4cdd-a3b4-5f6a7b8c9d0e` | 100-500 |
-| Noise Floor Max | `d7e8f9aa-bbcc-4dde-a4b5-6a7b8c9d0e1f` | 500-2000 |
-| Noise Adapt Speed | `d8e9faab-bccd-4edf-a5b6-7b8c9d0e1f2a` | 0.0001-0.01 |
-| AH Scale | `d9eafbac-bdce-4fe0-a6b7-8c9d0e1f2a3b` | 0.1-5.0 |
-| EE Scale | `dafbfcad-becf-4ae1-a7b8-9d0e1f2a3b4c` | 0.1-5.0 |
-| OH Scale | `dbfcfdae-bfd0-4be2-a8b9-0e1f2a3b4c5d` | 0.1-5.0 |
-| OO Scale | `dcfdfebf-c0d1-4ce3-a9ba-1f2a3b4c5d6e` | 0.1-5.0 |
-| TH Scale | `ddfeafc0-c1d2-4de4-aabb-2a3b4c5d6e7f` | 0.1-5.0 |
+| Name | UUID | Properties | Data Format | Range | Default | Description |
+|------|------|------------|-------------|-------|---------|-------------|
+| Envelope Attack | `d1e2f3a4-b5c6-47d8-9e0f-1a2b3c4d5e6f` | READ, WRITE | `float` | 0.1-0.9 | 0.5 | Attack time constant (higher = faster rise) |
+| Envelope Release | `d2e3f4a5-b6c7-48d9-9f0a-1b2c3d4e5f6a` | READ, WRITE | `float` | 0.01-0.5 | 0.4 | Release time constant (lower = slower decay) |
+| Noise Gate Multiplier | `d4e5f6a7-b8c9-4adb-a1b2-3d4e5f6a7b8c` | READ, WRITE | `float` | 0.5-3.0 | 1.2 | Required loudness above the adaptive noise floor |
+| Noise Floor Min | `d6e7f8a9-bacb-4cdd-a3b4-5f6a7b8c9d0e` | READ, WRITE | `float` | 5.0-200.0 | 5.0 | Minimum adaptive noise floor threshold (RMS scale) |
+| AH Scale | `d9eafbac-bdce-4fe0-a6b7-8c9d0e1f2a3b` | READ, WRITE | `float` | 0.1-5.0 | 3.3 | Sensitivity multiplier for AH viseme |
+| EE Scale | `dafbfcad-becf-4ae1-a7b8-9d0e1f2a3b4c` | READ, WRITE | `float` | 0.1-5.0 | 1.3 | Sensitivity multiplier for EE viseme |
+| OH Scale | `dbfcfdae-bfd0-4be2-a8b9-0e1f2a3b4c5d` | READ, WRITE | `float` | 0.1-5.0 | 1.5 | Sensitivity multiplier for OH viseme |
+| OO Scale | `dcfdfebf-c0d1-4ce3-a9ba-1f2a3b4c5d6e` | READ, WRITE | `float` | 0.1-5.0 | 1.4 | Sensitivity multiplier for OO viseme |
+| TH Scale | `ddfeafc0-c1d2-4de4-aabb-2a3b4c5d6e7f` | READ, WRITE | `float` | 0.1-5.0 | 1.0 | Sensitivity multiplier for TH viseme |
+| Loudness Exponent | `deafc0d1-c2d3-4ef5-abcc-3b4c5d6e7f80` | READ, WRITE | `float` | 0.2-2.0 | 0.8 | Perceptual mouth-opening curve |
+| Loudness Smoothing | `dfb0c1d2-c3d4-4fa6-abdd-4c5d6e7f8091` | READ, WRITE | `float` | 0.05-1.0 | 0.65 | Mouth-opening response speed |
+| Loudness Max | `e0c1d2e3-d4e5-40b7-acee-5d6e7f8091a2` | READ, WRITE | `float` | 1.0-20.0 | 5.0 | Dynamic range before the mouth reaches maximum opening |
+| Loudness Mid Boost | `e1d2e3f4-e5f6-41c8-adff-6e7f8091a2b3` | READ, WRITE | `float` | 0.5-2.0 | 1.2 | Boost applied to medium mouth openings |
+
+**Tuning Tips:**
+- **Envelope Attack/Release:** Controls how quickly the loudness tracker responds to sound
+- **Noise Gate Multiplier:** Lower is more sensitive; higher rejects more ambient noise
+- **Noise Floor Min:** Hardware calibration floor; normally leave at default
+- **Viseme Scales:** Adjust individual viseme sensitivity if certain mouth shapes are under/over-detected
+- **Loudness Parameters:** Tune mouth opening independently from phoneme selection
+
+#### Recommended UI Slider Scaling
+
+BLE values remain the raw `float` values listed above. These recommendations only affect how a frontend maps a normalized slider position `t` (`0.0-1.0`) to that value.
+
+| Parameter | UI Scaling | Mapping | Reason |
+|-----------|------------|---------|--------|
+| Envelope Attack | Linear | `0.1 + t * 0.8` | The useful response changes are distributed reasonably across the range. |
+| Envelope Release | Logarithmic | `0.01 * pow(50, t)` | Most useful tuning resolution is near the low end. |
+| Noise Gate Multiplier | Quadratic | `1.0 + 2.0 * t²` | Gives finer sensitivity control near `1.0-1.5`. |
+| Noise Floor Min | Logarithmic | `pow(50, t)` | RMS noise levels are perceptual and span a wide range. |
+| AH/EE/OH/OO/TH Scale | Logarithmic | `0.1 * pow(50, t)` | Multipliers are best tuned by ratios rather than equal numeric steps. |
+| Loudness Exponent | Logarithmic | `0.2 * pow(10, t)` | Fine control around values below `1.0` is more useful. |
+| Loudness Smoothing | Linear | `0.05 + t * 0.95` | Directly represents the blend applied each frame. |
+| Loudness Max | Logarithmic | `pow(20, t)` | Dynamic range is naturally ratio-based. |
+| Loudness Mid Boost | Linear | `0.5 + t * 1.5` | The range is small and centered around neutral `1.0`. |
+
+For frontend reset buttons, use the defaults from the parameter table rather than the slider midpoint.
 
 ### LED Brightness Control
 
@@ -156,7 +182,6 @@ Values are little-endian IEEE-754 `float`.
 ✅ Motion Enable Flags
 ✅ Tap Sensitivity
 ✅ Glitch Intensity
-✅ Viseme Advanced Parameters (12)
 
 ### V4 Only
 🆕 Fan Speed
@@ -165,8 +190,8 @@ Values are little-endian IEEE-754 `float`.
 🆕 Fan Connected
 
 **Total Characteristics:**
-- V2: 31 characteristics
-- V4: 35 characteristics (31 + 4 fan control)
+- V2: 19 characteristics
+- V4: 23 characteristics (19 + 4 fan control)
 
 ---
 
