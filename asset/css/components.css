@@ -133,9 +133,6 @@
 
 /* Fan Control Styles */
 .fan-control-card {
-  background:
-    linear-gradient(135deg, rgba(249, 130, 108, 0.16), transparent 42%),
-    var(--black3-color);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   padding: 18px;
