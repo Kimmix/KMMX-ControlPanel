@@ -1,5 +1,7 @@
 let bleDevice; // Store the connected device
 let isConnecting = false; // Prevent multiple simultaneous connection attempts
+let settingsStateLoaded = false;
+let settingsStateLoading = null;
 
 const visemeParameters = [
   ['EnvelopeAttack', 2],
@@ -70,6 +72,119 @@ async function discoverCharacteristics(service) {
 const readCharacteristic = name => bleManager.get(name)?.readValue();
 window.writeBLE = (name, ...values) => bleManager.write(name, values.length === 1 ? values[0] : values);
 
+function setSettingsBleLoading(isLoading) {
+  document.getElementById('s-pill')?.classList.toggle('ble-loading', isLoading);
+  const settingsPage = document.getElementById('page-settings');
+  settingsPage?.classList.toggle('settings-loading', isLoading);
+  settingsPage?.querySelectorAll('input, button').forEach(element => {
+    if (isLoading) {
+      element.dataset.wasDisabled = String(element.disabled);
+      element.disabled = true;
+    } else {
+      element.disabled = element.dataset.wasDisabled === 'true';
+      delete element.dataset.wasDisabled;
+    }
+  });
+}
+
+async function readFaceState() {
+  const eyeStateValue = await readCharacteristic('eyeState');
+  const visemeValue = await readCharacteristic('viseme');
+  const mouthStateValue = await readCharacteristic('mouthState');
+
+  setExpression(eyeStateValue.getUint8(0));
+  window.bleVisemeValue = visemeValue.getUint8(0);
+  window.setViseme?.(window.bleVisemeValue);
+  setMouthState(mouthStateValue.getUint8(0));
+  updateBLECharacteristicsDisplay(eyeStateValue.getUint8(0), '-', visemeValue.getUint8(0), mouthStateValue.getUint8(0), '-', '-', null, null);
+}
+
+async function readSettingsState({ force = false } = {}) {
+  if (!bleDevice || !bleDevice.gatt.connected) return;
+  if (settingsStateLoaded && !force) return;
+  if (settingsStateLoading) return settingsStateLoading;
+
+  settingsStateLoading = (async () => {
+    setSettingsBleLoading(true);
+    try {
+      const displayBrightnessValue = await readCharacteristic('displayBrightness');
+      const hornLedBrightnessValue = await readCharacteristic('hornLedBrightness');
+      const cheekPanelBrightnessValue = await readCharacteristic('cheekPanelBrightness');
+      const cheekBgColorValue = await readCharacteristic('cheekBgColor');
+      const cheekFadeColorValue = await readCharacteristic('cheekFadeColor');
+      const displayColorModeValue = await readCharacteristic('displayColorMode');
+      const displayEffectColor1Value = await readCharacteristic('displayEffectColor1');
+      const displayEffectColor2Value = await readCharacteristic('displayEffectColor2');
+      const displayEffectOption1Value = await readCharacteristic('displayEffectOption1');
+      const displayEffectOption2Value = await readCharacteristic('displayEffectOption2');
+      const displayEffectOption3Value = await readCharacteristic('displayEffectOption3');
+      const motionEnableFlagsValue = await readCharacteristic('motionEnableFlags');
+      const tapSensitivityValue = await readCharacteristic('tapSensitivity');
+      const glitchIntensityValue = await readCharacteristic('glitchIntensity');
+      const fanSpeedValue = await readCharacteristic('fanSpeed');
+
+      for (const [suffix, decimals] of visemeParameters) {
+        const name = `viseme${suffix}`;
+        try {
+          const value = await readCharacteristic(name);
+          if (!value) continue;
+          const floatValue = value.getFloat32(0, true);
+          const display = document.getElementById(`${name}Value`);
+          window.setVisemeParameterSlider?.(suffix, floatValue);
+          if (display) display.textContent = floatValue.toFixed(decimals);
+        } catch (error) {
+          console.warn(`Could not read ${name}:`, error);
+        }
+      }
+
+      setHornLedBrightnessValue(hornLedBrightnessValue.getUint8(0));
+      setCheekPanelBrightnessValue(cheekPanelBrightnessValue.getUint8(0));
+      setCheekBgColorValue(cheekBgColorValue.getUint8(0), cheekBgColorValue.getUint8(1), cheekBgColorValue.getUint8(2));
+      setCheekFadeColorValue(cheekFadeColorValue.getUint8(0), cheekFadeColorValue.getUint8(1), cheekFadeColorValue.getUint8(2));
+
+      if (displayColorModeValue) setDisplayColorModeValue(displayColorModeValue.getUint8(0));
+      if (displayEffectColor1Value) setDisplayEffectColor1Value(displayEffectColor1Value.getUint8(0), displayEffectColor1Value.getUint8(1), displayEffectColor1Value.getUint8(2));
+      if (displayEffectColor2Value) setDisplayEffectColor2Value(displayEffectColor2Value.getUint8(0), displayEffectColor2Value.getUint8(1), displayEffectColor2Value.getUint8(2));
+      if (displayEffectOption1Value) setDisplayEffectOption1Value(displayEffectOption1Value.getUint8(0));
+      if (displayEffectOption2Value) setDisplayEffectOption2Value(displayEffectOption2Value.getUint8(0));
+      if (displayEffectOption3Value) setDisplayEffectOption3Value(displayEffectOption3Value.getUint8(0));
+      if (motionEnableFlagsValue) setMotionEnableFlagsValue(motionEnableFlagsValue.getUint8(0));
+      if (tapSensitivityValue) setTapSensitivityValue(tapSensitivityValue.getUint8(0));
+      if (glitchIntensityValue) setGlitchIntensityValue(glitchIntensityValue.getUint8(0));
+      if (fanSpeedValue) setFanSpeedValue(fanSpeedValue.getUint8(0));
+
+      if (typeof updateFanControlVisibility === 'function') {
+        updateFanControlVisibility(Boolean(bleManager.get('fanSpeed')));
+      }
+
+      updateBLECharValue('ble-brightness', displayBrightnessValue.getUint8(0));
+      updateBLECharValue('ble-hornled', hornLedBrightnessValue.getUint8(0));
+      updateBLECharValue('ble-cheekpanel', cheekPanelBrightnessValue.getUint8(0));
+      updateBLECharColorValue('ble-cheekbgcolor', cheekBgColorValue.getUint8(0), cheekBgColorValue.getUint8(1), cheekBgColorValue.getUint8(2));
+      updateBLECharColorValue('ble-cheekfadecolor', cheekFadeColorValue.getUint8(0), cheekFadeColorValue.getUint8(1), cheekFadeColorValue.getUint8(2));
+      if (displayColorModeValue) updateBLECharValue('ble-displaycolormode', displayColorModeValue.getUint8(0));
+      if (displayEffectColor1Value) updateBLECharColorValue('ble-displayeffectcolor1', displayEffectColor1Value.getUint8(0), displayEffectColor1Value.getUint8(1), displayEffectColor1Value.getUint8(2));
+      if (displayEffectColor2Value) updateBLECharColorValue('ble-displayeffectcolor2', displayEffectColor2Value.getUint8(0), displayEffectColor2Value.getUint8(1), displayEffectColor2Value.getUint8(2));
+      if (displayEffectOption1Value) updateBLECharValue('ble-displayeffectoption1', displayEffectOption1Value.getUint8(0));
+      if (displayEffectOption2Value) updateBLECharValue('ble-displayeffectoption2', displayEffectOption2Value.getUint8(0));
+      if (displayEffectOption3Value) updateBLECharValue('ble-displayeffectoption3', displayEffectOption3Value.getUint8(0));
+      if (motionEnableFlagsValue) updateBLECharValue('ble-motionenableflags', `0x${motionEnableFlagsValue.getUint8(0).toString(16)}`);
+      if (tapSensitivityValue) updateBLECharValue('ble-tapsensitivity', tapSensitivityValue.getUint8(0));
+      if (glitchIntensityValue) updateBLECharValue('ble-glitchintensity', glitchIntensityValue.getUint8(0));
+
+      settingsStateLoaded = true;
+    } finally {
+      settingsStateLoading = null;
+      setSettingsBleLoading(false);
+    }
+  })();
+
+  return settingsStateLoading;
+}
+window.loadBLESettingsState = () => readSettingsState().catch(error => {
+  console.warn('Could not load BLE settings:', error);
+});
+
 //? Connect to a BLE device (new or existing)
 async function connectToDevice(device, isReconnect = false, retryCount = 0) {
   // Prevent concurrent connection attempts
@@ -136,82 +251,14 @@ async function connectToDevice(device, isReconnect = false, retryCount = 0) {
     }
 
     await discoverCharacteristics(service);
+    settingsStateLoaded = false;
 
     console.log('Reading value...');
     if (!isReconnect) {
       updateBLEProgress(90, 'Reading...');
     }
 
-    const eyeStateValue = await readCharacteristic('eyeState');
-    const displayBrightnessValue = await readCharacteristic('displayBrightness');
-    const visemeValue = await readCharacteristic('viseme');
-    const mouthStateValue = await readCharacteristic('mouthState');
-    const hornLedBrightnessValue = await readCharacteristic('hornLedBrightness');
-    const cheekPanelBrightnessValue = await readCharacteristic('cheekPanelBrightness');
-    const cheekBgColorValue = await readCharacteristic('cheekBgColor');
-    const cheekFadeColorValue = await readCharacteristic('cheekFadeColor');
-    const displayColorModeValue = await readCharacteristic('displayColorMode');
-    const displayEffectColor1Value = await readCharacteristic('displayEffectColor1');
-    const displayEffectColor2Value = await readCharacteristic('displayEffectColor2');
-    const displayEffectOption1Value = await readCharacteristic('displayEffectOption1');
-    const displayEffectOption2Value = await readCharacteristic('displayEffectOption2');
-    const displayEffectOption3Value = await readCharacteristic('displayEffectOption3');
-    const motionEnableFlagsValue = await readCharacteristic('motionEnableFlags');
-    const tapSensitivityValue = await readCharacteristic('tapSensitivity');
-    const glitchIntensityValue = await readCharacteristic('glitchIntensity');
-    const fanSpeedValue = await readCharacteristic('fanSpeed');
-
-    for (const [suffix, decimals] of visemeParameters) {
-      const name = `viseme${suffix}`;
-      try {
-        const value = await readCharacteristic(name);
-        if (!value) continue;
-        const floatValue = value.getFloat32(0, true);
-        const slider = document.getElementById(`${name}Slider`);
-        const display = document.getElementById(`${name}Value`);
-        window.setVisemeParameterSlider?.(suffix, floatValue);
-        if (display) display.textContent = floatValue.toFixed(decimals);
-      } catch (error) {
-        console.warn(`Could not read ${name}:`, error);
-      }
-    }
-
-    console.log(`Eye state is ${eyeStateValue.getUint8(0)}`);
-    console.log(`Display brightness is ${displayBrightnessValue.getUint8(0)}`);
-    console.log(`Viseme value is ${visemeValue.getUint8(0)}`);
-    console.log(`Mouth state is ${mouthStateValue.getUint8(0)}`);
-    console.log(`Horn LED brightness is ${hornLedBrightnessValue.getUint8(0)}`);
-    console.log(`Cheek Panel brightness is ${cheekPanelBrightnessValue.getUint8(0)}`);
-    console.log(`Cheek BG Color: R=${cheekBgColorValue.getUint8(0)} G=${cheekBgColorValue.getUint8(1)} B=${cheekBgColorValue.getUint8(2)}`);
-    console.log(`Cheek Fade Color: R=${cheekFadeColorValue.getUint8(0)} G=${cheekFadeColorValue.getUint8(1)} B=${cheekFadeColorValue.getUint8(2)}`);
-
-    if (displayColorModeValue) {
-      console.log(`Display Color Mode: ${displayColorModeValue.getUint8(0)}`);
-    }
-    if (displayEffectColor1Value) {
-      console.log(`Display Effect Color 1: R=${displayEffectColor1Value.getUint8(0)} G=${displayEffectColor1Value.getUint8(1)} B=${displayEffectColor1Value.getUint8(2)}`);
-    }
-    if (displayEffectColor2Value) {
-      console.log(`Display Effect Color 2: R=${displayEffectColor2Value.getUint8(0)} G=${displayEffectColor2Value.getUint8(1)} B=${displayEffectColor2Value.getUint8(2)}`);
-    }
-    if (displayEffectOption1Value) {
-      console.log(`Display Effect Option 1: ${displayEffectOption1Value.getUint8(0)}`);
-    }
-    if (displayEffectOption2Value) {
-      console.log(`Display Effect Option 2: ${displayEffectOption2Value.getUint8(0)}`);
-    }
-    if (motionEnableFlagsValue) {
-      console.log(`Motion Enable Flags: 0x${motionEnableFlagsValue.getUint8(0).toString(16)}`);
-    }
-    if (tapSensitivityValue) {
-      console.log(`Tap Sensitivity: ${tapSensitivityValue.getUint8(0)}`);
-    }
-    if (glitchIntensityValue) {
-      console.log(`Glitch Intensity: ${glitchIntensityValue.getUint8(0)}`);
-    }
-    if (fanSpeedValue) {
-      console.log(`Fan Speed: ${fanSpeedValue.getUint8(0)}%`);
-    }
+    await readFaceState();
 
     if (!isReconnect) {
       updateBLEProgress(100, 'Connected!');
@@ -222,59 +269,9 @@ async function connectToDevice(device, isReconnect = false, retryCount = 0) {
     if (typeof updateDeviceInfo === 'function') {
       updateDeviceInfo(device);
     }
-    // setBrightnessvalue(displayBrightnessValue.getUint8(0)); // Matrix brightness - Disabled
-    setExpression(eyeStateValue.getUint8(0));
-    window.bleVisemeValue = visemeValue.getUint8(0);
-    window.setViseme?.(window.bleVisemeValue);
-    setMouthState(mouthStateValue.getUint8(0));
-    setHornLedBrightnessValue(hornLedBrightnessValue.getUint8(0));
-    setCheekPanelBrightnessValue(cheekPanelBrightnessValue.getUint8(0));
-    setCheekBgColorValue(cheekBgColorValue.getUint8(0), cheekBgColorValue.getUint8(1), cheekBgColorValue.getUint8(2));
-    setCheekFadeColorValue(cheekFadeColorValue.getUint8(0), cheekFadeColorValue.getUint8(1), cheekFadeColorValue.getUint8(2));
-
-    // Set Hub75 display color values only if available
-    if (displayColorModeValue) {
-      setDisplayColorModeValue(displayColorModeValue.getUint8(0));
+    if (document.getElementById('page-settings')?.classList.contains('active')) {
+      window.loadBLESettingsState();
     }
-    if (displayEffectColor1Value) {
-      setDisplayEffectColor1Value(displayEffectColor1Value.getUint8(0), displayEffectColor1Value.getUint8(1), displayEffectColor1Value.getUint8(2));
-    }
-    if (displayEffectColor2Value) {
-      setDisplayEffectColor2Value(displayEffectColor2Value.getUint8(0), displayEffectColor2Value.getUint8(1), displayEffectColor2Value.getUint8(2));
-    }
-    if (displayEffectOption1Value) {
-      setDisplayEffectOption1Value(displayEffectOption1Value.getUint8(0));
-    }
-    if (displayEffectOption2Value) {
-      setDisplayEffectOption2Value(displayEffectOption2Value.getUint8(0));
-    }
-    if (displayEffectOption3Value) {
-      setDisplayEffectOption3Value(displayEffectOption3Value.getUint8(0));
-    }
-
-    // Set Motion Detection & Glitch Control values only if available
-    if (motionEnableFlagsValue) {
-      setMotionEnableFlagsValue(motionEnableFlagsValue.getUint8(0));
-    }
-    if (tapSensitivityValue) {
-      setTapSensitivityValue(tapSensitivityValue.getUint8(0));
-    }
-    if (glitchIntensityValue) {
-      setGlitchIntensityValue(glitchIntensityValue.getUint8(0));
-    }
-
-    // Set Fan Control values only if available
-    if (fanSpeedValue) {
-      setFanSpeedValue(fanSpeedValue.getUint8(0));
-    }
-
-    // Show/hide fan control section based on availability
-    if (typeof updateFanControlVisibility === 'function') {
-      updateFanControlVisibility(Boolean(bleManager.get('fanSpeed')));
-    }
-
-    updateBLECharacteristicsDisplay(eyeStateValue.getUint8(0), displayBrightnessValue.getUint8(0), visemeValue.getUint8(0), mouthStateValue.getUint8(0), hornLedBrightnessValue.getUint8(0), cheekPanelBrightnessValue.getUint8(0), cheekBgColorValue, cheekFadeColorValue);
-
     // Connection successful - clear the flag
     isConnecting = false;
 
@@ -370,6 +367,7 @@ function onDisconnected(event) {
 
   // Clear BLE Manager on disconnect
   bleManager.clear();
+  settingsStateLoaded = false;
 
   isStatusConnected(false);
   updateBLECharacteristicsDisplay('-', '-', '-', '-', '-', '-', null, null);
@@ -462,51 +460,8 @@ async function refreshBLECharacteristics() {
       `;
     }
 
-    const eyeStateValue = await readCharacteristic('eyeState');
-    const displayBrightnessValue = await readCharacteristic('displayBrightness');
-    const visemeValue = await readCharacteristic('viseme');
-    const mouthStateValue = await readCharacteristic('mouthState');
-    const hornLedBrightnessValue = await readCharacteristic('hornLedBrightness');
-    const cheekPanelBrightnessValue = await readCharacteristic('cheekPanelBrightness');
-    const cheekBgColorValue = await readCharacteristic('cheekBgColor');
-    const cheekFadeColorValue = await readCharacteristic('cheekFadeColor');
-    const displayColorModeValue = await readCharacteristic('displayColorMode');
-    const displayEffectColor1Value = await readCharacteristic('displayEffectColor1');
-    const displayEffectColor2Value = await readCharacteristic('displayEffectColor2');
-    const displayEffectOption1Value = await readCharacteristic('displayEffectOption1');
-    const displayEffectOption2Value = await readCharacteristic('displayEffectOption2');
-    const displayEffectOption3Value = await readCharacteristic('displayEffectOption3');
-
-    updateBLECharacteristicsDisplay(
-      eyeStateValue.getUint8(0),
-      displayBrightnessValue.getUint8(0),
-      visemeValue.getUint8(0),
-      mouthStateValue.getUint8(0),
-      hornLedBrightnessValue.getUint8(0),
-      cheekPanelBrightnessValue.getUint8(0),
-      cheekBgColorValue,
-      cheekFadeColorValue
-    );
-
-    // Update display color characteristics in the UI only if available
-    if (displayColorModeValue) {
-      updateBLECharValue('ble-displaycolormode', displayColorModeValue.getUint8(0));
-    }
-    if (displayEffectColor1Value) {
-      updateBLECharColorValue('ble-displayeffectcolor1', displayEffectColor1Value.getUint8(0), displayEffectColor1Value.getUint8(1), displayEffectColor1Value.getUint8(2));
-    }
-    if (displayEffectColor2Value) {
-      updateBLECharColorValue('ble-displayeffectcolor2', displayEffectColor2Value.getUint8(0), displayEffectColor2Value.getUint8(1), displayEffectColor2Value.getUint8(2));
-    }
-    if (displayEffectOption1Value) {
-      updateBLECharValue('ble-displayeffectoption1', displayEffectOption1Value.getUint8(0));
-    }
-    if (displayEffectOption2Value) {
-      updateBLECharValue('ble-displayeffectoption2', displayEffectOption2Value.getUint8(0));
-    }
-    if (displayEffectOption3Value) {
-      updateBLECharValue('ble-displayeffectoption3', displayEffectOption3Value.getUint8(0));
-    }
+    await readFaceState();
+    await readSettingsState({ force: true });
 
     console.log('BLE characteristics refreshed');
     vibrateDevice();

@@ -53,6 +53,12 @@
   animation: blePulse 0.4s ease-in-out 2;
 }
 
+.status-pill.ble-loading {
+  --pill-color: var(--acc1-color);
+  --pill-glow-color: rgba(249, 130, 108, 0.75);
+  animation: blePulse 0.7s ease-in-out infinite;
+}
+
 /* Static Header Container */
 .static-header {
   position: fixed;

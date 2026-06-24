@@ -36,6 +36,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 targetPageElement.classList.add('active');
             }
 
+            if (targetPage === 'settings') {
+                window.loadBLESettingsState?.();
+            }
+
             // Update header subtitle with smooth transition
             if (headerSubtitle && pageSubtitles[targetPage]) {
                 headerSubtitle.classList.add('fade-out');
