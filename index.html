@@ -46,7 +46,6 @@
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Open+Sans:wght@600&display=swap" />
 
-  <link defer rel="stylesheet" href="asset/css/normalize.css" />
   <link defer rel="stylesheet" href="asset/css/styles-main.css" />
   <link defer rel="stylesheet" href="asset/css/high-refresh-rate.css" />
   <link defer rel="stylesheet" href="asset/css/splash.css?v=1.0.10" />
@@ -188,7 +187,7 @@
                   <button class="viseme-configure" type="button" onclick="openVisemeSettings()">Configure audio processing</button>
                 </div>
                 <div id="mouthStateButtons" class="mouth-state-buttons">
-                  <!-- Mouth state buttons will be dynamically created by ButtonGrid component -->
+                  <!-- Mouth state buttons render from src/config/mouth-states.js -->
                 </div>
               </div>
             </div>
@@ -1193,13 +1192,11 @@
 
   <!-- Shared UI helpers -->
   <script defer src="src/managers/ble-manager.js"></script>
-  <script defer src="src/components/slider.js"></script>
-  <script defer src="src/components/button-grid.js"></script>
 
   <!-- Main application files -->
   <script type="module" src="src/core/app.js?v=1.0.11"></script>
-  <script type="module" src="src/core/control.js?v=1.0.11"></script>
-  <script defer src="src/core/ble.js?v=1.0.11"></script>
+  <script type="module" src="src/core/control.js?v=1.0.12"></script>
+  <script defer src="src/core/ble.js?v=1.0.12"></script>
   <script defer src="src/core/navigation.js"></script>
 </body>
 

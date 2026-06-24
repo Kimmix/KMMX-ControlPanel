@@ -1,13 +1,3 @@
-/**
- * Utility Helper Functions
- * Centralized location for reusable utility functions
- */
-
-/**
- * Convert hex color to RGB
- * @param {string} hex - Hex color string (with or without #)
- * @returns {object|null} RGB object {r, g, b} or null if invalid
- */
 export function hexToRgb(hex) {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? {
@@ -17,32 +7,14 @@ export function hexToRgb(hex) {
     } : null;
 }
 
-/**
- * Convert RGB to hex color
- * @param {number} r - Red value (0-255)
- * @param {number} g - Green value (0-255)
- * @param {number} b - Blue value (0-255)
- * @returns {string} Hex color string (uppercase with #)
- */
 export function rgbToHex(r, g, b) {
     return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
 }
 
-/**
- * Clamp a value between min and max
- * @param {number} value - Value to clamp
- * @param {number} min - Minimum value
- * @param {number} max - Maximum value
- * @returns {number} Clamped value
- */
 export function clamp(value, min, max) {
     return Math.min(Math.max(value, min), max);
 }
 
-/**
- * Haptic feedback using device vibration
- * @param {string} pattern - Vibration pattern name (light, medium, heavy, success, error, long)
- */
 export function vibrateDevice(pattern = 'light') {
     if (!navigator.vibrate) return;
 

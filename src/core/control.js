@@ -1,4 +1,3 @@
-// Import utilities
 import { hexToRgb, rgbToHex, vibrateDevice } from '../utils/helpers.js';
 
 import { expressions } from '../config/expressions.js';
@@ -20,11 +19,147 @@ let switchControlMode, toggleViseme, setDisplayColorMode, toggleDirectionInvert;
 let resetCheekColors, resetDisplayColors, toggleMotionFeature, triggerGlitch;
 let setFanSpeedValue, updateFanControlVisibility;
 
-//* --------- Expression ---------
-// Expression definitions imported from config/expressions.js
+function createButtonGrid({ containerId, items, buttonClass = 'exp-btn', countElementId, initialActiveIndex, onClick }) {
+    const container = document.getElementById(containerId);
+    let activeButton = null;
 
-// Create expression buttons using ButtonGrid component
-const expressionGrid = new ButtonGrid({
+    const setActive = buttonId => {
+        const button = document.getElementById(buttonId);
+        if (!button) return;
+        activeButton?.classList.remove('active');
+        button.classList.add('active');
+        activeButton = button;
+    };
+
+    document.getElementById(countElementId)?.replaceChildren(String(items.length));
+    container?.replaceChildren(...items.map(item => {
+        const button = document.createElement('button');
+        button.id = item.buttonId;
+        button.className = `btn-base ${buttonClass}${item.src ? '' : ' placeholder'}`;
+        button.title = item.name;
+        button.type = 'button';
+        button.addEventListener('click', () => {
+            setActive(item.buttonId);
+            onClick?.(item);
+        });
+
+        if (item.src) {
+            const img = document.createElement('img');
+            img.src = item.src;
+            img.alt = item.name;
+            button.appendChild(img);
+        } else {
+            const text = document.createElement('span');
+            text.className = 'placeholder-text';
+            text.textContent = item.name;
+            button.appendChild(text);
+        }
+        return button;
+    }));
+
+    if (initialActiveIndex !== undefined && items[initialActiveIndex]) {
+        setActive(items[initialActiveIndex].buttonId);
+    }
+
+    return {
+        setActiveById(id) {
+            setActive((items.find(item => item.id === id) || items[0])?.buttonId);
+        }
+    };
+}
+
+function bindSlider({ sliderId, dotsContainerId, valueDisplayId, type = 'dots', maxValue = 100, onChange, vibrate = true, convertToPercentage = false, valueSuffix = '' }) {
+    const slider = document.getElementById(sliderId);
+    const dotsContainer = dotsContainerId ? document.getElementById(dotsContainerId) : null;
+    const valueDisplay = valueDisplayId ? document.getElementById(valueDisplayId) : null;
+    let previousDotCount = 0;
+
+    const renderDots = (value, firstTime) => {
+        if (!dotsContainer) return;
+        const dots = [...dotsContainer.querySelectorAll('.dot')];
+        const filled = Math.ceil((value / maxValue) * dots.length);
+        if (filled !== previousDotCount && !firstTime && vibrate) vibrateDevice();
+        previousDotCount = filled;
+        dots.forEach((dot, index) => dot.classList.toggle('white-dot', index < filled));
+    };
+
+    const render = (value, firstTime = false) => {
+        if (type === 'dots') {
+            renderDots(value, firstTime);
+        } else if (slider) {
+            const min = parseInt(slider.min) || 0;
+            const max = parseInt(slider.max) || 255;
+            const percentage = ((value - min) / (max - min)) * 100;
+            slider.style.background = `linear-gradient(to right, white 0%, white ${percentage}%, rgba(255, 255, 255, 0.1) ${percentage}%, rgba(255, 255, 255, 0.1) 100%)`;
+        }
+
+        if (valueDisplay) {
+            const displayValue = convertToPercentage ? Math.round((value / maxValue) * 100) : value;
+            valueDisplay.textContent = `${displayValue}${valueSuffix}`;
+        }
+    };
+
+    const rebuildDots = () => {
+        if (!dotsContainer) return;
+        dotsContainer.replaceChildren(...Array.from({ length: Math.floor(window.innerWidth / 30) }, () => {
+            const dot = document.createElement('div');
+            dot.className = 'dot';
+            return dot;
+        }));
+        render(parseInt(slider.value) || 0, true);
+    };
+
+    if (type === 'dots') {
+        rebuildDots();
+        window.addEventListener('resize', rebuildDots);
+    }
+
+    slider?.addEventListener('input', event => {
+        const value = parseInt(event.target.value);
+        render(value);
+        onChange?.(value);
+        if (vibrate) vibrateDevice();
+    });
+
+    render(parseInt(slider?.value) || 0, true);
+    return {
+        setValue(value) {
+            if (slider) slider.value = value;
+            render(value, true);
+        }
+    };
+}
+
+function applyColor(picker, label, color, write, after) {
+    if (picker) picker.value = color;
+    if (label) label.textContent = color.toUpperCase();
+    const rgb = hexToRgb(color);
+    if (!rgb) return;
+    write?.(rgb.r, rgb.g, rgb.b);
+    after?.(color);
+}
+
+function bindColorInput(picker, label, write, after) {
+    picker?.addEventListener('input', event => {
+        applyColor(picker, label, event.target.value, write, after);
+        vibrateDevice();
+    });
+}
+
+function bindColorPresets(selector, targets) {
+    document.addEventListener('click', event => {
+        const btn = event.target.closest(selector);
+        if (!btn) return;
+        const target = targets[btn.dataset.target];
+        if (!target) return;
+        applyColor(target[0], target[1], btn.dataset.color, target[2], target[3]);
+        vibrateDevice();
+    });
+}
+
+//* --------- Expression ---------
+
+const expressionGrid = createButtonGrid({
     containerId: 'exp-btn',
     items: expressions,
     buttonClass: 'exp-btn',
@@ -93,10 +228,8 @@ switchControlMode = function(mode) {
 window.switchControlMode = switchControlMode;
 
 //* --------- Mouth State ---------
-// Mouth state definitions imported from config/mouth-states.js
 
-// Create mouth state buttons using ButtonGrid component
-const mouthStateGrid = new ButtonGrid({
+const mouthStateGrid = createButtonGrid({
     containerId: 'mouthStateButtons',
     items: mouthStates,
     buttonClass: 'mouth-state-btn',
@@ -281,14 +414,14 @@ window.resetVisemeSection = section => {
 
 //* --------- Horn LED Brightness ---------
 //* --------- Horn LED Brightness Slider ---------
-const hornLedSlider = new Slider({
+const hornLedSlider = bindSlider({
     sliderId: 'hornLedValue',
     dotsContainerId: 'horn-dots-container',
     valueDisplayId: 'hornLedSliderValue',
     type: 'dots',
     maxValue: 100,
     onChange: (value) => {
-        throttledAndDebouncedSetHornLedBrightness(value);
+        window.throttledAndDebouncedSetHornLedBrightness?.(value);
     }
 });
 
@@ -299,7 +432,7 @@ setHornLedBrightnessValue = function(value) {
 window.setHornLedBrightnessValue = setHornLedBrightnessValue;
 
 //* --------- Cheek Panel Brightness Slider ---------
-const cheekPanelSlider = new Slider({
+const cheekPanelSlider = bindSlider({
     sliderId: 'cheekPanelValue',
     dotsContainerId: 'cheek-dots-container',
     valueDisplayId: 'cheekPanelSliderValue',
@@ -307,7 +440,7 @@ const cheekPanelSlider = new Slider({
     maxValue: 255,
     convertToPercentage: true,
     onChange: (value) => {
-        throttledAndDebouncedSetCheekPanelBrightness(value);
+        window.throttledAndDebouncedSetCheekPanelBrightness?.(value);
     }
 });
 
@@ -322,97 +455,31 @@ const bgColorPicker = document.getElementById('bgColorPicker');
 const fadeColorPicker = document.getElementById('fadeColorPicker');
 const bgColorHex = document.getElementById('bgColorHex');
 const fadeColorHex = document.getElementById('fadeColorHex');
+const writeCheekBgColor = (r, g, b) => window.throttledAndDebouncedSetCheekBgColor?.(r, g, b);
+const writeCheekFadeColor = (r, g, b) => window.throttledAndDebouncedSetCheekFadeColor?.(r, g, b);
 
-// Background color picker handler
-if (bgColorPicker) {
-    bgColorPicker.addEventListener('input', (e) => {
-        const color = e.target.value;
-        if (bgColorHex) bgColorHex.textContent = color.toUpperCase();
-        const rgb = hexToRgb(color);
-        if (rgb) {
-            throttledAndDebouncedSetCheekBgColor(rgb.r, rgb.g, rgb.b);
-            vibrateDevice();
-        }
-    });
-}
-
-// Fade color picker handler
-if (fadeColorPicker) {
-    fadeColorPicker.addEventListener('input', (e) => {
-        const color = e.target.value;
-        if (fadeColorHex) fadeColorHex.textContent = color.toUpperCase();
-        const rgb = hexToRgb(color);
-        if (rgb) {
-            throttledAndDebouncedSetCheekFadeColor(rgb.r, rgb.g, rgb.b);
-            vibrateDevice();
-        }
-    });
-}
-
-// Event delegation for all color preset buttons (cheek panel colors)
-// Attach a single listener to the document and filter by class
-document.addEventListener('click', (e) => {
-    const btn = e.target.closest('.color-preset-btn:not([data-target^="gradient"])');
-    if (!btn) return;
-
-    const color = btn.getAttribute('data-color');
-    const target = btn.getAttribute('data-target');
-
-    if (target === 'bg' && bgColorPicker) {
-        bgColorPicker.value = color;
-        if (bgColorHex) bgColorHex.textContent = color.toUpperCase();
-        const rgb = hexToRgb(color);
-        if (rgb) {
-            throttledAndDebouncedSetCheekBgColor(rgb.r, rgb.g, rgb.b);
-        }
-    } else if (target === 'fade' && fadeColorPicker) {
-        fadeColorPicker.value = color;
-        if (fadeColorHex) fadeColorHex.textContent = color.toUpperCase();
-        const rgb = hexToRgb(color);
-        if (rgb) {
-            throttledAndDebouncedSetCheekFadeColor(rgb.r, rgb.g, rgb.b);
-        }
-    }
-    vibrateDevice();
+bindColorInput(bgColorPicker, bgColorHex, writeCheekBgColor);
+bindColorInput(fadeColorPicker, fadeColorHex, writeCheekFadeColor);
+bindColorPresets('.color-preset-btn:not([data-target^="gradient"])', {
+    bg: [bgColorPicker, bgColorHex, writeCheekBgColor],
+    fade: [fadeColorPicker, fadeColorHex, writeCheekFadeColor]
 });
 
 // Set color values from BLE (called when connecting to device)
 setCheekBgColorValue = function(r, g, b) {
-    const hex = rgbToHex(r, g, b);
-    if (bgColorPicker) bgColorPicker.value = hex;
-    if (bgColorHex) bgColorHex.textContent = hex;
+    applyColor(bgColorPicker, bgColorHex, rgbToHex(r, g, b));
 };
 window.setCheekBgColorValue = setCheekBgColorValue;
 
 setCheekFadeColorValue = function(r, g, b) {
-    const hex = rgbToHex(r, g, b);
-    if (fadeColorPicker) fadeColorPicker.value = hex;
-    if (fadeColorHex) fadeColorHex.textContent = hex;
+    applyColor(fadeColorPicker, fadeColorHex, rgbToHex(r, g, b));
 };
 window.setCheekFadeColorValue = setCheekFadeColorValue;
 
 // Reset colors to default values
 resetCheekColors = function() {
-    const defaultBgColor = '#FF446C';  // Default pink
-    const defaultFadeColor = '#F9826C';  // Default coral
-
-    // Update background color
-    if (bgColorPicker) bgColorPicker.value = defaultBgColor;
-    if (bgColorHex) bgColorHex.textContent = defaultBgColor;
-    const bgRgb = hexToRgb(defaultBgColor);
-    if (bgRgb) {
-        throttledAndDebouncedSetCheekBgColor(bgRgb.r, bgRgb.g, bgRgb.b);
-    }
-
-    // Update fade color
-    if (fadeColorPicker) fadeColorPicker.value = defaultFadeColor;
-    if (fadeColorHex) fadeColorHex.textContent = defaultFadeColor;
-    const fadeRgb = hexToRgb(defaultFadeColor);
-    if (fadeRgb) {
-        throttledAndDebouncedSetCheekFadeColor(fadeRgb.r, fadeRgb.g, fadeRgb.b);
-    }
-
-    // Haptic feedback
+    applyColor(bgColorPicker, bgColorHex, '#FF446C', writeCheekBgColor);
+    applyColor(fadeColorPicker, fadeColorHex, '#F9826C', writeCheekFadeColor);
     vibrateDevice();
 };
 window.resetCheekColors = resetCheekColors;
@@ -442,6 +509,8 @@ const directionInvertToggle = document.getElementById('directionInvertToggle');
 const directionInvertText = document.getElementById('directionInvertText');
 const gradientBottomColorContainer = document.getElementById('gradientBottomColorContainer');
 const gradientPreviewContainer = document.getElementById('gradientPreviewContainer');
+const writeDisplayEffectColor1 = (r, g, b) => window.throttledAndDebouncedSetDisplayEffectColor1?.(r, g, b);
+const writeDisplayEffectColor2 = (r, g, b) => window.throttledAndDebouncedSetDisplayEffectColor2?.(r, g, b);
 
 const displayModeButtons = [
     displayColorModeGradient,
@@ -514,104 +583,52 @@ function updateGradientPreview(topColor, bottomColor, mode = null) {
     if (gradientPreviewTitle) gradientPreviewTitle.textContent = 'Preview';
 }
 
-// Effect Color 1 (top/gradient/spiral/circle color) picker handler
-gradientTopColorPicker.addEventListener('input', (e) => {
-    const color = e.target.value;
-    gradientTopColorHex.textContent = color.toUpperCase();
-    const rgb = hexToRgb(color);
-    if (rgb) {
-        throttledAndDebouncedSetDisplayEffectColor1(rgb.r, rgb.g, rgb.b);
-        updateGradientPreview(color, gradientBottomColorPicker.value);
-        vibrateDevice();
-    }
-});
-
-// Effect Color 2 (bottom gradient color) picker handler
-gradientBottomColorPicker.addEventListener('input', (e) => {
-    const color = e.target.value;
-    gradientBottomColorHex.textContent = color.toUpperCase();
-    const rgb = hexToRgb(color);
-    if (rgb) {
-        throttledAndDebouncedSetDisplayEffectColor2(rgb.r, rgb.g, rgb.b);
-        updateGradientPreview(gradientTopColorPicker.value, color);
-        vibrateDevice();
-    }
-});
-
-// Event delegation for display effect color preset buttons
-document.addEventListener('click', (e) => {
-    const btn = e.target.closest('.color-preset-btn[data-target^="gradient"]');
-    if (!btn) return;
-
-    const color = btn.getAttribute('data-color');
-    const target = btn.getAttribute('data-target');
-
-    if (target === 'gradientTop') {
-        gradientTopColorPicker.value = color;
-        gradientTopColorHex.textContent = color.toUpperCase();
-        const rgb = hexToRgb(color);
-        if (rgb) {
-            throttledAndDebouncedSetDisplayEffectColor1(rgb.r, rgb.g, rgb.b);
-            updateGradientPreview(color, gradientBottomColorPicker.value);
-        }
-    } else if (target === 'gradientBottom') {
-        gradientBottomColorPicker.value = color;
-        gradientBottomColorHex.textContent = color.toUpperCase();
-        const rgb = hexToRgb(color);
-        if (rgb) {
-            throttledAndDebouncedSetDisplayEffectColor2(rgb.r, rgb.g, rgb.b);
-            updateGradientPreview(gradientTopColorPicker.value, color);
-        }
-    }
-    vibrateDevice();
+bindColorInput(
+    gradientTopColorPicker,
+    gradientTopColorHex,
+    writeDisplayEffectColor1,
+    color => updateGradientPreview(color, gradientBottomColorPicker.value)
+);
+bindColorInput(
+    gradientBottomColorPicker,
+    gradientBottomColorHex,
+    writeDisplayEffectColor2,
+    color => updateGradientPreview(gradientTopColorPicker.value, color)
+);
+bindColorPresets('.color-preset-btn[data-target^="gradient"]', {
+    gradientTop: [
+        gradientTopColorPicker,
+        gradientTopColorHex,
+        writeDisplayEffectColor1,
+        color => updateGradientPreview(color, gradientBottomColorPicker.value)
+    ],
+    gradientBottom: [
+        gradientBottomColorPicker,
+        gradientBottomColorHex,
+        writeDisplayEffectColor2,
+        color => updateGradientPreview(gradientTopColorPicker.value, color)
+    ]
 });
 
 // Set display effect color values from BLE (called when connecting to device)
 setDisplayEffectColor1Value = function(r, g, b) {
     const hex = rgbToHex(r, g, b);
-    gradientTopColorPicker.value = hex;
-    gradientTopColorHex.textContent = hex;
-    updateGradientPreview(hex, gradientBottomColorPicker.value);
+    applyColor(gradientTopColorPicker, gradientTopColorHex, hex, null, color => updateGradientPreview(color, gradientBottomColorPicker.value));
 };
 window.setDisplayEffectColor1Value = setDisplayEffectColor1Value;
 
 setDisplayEffectColor2Value = function(r, g, b) {
     const hex = rgbToHex(r, g, b);
-    gradientBottomColorPicker.value = hex;
-    gradientBottomColorHex.textContent = hex;
-    updateGradientPreview(gradientTopColorPicker.value, hex);
+    applyColor(gradientBottomColorPicker, gradientBottomColorHex, hex, null, color => updateGradientPreview(gradientTopColorPicker.value, color));
 };
 window.setDisplayEffectColor2Value = setDisplayEffectColor2Value;
 
 // Reset display colors to default values
 resetDisplayColors = function() {
-    const defaultTopColor = '#FFA393';  // Light peachy pink (RGB: 255, 163, 147)
-    const defaultBottomColor = '#FF2B5B';  // Deep pink/red (RGB: 255, 43, 91)
-    const defaultMode = 0;  // Gradient mode
-
-    // Reset to default mode
-    setDisplayColorMode(defaultMode);
-
-    // Update effect color 1 (top gradient color)
-    gradientTopColorPicker.value = defaultTopColor;
-    gradientTopColorHex.textContent = defaultTopColor;
-    const topRgb = hexToRgb(defaultTopColor);
-    if (topRgb) {
-        throttledAndDebouncedSetDisplayEffectColor1(topRgb.r, topRgb.g, topRgb.b);
-    }
-
-    // Update effect color 2 (bottom gradient color)
-    gradientBottomColorPicker.value = defaultBottomColor;
-    gradientBottomColorHex.textContent = defaultBottomColor;
-    const bottomRgb = hexToRgb(defaultBottomColor);
-    if (bottomRgb) {
-        throttledAndDebouncedSetDisplayEffectColor2(bottomRgb.r, bottomRgb.g, bottomRgb.b);
-    }
-
-    // Update preview
-    updateGradientPreview(defaultTopColor, defaultBottomColor);
-
-    // Haptic feedback
+    setDisplayColorMode(0);
+    applyColor(gradientTopColorPicker, gradientTopColorHex, '#FFA393', writeDisplayEffectColor1);
+    applyColor(gradientBottomColorPicker, gradientBottomColorHex, '#FF2B5B', writeDisplayEffectColor2);
+    updateGradientPreview('#FFA393', '#FF2B5B');
     vibrateDevice();
 };
 window.resetDisplayColors = resetDisplayColors;
@@ -619,13 +636,13 @@ window.resetDisplayColors = resetDisplayColors;
 //* --------- Display Effect Option Controls ---------
 //* --------- Display Effect Option 1 Slider (Thickness) ---------
 // Option1 is used for Thickness in modes 4 (Dual Spiral) and 5 (Dual Circle)
-const displayEffectOption1Slider = dualSpiralThicknessSlider ? new Slider({
+const displayEffectOption1Slider = dualSpiralThicknessSlider ? bindSlider({
     sliderId: 'dualSpiralThicknessSlider',
     valueDisplayId: 'spiralThicknessValue',
     type: 'gradient',
     maxValue: 255,
     onChange: (value) => {
-        throttledAndDebouncedSetDisplayEffectOption1(value);
+        window.throttledAndDebouncedSetDisplayEffectOption1?.(value);
     }
 }) : null;
 
@@ -639,13 +656,13 @@ window.setDisplayEffectOption1Value = setDisplayEffectOption1Value;
 
 //* --------- Display Effect Option 2 Slider (Speed) ---------
 // Option2 is used for Speed in modes 4 (Dual Spiral) and 5 (Dual Circle)
-const displayEffectOption2Slider = dualCircleThicknessSlider ? new Slider({
+const displayEffectOption2Slider = dualCircleThicknessSlider ? bindSlider({
     sliderId: 'dualCircleThicknessSlider',
     valueDisplayId: 'circleThicknessValue',
     type: 'gradient',
     maxValue: 255,
     onChange: (value) => {
-        throttledAndDebouncedSetDisplayEffectOption2(value);
+        window.throttledAndDebouncedSetDisplayEffectOption2?.(value);
     }
 }) : null;
 
@@ -759,29 +776,29 @@ setMotionEnableFlagsValue = function(value) {
 };
 window.setMotionEnableFlagsValue = setMotionEnableFlagsValue;
 
-const tapSensitivitySlider = new Slider({
+const tapSensitivitySlider = bindSlider({
     sliderId: 'tapSensitivitySlider',
     valueDisplayId: 'tapSensitivityValue',
     type: 'gradient',
     valueSuffix: '%',
-    onChange: value => throttledAndDebouncedSetTapSensitivity(value)
+    onChange: value => window.throttledAndDebouncedSetTapSensitivity?.(value)
 });
 
 setTapSensitivityValue = value => tapSensitivitySlider.setValue(value);
 window.setTapSensitivityValue = setTapSensitivityValue;
 
-const glitchIntensitySlider = new Slider({
+const glitchIntensitySlider = bindSlider({
     sliderId: 'glitchIntensitySlider',
     valueDisplayId: 'glitchIntensityValue',
     type: 'gradient',
     valueSuffix: '%',
-    onChange: value => throttledAndDebouncedSetGlitchIntensity(value)
+    onChange: value => window.throttledAndDebouncedSetGlitchIntensity?.(value)
 });
 
 setGlitchIntensityValue = value => glitchIntensitySlider.setValue(value);
 window.setGlitchIntensityValue = setGlitchIntensityValue;
 
-new Slider({
+bindSlider({
     sliderId: 'manualGlitchIntensitySlider',
     valueDisplayId: 'manualGlitchIntensityValue',
     type: 'gradient',

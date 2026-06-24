@@ -20,26 +20,26 @@ const visemeParameters = [
 ];
 
 const characteristicDefinitions = [
-  ['eyeState', 'eyeState', true, { displayId: 'ble-eyestate' }],
-  ['displayBrightness', 'display', true, { displayId: 'ble-brightness' }],
-  ['viseme', 'viseme', true, { displayId: 'ble-viseme' }],
-  ['mouthState', 'mouthState', true, { displayId: 'ble-mouthstate' }],
-  ['hornLedBrightness', 'hornLedBrightness', true, { displayId: 'ble-hornled' }],
-  ['cheekPanelBrightness', 'cheekPanelBrightness', true, { displayId: 'ble-cheekpanel' }],
-  ['cheekBgColor', 'cheekBgColor', true, { displayId: 'ble-cheekbgcolor', isColor: true, throttleMs: 150 }],
-  ['cheekFadeColor', 'cheekFadeColor', true, { displayId: 'ble-cheekfadecolor', isColor: true, throttleMs: 150 }],
+  ['eyeState', 'eyeState', true],
+  ['displayBrightness', 'display', true],
+  ['viseme', 'viseme', true],
+  ['mouthState', 'mouthState', true],
+  ['hornLedBrightness', 'hornLedBrightness', true],
+  ['cheekPanelBrightness', 'cheekPanelBrightness', true],
+  ['cheekBgColor', 'cheekBgColor', true, { isColor: true, throttleMs: 150 }],
+  ['cheekFadeColor', 'cheekFadeColor', true, { isColor: true, throttleMs: 150 }],
   ['reboot', 'reboot', true],
-  ['displayColorMode', 'displayColorMode', false, { displayId: 'ble-displaycolormode' }],
-  ['displayEffectColor1', 'displayEffectColor1', false, { displayId: 'ble-displayeffectcolor1', isColor: true, throttleMs: 150 }],
-  ['displayEffectColor2', 'displayEffectColor2', false, { displayId: 'ble-displayeffectcolor2', isColor: true, throttleMs: 150 }],
-  ['displayEffectOption1', 'displayEffectOption1', false, { displayId: 'ble-displayeffectoption1' }],
-  ['displayEffectOption2', 'displayEffectOption2', false, { displayId: 'ble-displayeffectoption2' }],
-  ['displayEffectOption3', 'displayEffectOption3', false, { displayId: 'ble-displayeffectoption3' }],
+  ['displayColorMode', 'displayColorMode', false],
+  ['displayEffectColor1', 'displayEffectColor1', false, { isColor: true, throttleMs: 150 }],
+  ['displayEffectColor2', 'displayEffectColor2', false, { isColor: true, throttleMs: 150 }],
+  ['displayEffectOption1', 'displayEffectOption1', false],
+  ['displayEffectOption2', 'displayEffectOption2', false],
+  ['displayEffectOption3', 'displayEffectOption3', false],
   ['glitchTrigger', 'glitchTrigger', false, { isTrigger: true }],
-  ['motionEnableFlags', 'motionEnableFlags', false, { displayId: 'ble-motionenableflags' }],
-  ['tapSensitivity', 'tapSensitivity', false, { displayId: 'ble-tapsensitivity' }],
-  ['glitchIntensity', 'glitchIntensity', false, { displayId: 'ble-glitchintensity' }],
-  ['fanSpeed', 'fanSpeed', false, { displayId: 'ble-fanspeed' }],
+  ['motionEnableFlags', 'motionEnableFlags', false],
+  ['tapSensitivity', 'tapSensitivity', false],
+  ['glitchIntensity', 'glitchIntensity', false],
+  ['fanSpeed', 'fanSpeed', false],
   ...visemeParameters.map(([name]) => [`viseme${name}`, `viseme${name}`])
 ];
 
@@ -399,6 +399,20 @@ const throttledAndDebouncedSetDisplayEffectOption2 = throttledWrite('displayEffe
 const throttledAndDebouncedSetDisplayEffectOption3 = throttledWrite('displayEffectOption3');
 const throttledAndDebouncedSetTapSensitivity = throttledWrite('tapSensitivity');
 const throttledAndDebouncedSetGlitchIntensity = throttledWrite('glitchIntensity');
+Object.assign(window, {
+  throttledAndDebouncedSetDisplayBrightness,
+  throttledAndDebouncedSetHornLedBrightness,
+  throttledAndDebouncedSetCheekPanelBrightness,
+  throttledAndDebouncedSetCheekBgColor,
+  throttledAndDebouncedSetCheekFadeColor,
+  throttledAndDebouncedSetDisplayEffectColor1,
+  throttledAndDebouncedSetDisplayEffectColor2,
+  throttledAndDebouncedSetDisplayEffectOption1,
+  throttledAndDebouncedSetDisplayEffectOption2,
+  throttledAndDebouncedSetDisplayEffectOption3,
+  throttledAndDebouncedSetTapSensitivity,
+  throttledAndDebouncedSetGlitchIntensity
+});
 
 const throttledVisemeFloatWriters = Object.fromEntries(visemeParameters.map(([name]) => [
   name,
@@ -433,8 +447,8 @@ function updateBLECharValue(elementId, value) {
 function updateBLECharColorValue(elementId, r, g, b) {
   const element = document.getElementById(elementId);
   if (element) {
-    const hexColor = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
-    element.textContent = hexColor.toUpperCase();
+    const hexColor = rgbToHex(r, g, b);
+    element.textContent = hexColor;
     element.style.color = hexColor;
   }
 }

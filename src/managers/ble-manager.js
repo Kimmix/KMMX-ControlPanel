@@ -1,9 +1,3 @@
-/**
- * BLE Characteristic Manager
- * Unified manager for all BLE characteristic operations
- * Handles writing, throttling, and previous value tracking
- */
-
 class BLECharacteristicManager {
   constructor() {
     this.characteristics = new Map();
@@ -13,12 +7,6 @@ class BLECharacteristicManager {
     this.throttledWrites = new Map(); // Store throttled write functions
   }
 
-  /**
-   * Register a BLE characteristic with the manager
-   * @param {string} name - Unique identifier for the characteristic
-   * @param {BluetoothRemoteGATTCharacteristic} characteristic - The BLE characteristic object
-   * @param {Object} options - Configuration options
-   */
   register(name, characteristic, options = {}) {
     if (!characteristic) {
       console.warn(`Cannot register null characteristic: ${name}`);
@@ -27,7 +15,6 @@ class BLECharacteristicManager {
 
     const config = {
       char: characteristic,
-      displayId: options.displayId || null,
       throttleMs: options.throttleMs || 100,
       debounceMs: options.debounceMs || 50,
       isColor: options.isColor || false,
@@ -36,7 +23,6 @@ class BLECharacteristicManager {
 
     this.characteristics.set(name, config);
 
-    // Create throttled write function for this characteristic
     this.throttledWrites.set(name, this.throttleAndDebounce(
       (value) => this.write(name, value),
       config.throttleMs,
@@ -46,11 +32,6 @@ class BLECharacteristicManager {
     console.log(`✓ Registered BLE characteristic: ${name}`);
   }
 
-  /**
-   * Write a value to a registered characteristic
-   * @param {string} name - Name of the registered characteristic
-   * @param {number|Array} value - Value(s) to write (single byte or RGB array)
-   */
   get(name) {
     return this.characteristics.get(name)?.char;
   }
@@ -63,27 +44,22 @@ class BLECharacteristicManager {
       return;
     }
 
-    // Create a key for comparing values
     const valueKey = Array.isArray(value) ? value.join(',') : value;
     const previousKey = this.previousValues.get(name);
 
-    // Skip if value hasn't changed (unless it's a trigger characteristic)
     if (!config.isTrigger && valueKey === previousKey) {
       return;
     }
 
-    // Update previous value (for non-trigger characteristics)
     if (!config.isTrigger) {
       this.previousValues.set(name, valueKey);
     }
 
-    // Queue the write operation
     this.queueWrite(async () => {
       try {
         const byteArray = Array.isArray(value) ? value : [value];
         await config.char.writeValue(Uint8Array.of(...byteArray));
 
-        // Log success
         if (config.isColor) {
           console.log(`> ${name} changed to: R=${value[0]} G=${value[1]} B=${value[2]}`);
         } else if (config.isTrigger) {
@@ -92,10 +68,6 @@ class BLECharacteristicManager {
           console.log(`> ${name} changed to: ${value}`);
         }
 
-        // Update display if displayId provided
-        if (config.displayId) {
-          this.updateDisplay(config.displayId, value, config.isColor);
-        }
       } catch (error) {
         console.error(`Error writing ${name}:`, error);
       }
@@ -115,21 +87,11 @@ class BLECharacteristicManager {
       }
     });
   }
-
-
-
-  /**
-   * Queue a BLE write operation
-   * @param {Function} writeFunction - Async function to execute
-   */
   queueWrite(writeFunction) {
     this.writeQueue.push(writeFunction);
     this.processQueue();
   }
 
-  /**
-   * Process the write queue with delays to prevent GATT conflicts
-   */
   async processQueue() {
     if (this.isProcessing || this.writeQueue.length === 0) {
       return;
@@ -144,38 +106,12 @@ class BLECharacteristicManager {
       } catch (error) {
         console.error('BLE write error:', error);
       }
-      // Delay between operations to prevent GATT conflicts
       await new Promise(resolve => setTimeout(resolve, 50));
     }
 
     this.isProcessing = false;
   }
 
-  /**
-   * Update the display element with the new value
-   * @param {string} elementId - DOM element ID to update
-   * @param {number|Array} value - Value to display
-   * @param {boolean} isColor - Whether this is a color value
-   */
-  updateDisplay(elementId, value, isColor) {
-    const element = document.getElementById(elementId);
-    if (!element) return;
-
-    if (isColor && Array.isArray(value)) {
-      const [r, g, b] = value;
-      const hexColor = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
-      element.textContent = hexColor.toUpperCase();
-      element.style.color = hexColor;
-    } else {
-      element.textContent = value;
-    }
-  }
-
-  /**
-   * Get the throttled write function for a characteristic
-   * @param {string} name - Name of the characteristic
-   * @returns {Function} Throttled write function
-   */
   getThrottledWrite(name) {
     const throttledWrite = this.throttledWrites.get(name);
     if (!throttledWrite) {
@@ -185,13 +121,6 @@ class BLECharacteristicManager {
     return throttledWrite;
   }
 
-  /**
-   * Throttle and debounce utility
-   * @param {Function} func - Function to throttle/debounce
-   * @param {number} throttleDelay - Throttle delay in ms
-   * @param {number} debounceDelay - Debounce delay in ms
-   * @returns {Function} Throttled and debounced function
-   */
   throttleAndDebounce(func, throttleDelay, debounceDelay) {
     let isThrottled = false;
     let lastCallTime = 0;
@@ -200,14 +129,12 @@ class BLECharacteristicManager {
     return function throttledAndDebounced(...args) {
       const currentTime = Date.now();
 
-      // Throttle
       if (!isThrottled || currentTime - lastCallTime >= throttleDelay) {
         func.apply(this, args);
         lastCallTime = currentTime;
         isThrottled = true;
       }
 
-      // Debounce
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
         isThrottled = false;
@@ -219,9 +146,6 @@ class BLECharacteristicManager {
     };
   }
 
-  /**
-   * Clear all stored values and queue (called on disconnect)
-   */
   clear() {
     this.writeQueue = [];
     this.isProcessing = false;
@@ -232,6 +156,4 @@ class BLECharacteristicManager {
   }
 
 }
-
-// Create global instance
 const bleManager = new BLECharacteristicManager();
