@@ -38,9 +38,6 @@ const characteristicDefinitions = [
   ['tapSensitivity', 'tapSensitivity', false, { displayId: 'ble-tapsensitivity' }],
   ['glitchIntensity', 'glitchIntensity', false, { displayId: 'ble-glitchintensity' }],
   ['fanSpeed', 'fanSpeed', false, { displayId: 'ble-fanspeed' }],
-  ['fanEnabled', 'fanEnabled', false, { displayId: 'ble-fanenabled' }],
-  ['fanRPM', 'fanRPM', false, { displayId: 'ble-fanrpm' }, handleFanRPMChange],
-  ['fanConnected', 'fanConnected', false, { displayId: 'ble-fanconnected' }, handleFanConnectedChange],
   ...visemeParameters.map(([name]) => [`viseme${name}`, `viseme${name}`])
 ];
 
@@ -163,9 +160,6 @@ async function connectToDevice(device, isReconnect = false, retryCount = 0) {
     const tapSensitivityValue = await readCharacteristic('tapSensitivity');
     const glitchIntensityValue = await readCharacteristic('glitchIntensity');
     const fanSpeedValue = await readCharacteristic('fanSpeed');
-    const fanEnabledValue = await readCharacteristic('fanEnabled');
-    const fanRPMValue = await readCharacteristic('fanRPM');
-    const fanConnectedValue = await readCharacteristic('fanConnected');
 
     for (const [suffix, decimals] of visemeParameters) {
       const name = `viseme${suffix}`;
@@ -218,15 +212,6 @@ async function connectToDevice(device, isReconnect = false, retryCount = 0) {
     if (fanSpeedValue) {
       console.log(`Fan Speed: ${fanSpeedValue.getUint8(0)}%`);
     }
-    if (fanEnabledValue) {
-      console.log(`Fan Enabled: ${fanEnabledValue.getUint8(0) ? 'Yes' : 'No'}`);
-    }
-    if (fanRPMValue) {
-      console.log(`Fan RPM: ${fanRPMValue.getUint16(0, true)}`); // true for little-endian
-    }
-    if (fanConnectedValue) {
-      console.log(`Fan Connected: ${fanConnectedValue.getUint8(0) ? 'Yes' : 'No'}`);
-    }
 
     if (!isReconnect) {
       updateBLEProgress(100, 'Connected!');
@@ -278,18 +263,9 @@ async function connectToDevice(device, isReconnect = false, retryCount = 0) {
       setGlitchIntensityValue(glitchIntensityValue.getUint8(0));
     }
 
-    // Set Fan Control values only if available (V4 only)
+    // Set Fan Control values only if available
     if (fanSpeedValue) {
       setFanSpeedValue(fanSpeedValue.getUint8(0));
-    }
-    if (fanEnabledValue) {
-      setFanEnabledValue(fanEnabledValue.getUint8(0));
-    }
-    if (fanRPMValue) {
-      setFanRPMValue(fanRPMValue.getUint16(0, true)); // little-endian
-    }
-    if (fanConnectedValue) {
-      setFanConnectedValue(fanConnectedValue.getUint8(0));
     }
 
     // Show/hide fan control section based on availability
@@ -306,10 +282,7 @@ async function connectToDevice(device, isReconnect = false, retryCount = 0) {
     console.error('Error during BLE connection:', error);
 
     // Check if it's a disconnection error and we should retry
-    const isDisconnectionError = error.message && (
-      error.message.includes('GATT Server is disconnected') ||
-      error.message.includes('Device disconnected')
-    );
+    const isDisconnectionError = /gatt server.*disconnect|device disconnected/i.test(error.message || '');
 
     if (isDisconnectionError && retryCount < MAX_RETRIES) {
       console.log(`Retry attempt ${retryCount + 1}/${MAX_RETRIES}`);
@@ -411,23 +384,6 @@ function writeVisemeFloat(name, value) {
   const buffer = new ArrayBuffer(4);
   new DataView(buffer).setFloat32(0, roundedValue, true);
   bleManager.writeBuffer(name, buffer, roundedValue);
-}
-
-// Notification handlers for Fan Control
-function handleFanRPMChange(event) {
-  const value = event.target.value;
-  const rpm = value.getUint16(0, true); // little-endian
-  console.log(`Fan RPM updated: ${rpm}`);
-
-  window.setFanRPMValue?.(rpm);
-}
-
-function handleFanConnectedChange(event) {
-  const value = event.target.value;
-  const connected = value.getUint8(0);
-  console.log(`Fan connection status updated: ${connected ? 'Connected' : 'Disconnected'}`);
-
-  window.setFanConnectedValue?.(connected);
 }
 
 const throttledWrite = name => value => bleManager.getThrottledWrite(name)(value);

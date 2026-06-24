@@ -211,14 +211,7 @@
             <div>
               <!-- Advanced Viseme Parameters Section -->
               <div id="visemeAdvancedSection" class="viseme-advanced-section">
-                <button id="visemeAdvancedToggleBtn" class="section-toggle-button" onclick="toggleVisemeAdvanced()" style="margin-bottom: 15px;">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="toggle-icon">
-                    <path d="M6 9l6 6 6-6" />
-                  </svg>
-                  <span>Advanced Parameters</span>
-                </button>
-                <div id="visemeAdvancedContent" class="collapsible-content" style="display: none; flex-direction: column;">
+                <div id="visemeAdvancedContent" class="collapsible-content" style="display: flex; flex-direction: column;">
 
                   <!-- Envelope Controls -->
                   <div style="margin-bottom: 25px; position: relative; order: 3;">
@@ -497,6 +490,7 @@
               </div>
               <input class="bn-slider" type="range" min="0" max="255" value="255" id="cheekPanelValue">
             </div>
+          </div>
 
             <!-- Hub75 Display Colors -->
             <div class="settings-section" style="margin-top: 30px; position: relative;">
@@ -885,16 +879,12 @@
               </div>
             </div>
 
-            <!-- Fan Control (V4 Only) -->
+            <!-- Fan Control -->
             <div id="fanControlSection" class="settings-section" style="margin-top: 30px; display: none;">
-              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                <h3 class="section-title" style="margin: 0;">Fan Control</h3>
-                <span class="v4-badge">V4 Only</span>
-              </div>
+              <h3 class="section-title" style="margin: 0 0 10px 0;">Fan Control</h3>
 
-              <!-- Fan Enable Toggle -->
-              <div class="fan-control-card">
-                <button id="fanEnableBtn" onclick="toggleFan()" class="viseme-btn">
+              <div class="fan-control-card" style="--fan-speed: 0%;">
+                <div class="fan-control-head">
                   <div class="fan-icon-container">
                     <svg id="fanIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                       stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -905,51 +895,25 @@
                       <circle cx="12" cy="12" r="2"></circle>
                     </svg>
                   </div>
-                  <div class="viseme-title">
-                    <div class="viseme-title-container">
-                      <h2>Fan</h2>
-                    </div>
-                    <div class="viseme-toggle">
-                      <span id="fanOn">on</span>&nbsp;|&nbsp;<span id="fanOff" class="active">off</span>
-                    </div>
+                  <div class="fan-title">
+                    <h2>Cooling Fan</h2>
+                    <span id="fanStateText">Off</span>
                   </div>
-                </button>
-
-                <!-- Fan Speed Slider -->
-                <div id="fanSpeedSliderContainer" class="fan-speed-container" style="margin-top: 20px; opacity: 0.5;">
-                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                    <h3 style="margin: 0;">Speed</h3>
-                    <div class="value-display">
-                      <span id="fanSpeedValue">0</span>
-                      <span class="fade" style="font-size: 1.2rem;margin-left: -6px;">%</span>
-                    </div>
+                  <div class="fan-speed-badge">
+                    <span id="fanSpeedValue">0</span><span>%</span>
                   </div>
-                  <input type="range" id="fanSpeedSlider" class="spiral-thickness-slider" min="0" max="100" value="0"
-                    style="width: 100%;" disabled>
                 </div>
 
-                <!-- Fan Status Display -->
-                <div class="fan-status-container" style="margin-top: 20px;">
-                  <div class="fan-status-row">
-                    <div class="fan-status-item">
-                      <h3 style="margin: 0 0 8px 0; font-size: 0.9rem; color: var(--white2-color);">RPM</h3>
-                      <div style="display: flex; align-items: baseline;">
-                        <span id="fanRPMValue" class="fan-rpm-display">0</span>
-                        <span class="fade" style="font-size: 0.8rem; margin-left: 4px;">RPM</span>
-                      </div>
-                    </div>
-                    <div class="fan-status-item">
-                      <h3 style="margin: 0 0 8px 0; font-size: 0.9rem; color: var(--white2-color);">Status</h3>
-                      <div class="fan-connection-status">
-                        <span id="fanConnectionDot" class="connection-dot disconnected"></span>
-                        <span id="fanConnectionText" class="connection-text">Disconnected</span>
-                      </div>
-                    </div>
+                <div id="fanSpeedSliderContainer" class="fan-speed-container" style="margin-top: 20px;">
+                  <div class="fan-speed-labels">
+                    <h3 style="margin: 0;">Speed</h3>
+                    <span class="fade">0 is off</span>
                   </div>
+                  <input type="range" id="fanSpeedSlider" class="spiral-thickness-slider" min="0" max="100" value="0"
+                    style="width: 100%;">
                 </div>
               </div>
             </div>
-          </div>
         </div>
         <!-- End Page Content Container -->
       </div>

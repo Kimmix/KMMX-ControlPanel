@@ -25,11 +25,7 @@ export const bleUUID = {
     motionEnableFlags: "a1a2a3a4-b1b2-4c1c-d1d2-e1e2e3e4e5f2",
     tapSensitivity: "a1a2a3a4-b1b2-4c1c-d1d2-e1e2e3e4e5f3",
     glitchIntensity: "a1a2a3a4-b1b2-4c1c-d1d2-e1e2e3e4e5f4",
-    // Fan Control (V4 Only)
     fanSpeed: "f1f2f3f4-a1a2-4b1b-c1c2-d1d2d3d4d5f1",
-    fanEnabled: "f1f2f3f4-a1a2-4b1b-c1c2-d1d2d3d4d5f2",
-    fanRPM: "f1f2f3f4-a1a2-4b1b-c1c2-d1d2d3d4d5f3",
-    fanConnected: "f1f2f3f4-a1a2-4b1b-c1c2-d1d2d3d4d5f4",
     // Viseme Advanced Parameters
     visemeEnvelopeAttack: "d1e2f3a4-b5c6-47d8-9e0f-1a2b3c4d5e6f",
     visemeEnvelopeRelease: "d2e3f4a5-b6c7-48d9-9f0a-1b2c3d4e5f6a",

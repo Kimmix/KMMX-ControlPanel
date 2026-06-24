@@ -18,8 +18,7 @@ let setDisplayEffectOption1Value, setDisplayEffectOption2Value, setDisplayEffect
 let setMotionEnableFlagsValue, setTapSensitivityValue, setGlitchIntensityValue;
 let switchControlMode, toggleViseme, setDisplayColorMode, toggleDirectionInvert;
 let resetCheekColors, resetDisplayColors, toggleMotionFeature, triggerGlitch;
-let setFanSpeedValue, setFanEnabledValue, setFanRPMValue, setFanConnectedValue;
-let toggleFan, updateFanControlVisibility;
+let setFanSpeedValue, updateFanControlVisibility;
 
 //* --------- Expression ---------
 // Expression definitions imported from config/expressions.js
@@ -160,52 +159,56 @@ function isVisemeOn() {
 
 window.openVisemeSettings = function() {
     document.querySelector('.nav-icon[data-page="settings"]')?.click();
+    expandSettingsSection(document.getElementById('audioProcessingSection'));
     const section = document.getElementById('visemeAdvancedSection');
     const content = document.getElementById('visemeAdvancedContent');
-    const button = document.getElementById('visemeAdvancedToggleBtn');
     section.style.display = 'block';
     content.style.display = 'flex';
-    button.classList.add('expanded');
-    button.querySelector('.toggle-icon').style.transform = 'rotate(180deg)';
     setTimeout(() => section.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
 };
 
 //* --------- Viseme Advanced Parameters ---------
-// Toggle Advanced Section
-window.toggleVisemeAdvanced = function() {
-    const content = document.getElementById('visemeAdvancedContent');
-    const button = document.getElementById('visemeAdvancedToggleBtn');
-    const icon = button?.querySelector('.toggle-icon');
-
-    if (!content) {
-        console.error('visemeAdvancedContent not found');
-        return;
-    }
-
-    // Toggle the display
-    const isCurrentlyVisible = content.style.display !== 'none';
-
-    if (isCurrentlyVisible) {
-        content.style.display = 'none';
-        if (icon) icon.style.transform = 'rotate(0deg)';
-        if (button) button.classList.remove('expanded');
-    } else {
-        content.style.display = 'flex';
-        if (icon) icon.style.transform = 'rotate(180deg)';
-        if (button) button.classList.add('expanded');
-    }
-
-    vibrateDevice();
-};
-
-// Show/hide advanced section based on viseme state
 function updateVisemeAdvancedVisibility() {
     const advancedSection = document.getElementById('visemeAdvancedSection');
-    if (advancedSection) advancedSection.style.display = isVisemeOn() ? 'block' : 'none';
+    if (advancedSection) advancedSection.style.display = 'block';
+}
+
+function expandSettingsSection(section) {
+    section?.classList.remove('collapsed');
+    section?.querySelector(':scope > h3.section-title')?.setAttribute('aria-expanded', 'true');
+}
+
+function setupSettingsAccordions() {
+    document.querySelectorAll('#page-settings .settings-section > h3.section-title').forEach(title => {
+        const section = title.parentElement;
+        if (!section || section.querySelector(':scope > .settings-section-content')) return;
+
+        const content = document.createElement('div');
+        content.className = 'settings-section-content';
+        while (title.nextSibling) content.appendChild(title.nextSibling);
+        section.appendChild(content);
+
+        title.tabIndex = 0;
+        title.setAttribute('role', 'button');
+        title.setAttribute('aria-expanded', 'true');
+
+        const toggle = () => {
+            section.classList.toggle('collapsed');
+            title.setAttribute('aria-expanded', String(!section.classList.contains('collapsed')));
+            vibrateDevice();
+        };
+        title.addEventListener('click', toggle);
+        title.addEventListener('keydown', event => {
+            if (event.key !== 'Enter' && event.key !== ' ') return;
+            event.preventDefault();
+            toggle();
+        });
+    });
 }
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
+    setupSettingsAccordions();
     renderViseme(window.bleVisemeValue === undefined ? isVisemeOn() : window.bleVisemeValue !== 0);
 });
 
@@ -809,35 +812,20 @@ triggerGlitch = function() {
 };
 window.triggerGlitch = triggerGlitch;
 
-//* --------- Fan Control (V4 Only) ---------
-let fanEnabled = false;
+//* --------- Fan Control ---------
 let fanSpeed = 0;
 
 function renderFan() {
-    const fanOnBtn = document.getElementById('fanOn');
-    const fanOffBtn = document.getElementById('fanOff');
+    const fanCard = document.querySelector('.fan-control-card');
     const fanIcon = document.getElementById('fanIcon');
-    const fanSpeedSlider = document.getElementById('fanSpeedSlider');
-    const fanSpeedContainer = document.getElementById('fanSpeedSliderContainer');
-    fanOnBtn?.classList.toggle('active', fanEnabled);
-    fanOffBtn?.classList.toggle('active', !fanEnabled);
-    if (fanSpeedSlider) fanSpeedSlider.disabled = !fanEnabled;
-    if (fanSpeedContainer) fanSpeedContainer.style.opacity = fanEnabled ? '1' : '0.5';
+    const fanStateText = document.getElementById('fanStateText');
+    if (fanCard) fanCard.style.setProperty('--fan-speed', `${fanSpeed}%`);
+    if (fanStateText) fanStateText.textContent = fanSpeed > 0 ? 'Running' : 'Off';
     if (fanIcon) {
         const rotationSpeed = Math.max(0.2, 2 - (fanSpeed / 50));
-        fanIcon.style.animation = fanEnabled && fanSpeed > 0 ? `fan-spin ${rotationSpeed}s linear infinite` : 'none';
+        fanIcon.style.animation = fanSpeed > 0 ? `fan-spin ${rotationSpeed}s linear infinite` : 'none';
     }
 }
-
-// Toggle fan on/off
-toggleFan = function() {
-    fanEnabled = !fanEnabled;
-    renderFan();
-    window.writeBLE('fanEnabled', fanEnabled ? 1 : 0);
-    vibrateDevice();
-    console.log(`Fan ${fanEnabled ? 'enabled' : 'disabled'}`);
-};
-window.toggleFan = toggleFan;
 
 // Set fan speed from slider
 document.addEventListener('DOMContentLoaded', function() {
@@ -863,50 +851,18 @@ setFanSpeedValue = function(value) {
 
     if (fanSpeedSlider) fanSpeedSlider.value = value;
     if (fanSpeedValue) fanSpeedValue.textContent = value;
+    renderFan();
 
     console.log(`Fan speed set to: ${value}%`);
 };
 window.setFanSpeedValue = setFanSpeedValue;
 
-// Initialize fan enabled state (called from BLE when connection established)
-setFanEnabledValue = function(value) {
-    fanEnabled = value === 1;
-    renderFan();
-    console.log(`Fan enabled state set to: ${fanEnabled}`);
-};
-window.setFanEnabledValue = setFanEnabledValue;
-
-// Update RPM display (called from BLE notification)
-setFanRPMValue = function(rpm) {
-    const fanRPMValue = document.getElementById('fanRPMValue');
-    if (fanRPMValue) {
-        fanRPMValue.textContent = rpm;
-    }
-};
-window.setFanRPMValue = setFanRPMValue;
-
-// Update connection status (called from BLE notification)
-setFanConnectedValue = function(connected) {
-    const fanConnectionDot = document.getElementById('fanConnectionDot');
-    const fanConnectionText = document.getElementById('fanConnectionText');
-
-    if (fanConnectionDot) {
-        fanConnectionDot.className = connected ? 'connection-dot connected' : 'connection-dot disconnected';
-    }
-    if (fanConnectionText) {
-        fanConnectionText.textContent = connected ? 'Connected' : 'Disconnected';
-    }
-
-    console.log(`Fan connection status: ${connected ? 'Connected' : 'Disconnected'}`);
-};
-window.setFanConnectedValue = setFanConnectedValue;
-
-// Show/hide fan control section based on hardware version
+// Show/hide fan control section based on BLE availability
 updateFanControlVisibility = function(isAvailable) {
     const fanControlSection = document.getElementById('fanControlSection');
     if (fanControlSection) {
         fanControlSection.style.display = isAvailable ? 'block' : 'none';
-        console.log(`Fan control ${isAvailable ? 'available (V4 hardware)' : 'not available (V2 hardware)'}`);
+        console.log(`Fan control ${isAvailable ? 'available' : 'not available'}`);
     }
 };
 window.updateFanControlVisibility = updateFanControlVisibility;
