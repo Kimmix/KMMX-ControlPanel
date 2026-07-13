@@ -255,6 +255,24 @@ function updateMouthStateDisplay(name) {
     }
 }
 
+//* --------- Slot Machine ---------
+const slotMachineBtn = document.getElementById('slotMachineBtn');
+
+function renderSlotMachine(enabled) {
+    slotMachineBtn?.classList.toggle('active', enabled);
+    slotMachineBtn?.setAttribute('aria-pressed', enabled);
+    document.getElementById('slotMachineState')?.replaceChildren(enabled ? 'On — boop to spin' : 'Off');
+}
+
+window.toggleSlotMachine = function() {
+    const enabled = !slotMachineBtn?.classList.contains('active');
+    renderSlotMachine(enabled);
+    window.writeBLE('slotMachineEnable', enabled ? 1 : 0);
+    vibrateDevice();
+};
+
+window.setSlotMachineEnabledValue = value => renderSlotMachine(value !== 0);
+
 //* --------- Viseme ---------
 const visemeBtn = document.getElementById('visemeBtn');
 const visemeOn = document.getElementById('visemeOn');

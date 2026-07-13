@@ -29,6 +29,7 @@ const characteristicDefinitions = [
   ['cheekBgColor', 'cheekBgColor', true, { isColor: true, throttleMs: 150 }],
   ['cheekFadeColor', 'cheekFadeColor', true, { isColor: true, throttleMs: 150 }],
   ['reboot', 'reboot', true],
+  ['slotMachineEnable', 'slotMachineEnable', false],
   ['displayColorMode', 'displayColorMode', false],
   ['displayEffectColor1', 'displayEffectColor1', false, { isColor: true, throttleMs: 150 }],
   ['displayEffectColor2', 'displayEffectColor2', false, { isColor: true, throttleMs: 150 }],
@@ -91,12 +92,14 @@ async function readFaceState() {
   const eyeStateValue = await readCharacteristic('eyeState');
   const visemeValue = await readCharacteristic('viseme');
   const mouthStateValue = await readCharacteristic('mouthState');
+  const slotMachineEnableValue = await readCharacteristic('slotMachineEnable');
 
   setExpression(eyeStateValue.getUint8(0));
   window.bleVisemeValue = visemeValue.getUint8(0);
   window.setViseme?.(window.bleVisemeValue);
   setMouthState(mouthStateValue.getUint8(0));
-  updateBLECharacteristicsDisplay(eyeStateValue.getUint8(0), '-', visemeValue.getUint8(0), mouthStateValue.getUint8(0), '-', '-', null, null);
+  if (slotMachineEnableValue) setSlotMachineEnabledValue(slotMachineEnableValue.getUint8(0));
+  updateBLECharacteristicsDisplay(eyeStateValue.getUint8(0), '-', visemeValue.getUint8(0), mouthStateValue.getUint8(0), '-', '-', null, null, slotMachineEnableValue?.getUint8(0) ?? '-');
 }
 
 async function readSettingsState({ force = false } = {}) {
@@ -370,7 +373,7 @@ function onDisconnected(event) {
   settingsStateLoaded = false;
 
   isStatusConnected(false);
-  updateBLECharacteristicsDisplay('-', '-', '-', '-', '-', '-', null, null);
+  updateBLECharacteristicsDisplay('-', '-', '-', '-', '-', '-', null, null, '-');
   showDisconnectPopup();
 }
 
@@ -421,13 +424,14 @@ const throttledVisemeFloatWriters = Object.fromEntries(visemeParameters.map(([na
 window.throttledVisemeFloatWriters = throttledVisemeFloatWriters;
 
 // Update BLE characteristics display on About page
-function updateBLECharacteristicsDisplay(eyeState, brightness, viseme, mouthState, hornLed, cheekPanel, cheekBgColor, cheekFadeColor) {
+function updateBLECharacteristicsDisplay(eyeState, brightness, viseme, mouthState, hornLed, cheekPanel, cheekBgColor, cheekFadeColor, slotMachineEnable = '-') {
   updateBLECharValue('ble-eyestate', eyeState);
   updateBLECharValue('ble-brightness', brightness);
   updateBLECharValue('ble-viseme', viseme);
   updateBLECharValue('ble-mouthstate', mouthState);
   updateBLECharValue('ble-hornled', hornLed);
   updateBLECharValue('ble-cheekpanel', cheekPanel);
+  updateBLECharValue('ble-slotmachine', slotMachineEnable);
 
   if (cheekBgColor) {
     updateBLECharColorValue('ble-cheekbgcolor', cheekBgColor.getUint8(0), cheekBgColor.getUint8(1), cheekBgColor.getUint8(2));

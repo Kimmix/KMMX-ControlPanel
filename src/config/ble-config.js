@@ -15,6 +15,7 @@ export const bleUUID = {
     cheekBgColor: "c3d4e5f6-a7b8-4c5d-9e0f-1a2b3c4d5e6f",
     cheekFadeColor: "d4e5f6a7-b8c9-4d5e-9f0a-1b2c3d4e5f6a",
     reboot: "e5f6a7b8-c9d0-4e5f-a0b1-2c3d4e5f6a7b",
+    slotMachineEnable: "a1a2a3a4-b1b2-4c1c-d1d2-e1e2e3e4e5f5",
     displayColorMode: "f5a6b7c8-d9e0-4f5a-b0c1-2d3e4f5a6b7c",
     displayEffectColor1: "a6b7c8d9-e0f1-4a5b-c1d2-3e4f5a6b7c8d",
     displayEffectColor2: "b7c8d9e0-f1a2-4b5c-d2e3-4f5a6b7c8d9e",
