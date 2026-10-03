@@ -408,13 +408,6 @@
         transform 300ms ease;
     }
 
-    /* Adjust hover for scale instead of translateY - but not when active */
-    &:hover:not(.active) {
-      transform: scale(1.05);
-      background-color: var(--black2-color);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-    }
-
     /* Active state: invert background and image */
     &.active {
       /* White background and pulse inherited from .btn-base.active */
@@ -424,6 +417,16 @@
         transform: scale(1.1);
       }
     }
+  }
+}
+
+/* Keep grid hover feedback inside the scroll container's clipping bounds. */
+@media (hover: hover) and (pointer: fine) {
+  .expression-grid > .btn-base:hover:not(.active):not(:active),
+  .mouth-state-buttons > .btn-base:hover:not(.active):not(:active) {
+    transform: none;
+    background-color: var(--black2-color);
+    box-shadow: inset 0 0 0 2px var(--acc2-color);
   }
 }
 
