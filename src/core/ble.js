@@ -3,22 +3,6 @@ let isConnecting = false; // Prevent multiple simultaneous connection attempts
 let settingsStateLoaded = false;
 let settingsStateLoading = null;
 
-const visemeParameters = [
-  ['EnvelopeAttack', 2],
-  ['EnvelopeRelease', 2],
-  ['NoiseGateMultiplier', 2],
-  ['NoiseFloorMin', 1],
-  ['AHScale', 2],
-  ['EEScale', 2],
-  ['OHScale', 2],
-  ['OOScale', 2],
-  ['THScale', 2],
-  ['LoudnessExponent', 2],
-  ['LoudnessSmoothing', 2],
-  ['LoudnessMax', 2],
-  ['LoudnessMidBoost', 2]
-];
-
 const characteristicDefinitions = [
   ['eyeState', 'eyeState', true],
   ['displayBrightness', 'display', true],
@@ -41,7 +25,9 @@ const characteristicDefinitions = [
   ['tapSensitivity', 'tapSensitivity', false],
   ['glitchIntensity', 'glitchIntensity', false],
   ['fanSpeed', 'fanSpeed', false],
-  ...visemeParameters.map(([name]) => [`viseme${name}`, `viseme${name}`])
+  ['visemeSettings', 'visemeSettings', false],
+  ['visemeCalibration', 'visemeCalibration', false],
+  ['visemeStatus', 'visemeStatus', false]
 ];
 
 async function discoverCharacteristics(service) {
@@ -70,7 +56,7 @@ async function discoverCharacteristics(service) {
   }
 }
 
-const readCharacteristic = name => bleManager.get(name)?.readValue();
+const readCharacteristic = name => bleManager.enqueue(() => bleManager.get(name)?.readValue());
 window.writeBLE = (name, ...values) => bleManager.write(name, values.length === 1 ? values[0] : values);
 
 function setSettingsBleLoading(isLoading) {
@@ -126,20 +112,6 @@ async function readSettingsState({ force = false } = {}) {
       const glitchIntensityValue = await readCharacteristic('glitchIntensity');
       const fanSpeedValue = await readCharacteristic('fanSpeed');
 
-      for (const [suffix, decimals] of visemeParameters) {
-        const name = `viseme${suffix}`;
-        try {
-          const value = await readCharacteristic(name);
-          if (!value) continue;
-          const floatValue = value.getFloat32(0, true);
-          const display = document.getElementById(`${name}Value`);
-          window.setVisemeParameterSlider?.(suffix, floatValue);
-          if (display) display.textContent = floatValue.toFixed(decimals);
-        } catch (error) {
-          console.warn(`Could not read ${name}:`, error);
-        }
-      }
-
       setHornLedBrightnessValue(hornLedBrightnessValue.getUint8(0));
       setCheekPanelBrightnessValue(cheekPanelBrightnessValue.getUint8(0));
       setCheekBgColorValue(cheekBgColorValue.getUint8(0), cheekBgColorValue.getUint8(1), cheekBgColorValue.getUint8(2));
@@ -179,6 +151,7 @@ async function readSettingsState({ force = false } = {}) {
     } finally {
       settingsStateLoading = null;
       setSettingsBleLoading(false);
+      renderVisemeTuning(visemeClient);
     }
   })();
 
@@ -254,6 +227,7 @@ async function connectToDevice(device, isReconnect = false, retryCount = 0) {
     }
 
     await discoverCharacteristics(service);
+    await visemeClient.connect();
     settingsStateLoaded = false;
 
     console.log('Reading value...');
@@ -366,25 +340,14 @@ function onDisconnected(event) {
   const device = event.target;
   console.log(`Device ${device.name} is disconnected.`);
 
-  if (isConnecting) return;
-
-  // Clear BLE Manager on disconnect
+  window.disconnectViseme?.();
   bleManager.clear();
   settingsStateLoaded = false;
+  if (isConnecting) return;
 
   isStatusConnected(false);
   updateBLECharacteristicsDisplay('-', '-', '-', '-', '-', '-', null, null, '-');
   showDisconnectPopup();
-}
-
-// Viseme Advanced Parameters Characteristics
-function writeVisemeFloat(name, value) {
-  const decimals = visemeParameters.find(([suffix]) => name === `viseme${suffix}`)?.[1] ?? 2;
-  const roundedValue = Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
-
-  const buffer = new ArrayBuffer(4);
-  new DataView(buffer).setFloat32(0, roundedValue, true);
-  bleManager.writeBuffer(name, buffer, roundedValue);
 }
 
 const throttledWrite = name => value => bleManager.getThrottledWrite(name)(value);
@@ -416,12 +379,6 @@ Object.assign(window, {
   throttledAndDebouncedSetTapSensitivity,
   throttledAndDebouncedSetGlitchIntensity
 });
-
-const throttledVisemeFloatWriters = Object.fromEntries(visemeParameters.map(([name]) => [
-  name,
-  bleManager.throttleAndDebounce(value => writeVisemeFloat(`viseme${name}`, value), 100, 50)
-]));
-window.throttledVisemeFloatWriters = throttledVisemeFloatWriters;
 
 // Update BLE characteristics display on About page
 function updateBLECharacteristicsDisplay(eyeState, brightness, viseme, mouthState, hornLed, cheekPanel, cheekBgColor, cheekFadeColor, slotMachineEnable = '-') {

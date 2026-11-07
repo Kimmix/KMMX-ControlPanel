@@ -1,3 +1,5 @@
+document.getElementById('appUpdate')?.addEventListener('click', () => location.reload());
+
 // Import utilities
 import { vibrateDevice, clamp } from '../utils/helpers.js';
 
@@ -19,7 +21,7 @@ if ('serviceWorker' in navigator) {
 
                     newWorker.addEventListener('statechange', () => {
                         if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            console.log('[PWA] New content available, please refresh.');
+                            document.getElementById('appUpdate').hidden = false;
                         }
                     });
                 });

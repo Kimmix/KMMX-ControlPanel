@@ -4,6 +4,7 @@ class BLECharacteristicManager {
     this.previousValues = new Map();
     this.writeQueue = [];
     this.isProcessing = false;
+    this.generation = 0;
     this.throttledWrites = new Map(); // Store throttled write functions
   }
 
@@ -88,28 +89,41 @@ class BLECharacteristicManager {
     });
   }
   queueWrite(writeFunction) {
-    this.writeQueue.push(writeFunction);
-    this.processQueue();
+    this.enqueue(writeFunction).catch(error => {
+      if (error.message !== 'Disconnected') console.error('BLE operation failed:', error);
+    });
+  }
+
+  enqueue(operation, key) {
+    const generation = this.generation;
+    return new Promise((resolve, reject) => {
+      if (key) {
+        this.writeQueue = this.writeQueue.filter(item => {
+          if (item.key !== key) return true;
+          item.reject(new Error('Superseded'));
+          return false;
+        });
+      }
+      this.writeQueue.push({ operation, key, generation, resolve, reject });
+      this.processQueue();
+    });
   }
 
   async processQueue() {
-    if (this.isProcessing || this.writeQueue.length === 0) {
-      return;
-    }
-
+    if (this.isProcessing) return;
     this.isProcessing = true;
-
-    while (this.writeQueue.length > 0) {
-      const writeOperation = this.writeQueue.shift();
-      try {
-        await writeOperation();
-      } catch (error) {
-        console.error('BLE write error:', error);
+    try {
+      while (this.writeQueue.length) {
+        const item = this.writeQueue.shift();
+        try {
+          if (item.generation !== this.generation) throw new Error('Disconnected');
+          const result = await item.operation();
+          if (item.generation !== this.generation) throw new Error('Disconnected');
+          item.resolve(result);
+        } catch (error) { item.reject(error); }
+        await new Promise(resolve => setTimeout(resolve, 50));
       }
-      await new Promise(resolve => setTimeout(resolve, 50));
-    }
-
-    this.isProcessing = false;
+    } finally { this.isProcessing = false; }
   }
 
   getThrottledWrite(name) {
@@ -122,11 +136,14 @@ class BLECharacteristicManager {
   }
 
   throttleAndDebounce(func, throttleDelay, debounceDelay) {
+    const generation = this.generation;
+    const manager = this;
     let isThrottled = false;
     let lastCallTime = 0;
     let timeoutId;
 
     return function throttledAndDebounced(...args) {
+      if (generation !== manager.generation) return;
       const currentTime = Date.now();
 
       if (!isThrottled || currentTime - lastCallTime >= throttleDelay) {
@@ -137,6 +154,7 @@ class BLECharacteristicManager {
 
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
+        if (generation !== manager.generation) return;
         isThrottled = false;
         if (Date.now() - lastCallTime >= debounceDelay) {
           func.apply(this, args);
@@ -147,8 +165,9 @@ class BLECharacteristicManager {
   }
 
   clear() {
+    ++this.generation;
+    for (const item of this.writeQueue) item.reject(new Error('Disconnected'));
     this.writeQueue = [];
-    this.isProcessing = false;
     this.characteristics.clear();
     this.previousValues.clear();
     this.throttledWrites.clear();
@@ -157,3 +176,5 @@ class BLECharacteristicManager {
 
 }
 const bleManager = new BLECharacteristicManager();
+
+if (typeof module !== 'undefined') module.exports = BLECharacteristicManager;
