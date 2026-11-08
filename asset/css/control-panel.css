@@ -1037,6 +1037,10 @@ button.status-item { font: inherit; text-align: left; color: var(--white-color);
 
 /* Audio tuning keeps live input beside its threshold control. */
 .lip-sync-controls { display: flex; flex-direction: column; gap: 12px; }
+.manual-trigger-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; }
+.manual-trigger-row .display-color-mode-btn { display: inline-flex; justify-content: center; white-space: nowrap; }
+.slider-bar .slider-label { position: absolute; inset: 0 12px 0 44px; gap: 8px; font-size: 0.8rem; color: white; mix-blend-mode: difference; pointer-events: none; }
+.slider-bar .slider-label output { color: inherit; font-size: inherit; }
 .lip-sync-controls p { margin: 0; }
 .lip-sync-field { display: flex; flex-direction: column; gap: 8px; }
 .lip-sync-field .slider-bar { margin-block: 0; }
@@ -1044,7 +1048,7 @@ button.status-item { font: inherit; text-align: left; color: var(--white-color);
 .lip-sync-label output, #visemeReading { font-variant-numeric: tabular-nums; }
 .lip-sync-controls .lip-sync-help { font-size: 0.85rem; font-weight: 400; line-height: 1.5; color: var(--white2-color, #bbb); }
 #visemeMeter { height: 14px; position: relative; background: var(--black3-color, #333); border-radius: 3px; }
-#visemeMeterFill { height: 100%; width: 0; max-width: 100%; background: var(--acc1-color, #5ac); border-radius: inherit; }
+#visemeMeterFill { height: 100%; width: 0; max-width: 100%; background: var(--acc2-color, #5ac); border-radius: inherit; }
 #visemeMeterGate { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--white-color, #fff); left: 13%; transform: translateX(-1px); }
 .lip-sync-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 .lip-sync-actions button { min-height: 44px; }
