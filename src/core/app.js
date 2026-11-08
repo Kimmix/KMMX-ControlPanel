@@ -414,10 +414,12 @@ function toggleBLECharacteristics() {
         // Show BLE characteristics
         bleCharContent.style.display = 'block';
         bleCharBtn.classList.add('expanded');
+        bleCharBtn.setAttribute('aria-expanded', 'true');
     } else {
         // Hide BLE characteristics
         bleCharContent.style.display = 'none';
         bleCharBtn.classList.remove('expanded');
+        bleCharBtn.setAttribute('aria-expanded', 'false');
     }
 
     // Vibrate on toggle
@@ -434,11 +436,13 @@ function toggleDebugInfo() {
         // Show debug info and populate it
         debugInfo.style.display = 'block';
         debugBtn.classList.add('expanded');
+        debugBtn.setAttribute('aria-expanded', 'true');
         populateDebugInfo();
     } else {
         // Hide debug info
         debugInfo.style.display = 'none';
         debugBtn.classList.remove('expanded');
+        debugBtn.setAttribute('aria-expanded', 'false');
     }
 
     // Vibrate on toggle

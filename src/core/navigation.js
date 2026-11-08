@@ -7,8 +7,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Page subtitle mapping
     const pageSubtitles = {
         'home': 'Control panel',
-        'settings': 'Setting',
-        'about': 'Information'
+        'settings': 'Settings',
+        'about': 'About'
     };
 
     // Navigation click handler
@@ -22,10 +22,14 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // Remove active class from all nav icons
-            navIcons.forEach(nav => nav.classList.remove('active'));
+            navIcons.forEach(nav => {
+                nav.classList.remove('active');
+                nav.removeAttribute('aria-current');
+            });
 
             // Add active class to clicked nav icon
             this.classList.add('active');
+            this.setAttribute('aria-current', 'page');
 
             // Hide all pages
             pages.forEach(page => page.classList.remove('active'));

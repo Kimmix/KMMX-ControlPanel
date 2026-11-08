@@ -40,6 +40,9 @@
 
 .display-color-mode-btn {
   padding: 10px 12px;
+  align-items: center;
+  min-width: 0;
+  overflow-wrap: anywhere;
   background: transparent !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
   border-radius: 10px;
@@ -47,7 +50,7 @@
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1), border-color 250ms cubic-bezier(0.4, 0, 0.2, 1), color 250ms cubic-bezier(0.4, 0, 0.2, 1), transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
   font-family: "Montserrat", sans-serif;
   height: auto;
 
@@ -95,7 +98,7 @@
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .ble-char-item:hover {
@@ -123,14 +126,14 @@
   font-family: 'Courier New', monospace;
   min-width: 40px;
   text-align: right;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
 }
 
 /* Clickable Device ID Item */
 #device-id-item[style*="cursor: pointer"] {
   user-select: none;
   -webkit-user-select: none;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
 #device-id-item[style*="cursor: pointer"]:hover {
@@ -151,7 +154,7 @@
 .ble-char-uuid {
   font-size: 0.7rem;
   color: var(--white2-color);
-  opacity: 0.5;
+  opacity: 1;
   font-family: 'Courier New', monospace;
   word-break: break-all;
 }
@@ -170,7 +173,7 @@
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -222,7 +225,7 @@
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -263,6 +266,9 @@
 }
 
 .section-title {
+  position: relative;
+  box-sizing: border-box;
+  min-height: 55px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -272,6 +278,7 @@
   color: var(--white-color);
   margin-bottom: 15px;
   padding-bottom: 10px;
+  padding-right: 44px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
   user-select: none;
@@ -279,6 +286,13 @@
 
 .section-title::after {
   content: "v";
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 11px;
+  width: 44px;
+  display: grid;
+  place-items: center;
   color: var(--white2-color);
   font-size: 1rem;
   transition: transform 0.2s ease;
@@ -311,7 +325,7 @@
   padding: 25px;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
 }
 
 .about-card:hover {
@@ -407,7 +421,7 @@
 }
 
 .section-toggle-button {
-  height: 40px;
+  min-height: 44px;
   width: 100%;
   background: transparent;
   border: none;
@@ -415,7 +429,7 @@
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -519,7 +533,8 @@
 }
 
 .page .control-panel {
-  padding-bottom: 120px;
+  padding-bottom: 0;
+  box-sizing: border-box;
   width: 100%;
   max-width: 900px;
   margin: 0 auto;
@@ -528,3 +543,12 @@
 /* Reserve the accent for selected controls rather than idle decoration. */
 .display-color-mode-btn:not(.active) { box-shadow: none; }
 .settings-section { margin-bottom: 20px; }
+
+.ble-char-value, .debug-value { min-width: 0; overflow-wrap: anywhere; }
+.ble-char-uuid, .debug-value { user-select: text; }
+@media (max-width: 480px) {
+  .debug-item { flex-direction: column; gap: 6px; }
+  .debug-value { text-align: left; }
+}
+
+.display-color-mode-btn svg { flex-shrink: 0; }

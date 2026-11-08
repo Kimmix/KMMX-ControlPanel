@@ -14,7 +14,7 @@
 
   .page-content-container,
   .expression-container {
-    touch-action: pan-y !important;
+    touch-action: pan-y pinch-zoom !important;
   }
 
   input[type="range"],

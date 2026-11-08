@@ -4,19 +4,19 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
   <title>KMMX Control</title>
   <meta name="description" content="KMMX BLE Control Panel - Control your KMMX Fursuit via Bluetooth" />
 
   <!-- High refresh rate support -->
-  <meta name="color-scheme" content="dark light">
+  <meta name="color-scheme" content="dark">
   <meta name="screen-orientation" content="portrait">
   <meta name="mobile-web-app-capable" content="yes">
 
   <!-- PWA Meta Tags -->
-  <meta name="theme-color" content="#141414" />
-  <meta name="theme-color" content="#0b0b0c" media="(prefers-color-scheme: dark)" />
-  <meta name="theme-color" content="#141414" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#101014" />
+  <meta name="theme-color" content="#101014" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#101014" media="(prefers-color-scheme: light)" />
 
   <!-- Apple iOS Meta Tags -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -55,6 +55,7 @@
   <style>#appUpdate[hidden] { display: none; }</style>
 </head>
 
+<body>
 <!-- Start page Splash -->
 <div class="splash" id="splash">
   <div class="splash-image">
@@ -75,7 +76,7 @@
 
   <!-- Skip Pairing Button -->
   <button class="skip-pairing-btn" id="skipPairingBtn" onclick="skipPairing(event)">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
       stroke-linecap="round" stroke-linejoin="round">
       <line x1="5" y1="12" x2="19" y2="12"></line>
       <polyline points="12 5 19 12 12 19"></polyline>
@@ -90,7 +91,7 @@
     <p>Device disconnected</p>
     <button class="reconnect-btn" type="button" onclick="reconnectBLEWithProgress(event)">Reconnect</button>
     <button aria-label="Refresh panel" id="refreshPageBtn" class="btn-refresh" onclick="location.reload()">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
         stroke-linecap="round" stroke-linejoin="round">
         <polyline points="23 4 23 10 17 10"></polyline>
         <polyline points="1 20 1 14 7 14"></polyline>
@@ -101,7 +102,7 @@
   </div>
 </div>
 
-<body>
+  <a class="skip-link" href="#mainContent">Skip to controls</a>
   <button id="appUpdate" type="button" hidden style="position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:10000">Update ready — refresh panel</button>
   <!-- Status Header (shared across all pages) -->
   <div class="status-header">
@@ -118,16 +119,16 @@
   <!-- Static Header (shared across all pages) -->
   <div class="static-header">
     <div class="header">
-      <img class="glow-icon" src="asset/svg/control-icon.svg" alt="Icon">
+      <img class="glow-icon" src="asset/svg/control-icon.svg" alt="">
       <div class="header-title">
         <h2>KMMX</h2>
         <h3 id="header-subtitle" class="header-subtitle">Control panel</h3>
       </div>
-      <img id="movingElement" class="dotted-array" src="asset/svg/dot-array.svg" alt="dotted array">
+      <img id="movingElement" class="dotted-array" src="asset/svg/dot-array.svg" alt="">
     </div>
   </div>
 
-  <div class="main-content" id="mainContent">
+  <main class="main-content" id="mainContent" tabindex="-1" aria-label="Control panel">
     <!-- Page: Home/Control -->
     <div id="page-home" class="page active">
       <div id="pairingMode" class="control-panel">
@@ -143,7 +144,7 @@
             <!-- Dual Status Display (also acts as mode switcher) -->
             <div class="dual-status-container">
               <button type="button" class="status-item eye-status active" aria-pressed="true" onclick="switchControlMode('eye')">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="status-icon">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                   <circle cx="12" cy="12" r="3"></circle>
@@ -154,7 +155,7 @@
                 </span>
               </button>
               <button type="button" class="status-item mouth-status" aria-pressed="false" onclick="switchControlMode('mouth')">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="status-icon">
                   <path d="M12 19c-4 0-7-2-7-5h14c0 3-3 5-7 5z"></path>
                   <circle cx="9" cy="10" r="1"></circle>
@@ -169,7 +170,7 @@
 
             <button id="slotMachineBtn" class="status-item" type="button" aria-pressed="false"
               onclick="toggleSlotMachine()" style="width: 100%; margin-top: 8px; flex: none; font: inherit;">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="status-icon">
                 <rect x="3" y="4" width="18" height="16" rx="2"></rect>
                 <path d="M7 9h2M11 9h2M15 9h2M8 14h8"></path>
@@ -339,7 +340,7 @@
                 </div>
                 <div class="matrix-bncontrol">
                   <div class="matrix-silder-header">
-                    <h3>Cheek Panel brightness</h3>
+                    <h3>Cheek panel brightness</h3>
                     <div class="value-display">
                       <span id="cheekPanelSliderValue">100</span>
                       <span class="fade" style="font-size: 1.2rem;margin-left: -6px;">%</span>
@@ -372,7 +373,7 @@
                 </div>
                 <div class="display-mode-grid">
                   <button id="displayColorModeGradient" class="display-color-mode-btn active" aria-pressed="true">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="0" style="width: 18px; height: 18px; margin-right: 6px;">
                       <rect x="4" y="4" width="16" height="3" fill="currentColor" opacity="1"></rect>
                       <rect x="4" y="7" width="16" height="3" fill="currentColor" opacity="0.75"></rect>
@@ -383,7 +384,7 @@
                     Gradient
                   </button>
                   <button id="displayColorModeSpiral" class="display-color-mode-btn" aria-pressed="false">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
                       <path d="M12 3a9 9 0 0 1 9 9"></path>
@@ -396,7 +397,7 @@
                     Spiral/Vortex
                   </button>
                   <button id="displayColorModePlasma" class="display-color-mode-btn" aria-pressed="false">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
                       <path d="M3 8 Q 8 5, 13 8 T 21 8"></path>
@@ -406,7 +407,7 @@
                     Plasma Effect
                   </button>
                   <button id="displayColorModeRadial" class="display-color-mode-btn" aria-pressed="false">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
                       <circle cx="12" cy="12" r="2"></circle>
@@ -416,7 +417,7 @@
                     Radial Pulse
                   </button>
                   <button id="displayColorModeDualSpiral" class="display-color-mode-btn" aria-pressed="false">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
                       <path d="M12 12c-1.5-1.5-3.5-2.5-5.5-2.5C4 9.5 2 11.5 2 14s2 4.5 4.5 4.5c2 0 4-1 5.5-2.5"></path>
@@ -427,7 +428,7 @@
                     Dual Spiral
                   </button>
                   <button id="displayColorModeDualCircle" class="display-color-mode-btn" aria-pressed="false">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
                       <circle cx="12" cy="12" r="3"></circle>
@@ -451,17 +452,17 @@
                       style="width: 60px; height: 40px; border: 2px solid var(--acc1-color); border-radius: 8px; cursor: pointer; background: transparent;">
                     <div style="flex: 1; display: flex; gap: 8px; flex-wrap: wrap;">
                       <button class="color-preset-btn" data-color="#FFA393" data-target="gradientTop"
-                        style="background: #FFA393;" title="Light Peachy Pink"></button>
+                        style="background: #FFA393;" title="Light Peachy Pink" aria-label="Light Peachy Pink"></button>
                       <button class="color-preset-btn" data-color="#FF0000" data-target="gradientTop"
-                        style="background: #FF0000;" title="Red"></button>
+                        style="background: #FF0000;" title="Red" aria-label="Red"></button>
                       <button class="color-preset-btn" data-color="#FF8800" data-target="gradientTop"
-                        style="background: #FF8800;" title="Orange"></button>
+                        style="background: #FF8800;" title="Orange" aria-label="Orange"></button>
                       <button class="color-preset-btn" data-color="#FFFF00" data-target="gradientTop"
-                        style="background: #FFFF00;" title="Yellow"></button>
+                        style="background: #FFFF00;" title="Yellow" aria-label="Yellow"></button>
                       <button class="color-preset-btn" data-color="#00FF00" data-target="gradientTop"
-                        style="background: #00FF00;" title="Green"></button>
+                        style="background: #00FF00;" title="Green" aria-label="Green"></button>
                       <button class="color-preset-btn" data-color="#000000" data-target="gradientTop"
-                        style="background: #000000;" title="Cyan"></button>
+                        style="background: #000000;" title="Black" aria-label="Black"></button>
                     </div>
                   </div>
                 </div>
@@ -477,17 +478,17 @@
                       style="width: 60px; height: 40px; border: 2px solid var(--acc1-color); border-radius: 8px; cursor: pointer; background: transparent;">
                     <div style="flex: 1; display: flex; gap: 8px; flex-wrap: wrap;">
                       <button class="color-preset-btn" data-color="#FF2B5B" data-target="gradientBottom"
-                        style="background: #FF2B5B;" title="Deep Pink/Red"></button>
+                        style="background: #FF2B5B;" title="Deep Pink/Red" aria-label="Deep Pink/Red"></button>
                       <button class="color-preset-btn" data-color="#0000FF" data-target="gradientBottom"
-                        style="background: #0000FF;" title="Blue"></button>
+                        style="background: #0000FF;" title="Blue" aria-label="Blue"></button>
                       <button class="color-preset-btn" data-color="#8800FF" data-target="gradientBottom"
-                        style="background: #8800FF;" title="Purple"></button>
+                        style="background: #8800FF;" title="Purple" aria-label="Purple"></button>
                       <button class="color-preset-btn" data-color="#FF00FF" data-target="gradientBottom"
-                        style="background: #FF00FF;" title="Magenta"></button>
+                        style="background: #FF00FF;" title="Magenta" aria-label="Magenta"></button>
                       <button class="color-preset-btn" data-color="#FF0088" data-target="gradientBottom"
-                        style="background: #FF0088;" title="Pink"></button>
+                        style="background: #FF0088;" title="Pink" aria-label="Pink"></button>
                       <button class="color-preset-btn" data-color="#ffffff" data-target="gradientBottom"
-                        style="background: #ffffff;" title="White"></button>
+                        style="background: #ffffff;" title="White" aria-label="White"></button>
                     </div>
                   </div>
                 </div>
@@ -569,15 +570,15 @@
                     style="width: 60px; height: 40px; border: 2px solid var(--acc1-color); border-radius: 8px; cursor: pointer; background: transparent;">
                   <div style="flex: 1; display: flex; gap: 8px; flex-wrap: wrap;">
                     <button class="color-preset-btn" data-color="#FF446C" data-target="bg" style="background: #FF446C;"
-                      title="Pink (Default)"></button>
+                      title="Pink (Default)" aria-label="Pink (Default)"></button>
                     <button class="color-preset-btn" data-color="#4488FF" data-target="bg" style="background: #4488FF;"
-                      title="Blue"></button>
+                      title="Blue" aria-label="Blue"></button>
                     <button class="color-preset-btn" data-color="#AA44FF" data-target="bg" style="background: #AA44FF;"
-                      title="Purple"></button>
+                      title="Purple" aria-label="Purple"></button>
                     <button class="color-preset-btn" data-color="#44FF88" data-target="bg" style="background: #44FF88;"
-                      title="Green"></button>
+                      title="Green" aria-label="Green"></button>
                     <button class="color-preset-btn" data-color="#FFAA44" data-target="bg" style="background: #FFAA44;"
-                      title="Orange"></button>
+                      title="Orange" aria-label="Orange"></button>
                   </div>
                 </div>
               </div>
@@ -589,19 +590,19 @@
                   <span id="fadeColorHex" class="fade" style="font-size: 0.9rem;">#F9826C</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 15px;">
-                  <input type="color" id="fadeColorPicker" aria-label="Cheek fade color" value="#F9826C"
+                  <input type="color" id="fadeColorPicker" aria-label="Cheek sparkle color" value="#F9826C"
                     style="width: 60px; height: 40px; border: 2px solid var(--acc1-color); border-radius: 8px; cursor: pointer; background: transparent;">
                   <div style="flex: 1; display: flex; gap: 8px; flex-wrap: wrap;">
                     <button class="color-preset-btn" data-color="#F9826C" data-target="fade"
-                      style="background: #F9826C;" title="Coral (Default)"></button>
+                      style="background: #F9826C;" title="Coral (Default)" aria-label="Coral (Default)"></button>
                     <button class="color-preset-btn" data-color="#6CC8FF" data-target="fade"
-                      style="background: #6CC8FF;" title="Cyan"></button>
+                      style="background: #6CC8FF;" title="Cyan" aria-label="Cyan"></button>
                     <button class="color-preset-btn" data-color="#FF6CFF" data-target="fade"
-                      style="background: #FF6CFF;" title="Magenta"></button>
+                      style="background: #FF6CFF;" title="Magenta" aria-label="Magenta"></button>
                     <button class="color-preset-btn" data-color="#6CFFAA" data-target="fade"
-                      style="background: #6CFFAA;" title="Lime"></button>
+                      style="background: #6CFFAA;" title="Lime" aria-label="Lime"></button>
                     <button class="color-preset-btn" data-color="#FFD66C" data-target="fade"
-                      style="background: #FFD66C;" title="Yellow"></button>
+                      style="background: #FFD66C;" title="Yellow" aria-label="Yellow"></button>
                   </div>
                 </div>
               </div>
@@ -618,7 +619,7 @@
                 </div>
                 <div class="display-mode-grid">
                   <button id="tapDetectionBtn" class="display-color-mode-btn active" aria-pressed="true">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
                       <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"></path>
@@ -631,7 +632,7 @@
                     Tap
                   </button>
                   <button id="pettingDetectionBtn" class="display-color-mode-btn active" aria-pressed="true">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
                       <path d="M11 15h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 17"></path>
@@ -645,7 +646,7 @@
                     Petting
                   </button>
                   <button id="tiltDetectionBtn" class="display-color-mode-btn active" aria-pressed="true">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
                       <path
@@ -660,7 +661,7 @@
                     Tilt
                   </button>
                   <button id="upsideDownDetectionBtn" class="display-color-mode-btn active" aria-pressed="true">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
                       <circle cx="12" cy="12" r="10"></circle>
@@ -671,7 +672,7 @@
                     Upside Down
                   </button>
                   <button id="boopToggleBtn" class="display-color-mode-btn" aria-pressed="false">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
                       <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
@@ -714,7 +715,7 @@
                 <!-- Trigger Button -->
                 <button id="triggerGlitchBtn" class="display-color-mode-btn" onclick="triggerGlitch()"
                   style="width: 100%; margin-bottom: 15px;">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     style="width: 18px; height: 18px; margin-right: 6px;">
                     <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
@@ -745,7 +746,7 @@
               <div class="fan-control-card" style="--fan-speed: 0%;">
                 <div class="fan-control-head">
                   <div class="fan-icon-container">
-                    <svg id="fanIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    <svg aria-hidden="true" id="fanIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                       stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 40px; height: 40px;">
                       <path
@@ -796,7 +797,7 @@
               <div class="about-copyright">
                 <p class="copyright-text">Kimmix ©2026</p>
                 <p class="copyright-auth">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lock-icon">
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                     <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
@@ -808,8 +809,8 @@
 
             <!-- Device Details Section -->
             <div class="about-card collapsible-section">
-              <button id="bleCharBtn" class="section-toggle-button" onclick="toggleBLECharacteristics()">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              <button id="bleCharBtn" aria-expanded="false" aria-controls="bleCharContent" class="section-toggle-button" onclick="toggleBLECharacteristics()">
+                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="toggle-icon">
                   <path d="M6 9l6 6 6-6" />
                 </svg>
@@ -959,7 +960,7 @@
                   </div>
                 </div>
                 <button id="refreshBleBtn" class="refresh-ble-button" onclick="refreshBLECharacteristics()" disabled>
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     style="width: 16px; height: 16px; margin-right: 6px;">
                     <polyline points="23 4 23 10 17 10"></polyline>
@@ -969,7 +970,7 @@
                   Refresh Values
                 </button>
                 <button id="rebootDeviceBtn" class="reboot-device-button" onclick="rebootDevice()" disabled>
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     style="width: 16px; height: 16px; margin-right: 6px;">
                     <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" />
@@ -981,8 +982,8 @@
 
             <!-- System Information Section -->
             <div class="about-card collapsible-section">
-              <button id="debugBtn" class="section-toggle-button" onclick="toggleDebugInfo()">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              <button id="debugBtn" aria-expanded="false" aria-controls="debugInfo" class="section-toggle-button" onclick="toggleDebugInfo()">
+                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="toggle-icon">
                   <path d="M6 9l6 6 6-6" />
                 </svg>
@@ -1019,20 +1020,20 @@
     </div>
     <!-- End Page: About -->
 
-  </div>
+  </main>
 
   <!-- Floating Navigation Icons -->
-  <nav class="floating-nav">
-    <button class="nav-icon active" data-page="home">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+  <nav class="floating-nav" aria-label="Main navigation">
+    <button class="nav-icon active" type="button" data-page="home" aria-label="Home" aria-current="page" aria-controls="page-home">
+      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
         stroke-linecap="round" stroke-linejoin="round">
         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
         <polyline points="9 22 9 12 15 12 15 22"></polyline>
       </svg>
       <span class="nav-label">Home</span>
     </button>
-    <button class="nav-icon" data-page="settings">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    <button class="nav-icon" type="button" data-page="settings" aria-label="Settings" aria-controls="page-settings">
+      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
         stroke-linecap="round" stroke-linejoin="round">
         <path
           d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z">
@@ -1041,8 +1042,8 @@
       </svg>
       <span class="nav-label">Settings</span>
     </button>
-    <button class="nav-icon" data-page="about">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    <button class="nav-icon" type="button" data-page="about" aria-label="About" aria-controls="page-about">
+      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
         stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="10"></circle>
         <line x1="12" y1="16" x2="12" y2="12"></line>
@@ -1052,7 +1053,6 @@
     </button>
   </nav>
 
-  </div>
 
   <!-- BLE config is also exposed globally for the classic BLE script -->
   <script type="module" src="src/config/ble-config.js"></script>

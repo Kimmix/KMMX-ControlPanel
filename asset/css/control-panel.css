@@ -7,7 +7,7 @@
   height: 100svh;
   margin: 0 15px;
   overflow: hidden;
-  animation: controlIn 1800ms linear;
+  animation: fadeIn 240ms ease-out;
 
   .control-panel {
     display: flex;
@@ -26,7 +26,7 @@
   z-index: 9;
   display: none;
   opacity: 0;
-  animation: fadeIn 1800ms linear forwards;
+  animation: fadeIn 240ms ease-out forwards;
 }
 
 .status-pill {
@@ -65,7 +65,7 @@
   width: 100%;
   max-width: calc(900px + 30px);
   margin: 0 auto;
-  padding: 0 15px;
+  padding: env(safe-area-inset-top) max(15px, env(safe-area-inset-right)) 0 max(15px, env(safe-area-inset-left));
   box-sizing: border-box;
   z-index: 5;
   pointer-events: none;
@@ -73,7 +73,7 @@
   -webkit-backdrop-filter: blur(10px);
   display: none;
   opacity: 0;
-  animation: controlIn 1800ms linear forwards;
+  animation: fadeIn 240ms ease-out forwards;
 }
 
 .header {
@@ -81,7 +81,7 @@
   flex-direction: row;
   align-items: flex-end;
   justify-content: space-between;
-  height: 10vh;
+  height: var(--header-height);
   max-height: 140px;
   min-height: 80px;
   padding-bottom: 10px;
@@ -176,7 +176,7 @@
   min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
-  padding-bottom: 35vh;
+  padding-bottom: var(--content-bottom-space);
 
   /* Native momentum scrolling (iOS/Android) */
   -webkit-overflow-scrolling: touch;
@@ -197,7 +197,7 @@
   will-change: scroll-position;
 
   /* Touch optimization */
-  touch-action: pan-y;
+  touch-action: pan-y pinch-zoom;
 }
 
 .expression-container::-webkit-scrollbar {
@@ -222,7 +222,7 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   cursor: pointer;
-  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1), border-color 250ms cubic-bezier(0.4, 0, 0.2, 1), color 250ms cubic-bezier(0.4, 0, 0.2, 1), transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
 
   /* Touch optimization */
   -webkit-tap-highlight-color: transparent;
@@ -236,7 +236,7 @@
   height: 22px;
   stroke: var(--white2-color);
   flex-shrink: 0;
-  transition: all 250ms ease;
+  transition: stroke 250ms ease;
 }
 
 .status-content {
@@ -248,12 +248,12 @@
 }
 
 .status-label {
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   font-weight: 500;
   color: var(--white2-color);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  transition: all 250ms ease;
+  text-transform: none;
+  letter-spacing: normal;
+  transition: color 250ms ease;
 }
 
 .status-value {
@@ -263,7 +263,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  transition: all 250ms ease;
+  transition: color 250ms ease;
 }
 
 /* Hover state - Only on devices with hover capability */
@@ -311,7 +311,7 @@
 /* Mouth State Buttons in Grid - Same style as expression buttons */
 .mouth-state-buttons {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 15px;
   width: 100%;
   animation: fadeIn 800ms ease-in-out;
@@ -381,7 +381,7 @@
 /* Expression Grid Layout - Fursuit Friendly */
 .expression-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 15px;
   width: 100%;
   animation: fadeIn 800ms ease-in-out;
@@ -407,7 +407,7 @@
 
     /* Active state: invert background and image */
     &.active {
-      /* White background and pulse inherited from .btn-base.active */
+      /* White background inherited from .btn-base.active */
 
       >img {
         filter: invert(0);
@@ -542,7 +542,7 @@ hr.cenhr {
         >p {
           margin-top: 3px;
           color: var(--white2-color);
-          font-size: 0.65rem;
+          font-size: 0.75rem;
           font-weight: 500;
           white-space: nowrap;
         }
@@ -661,10 +661,13 @@ hr.cenhr {
     display: flex;
     flex-direction: column;
     width: 100%;
+    min-width: 0;
 
     .matrix-silder-header {
       display: flex;
       justify-content: space-between;
+      align-items: end;
+      gap: 12px;
 
       >h3 {
         align-self: flex-end;
@@ -673,6 +676,7 @@ hr.cenhr {
 
       .value-display {
         font-size: 2rem;
+        flex-shrink: 0;
         text-align: right;
       }
     }
@@ -761,7 +765,7 @@ hr.cenhr {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  transition: all 300ms ease;
+  transition: transform 300ms ease, box-shadow 300ms ease;
   box-shadow: 0 4px 15px rgba(255, 68, 108, 0.4);
 }
 
@@ -852,12 +856,13 @@ footer {
 }
 
 .color-preset-btn {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
   border: 2px solid var(--white2-color);
   border-radius: 8px;
   cursor: pointer;
-  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1), border-color 200ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 
   /* Touch optimization */
@@ -906,20 +911,8 @@ input[type="color"]::-moz-color-swatch {
 
 /* Reset Colors Button */
 .color-section-title {
-  position: relative;
   margin-top: 0;
-  min-height: 44px;
-  box-sizing: border-box;
   padding-right: 108px;
-}
-.color-section-title::after {
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 44px;
-  height: 44px;
-  display: grid;
-  place-items: center;
 }
 .reset-colors-btn {
   position: absolute;
@@ -939,7 +932,7 @@ input[type="color"]::-moz-color-swatch {
   font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 200ms cubic-bezier(0.4, 0, 0.2, 1), border-color 200ms cubic-bezier(0.4, 0, 0.2, 1), transform 200ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1);
   font-family: "Montserrat", sans-serif;
   z-index: 1;
 
@@ -980,7 +973,7 @@ input[type="color"]::-moz-color-swatch {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 2px;
   outline: none;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   touch-action: pan-x;
 }
@@ -993,7 +986,7 @@ input[type="color"]::-moz-color-swatch {
   background: white;
   border-radius: 2px;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Hover state - Only on devices with hover capability */
@@ -1014,7 +1007,7 @@ input[type="color"]::-moz-color-swatch {
   border: none;
   border-radius: 2px;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .spiral-thickness-slider::-moz-range-track {
@@ -1034,7 +1027,7 @@ input[type="color"]::-moz-color-swatch {
   position: relative;
   display: inline-block;
   width: 60px;
-  height: 32px;
+  height: 44px;
   cursor: pointer;
 }
 
@@ -1046,14 +1039,14 @@ input[type="color"]::-moz-color-swatch {
 
 .direction-toggle-slider {
   position: absolute;
-  top: 0;
+  top: 6px;
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: 6px;
   background: rgba(255, 255, 255, 0.1);
   border: 2px solid rgba(255, 255, 255, 0.2);
   border-radius: 32px;
-  transition: all 300ms ease;
+  transition: background-color 300ms ease, border-color 300ms ease;
   display: flex;
   align-items: center;
   padding: 0 4px;
@@ -1068,7 +1061,7 @@ input[type="color"]::-moz-color-swatch {
   bottom: 3px;
   background: var(--white-color);
   border-radius: 50%;
-  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1), background-color 300ms cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
@@ -1197,3 +1190,31 @@ button.status-item { font: inherit; text-align: left; color: var(--white-color);
 #statusIndicator:focus-visible { outline: 2px solid var(--acc1-color); outline-offset: 2px; }
 #statusDescription { position: fixed; inset: 60px 15px auto auto; margin: 0; max-width: min(300px, calc(100vw - 48px)); padding: 12px 16px; border: 1px solid var(--white2-color); border-radius: 8px; background: var(--black-color); color: var(--white-color); font: inherit; font-size: 0.85rem; }
 @media (prefers-reduced-motion: reduce) { .status-pill.ble-writing, .status-pill.ble-loading { animation: none; } }
+
+.spiral-thickness-slider:focus-visible,
+.direction-toggle-switch input:focus-visible + .direction-toggle-slider {
+  outline: 3px solid var(--acc1-color);
+  outline-offset: 3px;
+}
+#calibrationDialog { overscroll-behavior: contain; }
+.status-content { overflow-wrap: anywhere; }
+.expression-container { scroll-padding-bottom: var(--content-bottom-space); }
+@media (max-height: 520px) {
+  #page-home .page-content-container { overflow-y: auto; padding-bottom: var(--content-bottom-space); }
+  .expression { flex: none; overflow: visible; }
+  .expression-container { flex: none; overflow: visible; padding-bottom: 0; }
+}
+
+.matrix:has(.bn-slider:focus-visible) .matrix-bncontrol {
+  outline: 3px solid var(--acc1-color);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.viseme-configure, .lip-sync-more summary { min-height: 44px; }
+.lip-sync-more summary { align-content: center; }
+
+@media (max-width: 480px) {
+  .header .dotted-array { width: 100px; }
+  .header-subtitle { font-size: 1rem; }
+  .status-label { font-size: 0.75rem; }
+}

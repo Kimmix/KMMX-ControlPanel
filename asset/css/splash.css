@@ -144,7 +144,7 @@
   font-weight: 500;
   font-family: "Montserrat", sans-serif;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -176,6 +176,8 @@
 }
 
 .reconnect-btn {
+  align-items: center;
+  justify-content: center;
   position: absolute;
   bottom: 4%;
   left: 4%;

@@ -2,11 +2,11 @@
 @keyframes slideInRight {
   from {
     opacity: 0;
-    transform: translateY(50px);
+    transform: translateX(-50%) translateY(50px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateX(-50%) translateY(0);
   }
 }
 
@@ -24,18 +24,17 @@
 /* Floating Navigation Icons */
 .floating-nav {
   position: fixed;
-  right: 20px;
-  bottom: 20px;
+  left: 50%;
+  bottom: max(20px, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 8px;
-  background: linear-gradient(135deg,
-    rgba(22, 22, 26, 0.25) 0%,
-    rgba(16, 16, 20, 0.25) 100%);
+  background: rgba(22, 22, 26, 0.94);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-radius: 50px;
-  padding: 12px 8px;
+  padding: 8px 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.05);
   z-index: 1000;
@@ -47,17 +46,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0;
-  width: 54px;
-  height: 54px;
+  width: 48px;
+  height: 48px;
   background: transparent;
   border: none;
   border-radius: 27px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 0;
   color: var(--white2-color);
-  opacity: 0.5;
+  opacity: 1;
   overflow: hidden;
   white-space: nowrap;
 
@@ -73,7 +71,7 @@
   height: 24px;
   min-width: 24px;
   stroke-width: 2;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: stroke 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .nav-label {
@@ -119,10 +117,9 @@
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  /* Add bottom padding so content can scroll past the floating nav (nav height ~200px + 20px bottom margin + extra space) */
-  padding-top: 10vh;
-  padding-bottom: 35vh;
-  /* No padding-top so content can scroll behind header for blur effect */
+  /* Keep controls clear of the fixed header and bottom navigation. */
+  padding-top: calc(var(--header-height) + env(safe-area-inset-top));
+  padding-bottom: var(--content-bottom-space);
 
   /* Native momentum scrolling (iOS/Android) */
   -webkit-overflow-scrolling: touch;
@@ -143,62 +140,10 @@
   will-change: scroll-position;
 
   /* Touch optimization */
-  touch-action: pan-y;
+  touch-action: pan-y pinch-zoom;
+  scroll-padding-block: calc(var(--header-height) + env(safe-area-inset-top)) var(--content-bottom-space);
 }
 
 .page-content-container::-webkit-scrollbar {
   display: none;
-}
-
-/* Mobile optimizations */
-@media (max-width: 768px) {
-  .floating-nav {
-    right: 15px;
-    padding: 10px 6px;
-    gap: 16px;
-  }
-
-  .nav-icon {
-    width: 48px;
-    height: 48px;
-  }
-
-  .nav-icon svg {
-    width: 22px;
-    height: 22px;
-    min-width: 22px;
-  }
-}
-
-@media (max-width: 480px) {
-  .floating-nav {
-    left: 50%;
-    right: auto;
-    bottom: 20px;
-    transform: translateX(-50%);
-    flex-direction: row;
-    padding: 8px 12px;
-  }
-
-  @keyframes slideInRight {
-    from {
-      opacity: 0;
-      transform: translateX(-50%) translateY(50px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-  }
-
-  .nav-icon {
-    width: 45px;
-    height: 45px;
-  }
-
-  .nav-icon svg {
-    width: 20px;
-    height: 20px;
-    min-width: 20px;
-  }
 }
