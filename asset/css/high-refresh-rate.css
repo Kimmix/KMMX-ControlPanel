@@ -19,22 +19,9 @@
 
   input[type="range"],
   .vsm-slider,
-  .bn-slider,
   .spiral-thickness-slider {
     touch-action: pan-x;
     cursor: pointer;
-  }
-
-  input[type="range"]::-webkit-slider-thumb,
-  .spiral-thickness-slider::-webkit-slider-thumb {
-    width: 24px;
-    height: 24px;
-  }
-
-  input[type="range"]::-moz-range-thumb,
-  .spiral-thickness-slider::-moz-range-thumb {
-    width: 24px;
-    height: 24px;
   }
 
   .direction-toggle-switch {

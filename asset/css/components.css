@@ -179,25 +179,6 @@
   font-size: 0.88rem;
 }
 
-.fan-speed-badge {
-  min-width: 72px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.09);
-  color: var(--white-color);
-  text-align: center;
-  font-size: 1.35rem;
-  font-weight: 750;
-  font-variant-numeric: tabular-nums;
-}
-
-.fan-speed-badge span:last-child {
-  margin-left: 1px;
-  color: var(--white2-color);
-  font-size: 0.8rem;
-  font-weight: 600;
-}
-
 /* Fan spin animation */
 @keyframes fan-spin {
   from {
@@ -212,24 +193,9 @@
   transition: opacity 0.3s ease;
 }
 
-.fan-speed-labels {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 10px;
-}
-
-.fan-speed-labels .fade {
-  font-size: 0.78rem;
-}
-
 @media (max-width: 420px) {
   .fan-control-head {
     grid-template-columns: auto 1fr;
   }
 
-  .fan-speed-badge {
-    grid-column: 1 / -1;
-  }
 }

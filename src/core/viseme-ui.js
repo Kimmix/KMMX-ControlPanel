@@ -39,6 +39,10 @@ function renderVisemeTuning(client) {
     visemeElement('mouthSizeValue').textContent = `${shown.gain.toFixed(2)}\u00d7`;
 
   }
+  for (const id of ['noiseRejection', 'mouthSize']) {
+    const slider = visemeElement(id);
+    slider.style.backgroundImage = `linear-gradient(to right, white ${slider.value}%, rgba(255, 255, 255, 0.1) ${slider.value}%)`;
+  }
   let message = editing ? 'Pending changes\u2026' : 'Settings applied';
   if (s) {
     const phases = ['Ready', `Stay quiet \u2014 ${Math.max(0, Math.ceil(2 * (1 - s.progress / 100)))}s`, `Measuring \u2014 ${s.progress}%`, 'Room calibrated', 'Calibration failed', 'Calibration cancelled'];

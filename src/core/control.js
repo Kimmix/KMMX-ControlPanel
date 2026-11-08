@@ -71,51 +71,21 @@ function createButtonGrid({ containerId, items, buttonClass = 'exp-btn', countEl
     };
 }
 
-function bindSlider({ sliderId, dotsContainerId, valueDisplayId, type = 'dots', maxValue = 100, onChange, vibrate = true, convertToPercentage = false, valueSuffix = '' }) {
+function bindSlider({ sliderId, valueDisplayId, maxValue = 100, onChange, vibrate = true, convertToPercentage = false, valueSuffix = '' }) {
     const slider = document.getElementById(sliderId);
-    const dotsContainer = dotsContainerId ? document.getElementById(dotsContainerId) : null;
     const valueDisplay = valueDisplayId ? document.getElementById(valueDisplayId) : null;
-    let previousDotCount = 0;
 
-    const renderDots = (value, firstTime) => {
-        if (!dotsContainer) return;
-        const dots = [...dotsContainer.querySelectorAll('.dot')];
-        const filled = Math.ceil((value / maxValue) * dots.length);
-        if (filled !== previousDotCount && !firstTime && vibrate) vibrateDevice();
-        previousDotCount = filled;
-        dots.forEach((dot, index) => dot.classList.toggle('white-dot', index < filled));
-    };
-
-    const render = (value, firstTime = false) => {
-        if (type === 'dots') {
-            renderDots(value, firstTime);
-        } else if (slider) {
+    const render = value => {
+        if (slider) {
             const min = parseInt(slider.min) || 0;
             const max = parseInt(slider.max) || 255;
             const percentage = ((value - min) / (max - min)) * 100;
-            slider.style.background = `linear-gradient(to right, white 0%, white ${percentage}%, rgba(255, 255, 255, 0.1) ${percentage}%, rgba(255, 255, 255, 0.1) 100%)`;
+            slider.style.backgroundImage = `linear-gradient(to right, white 0%, white ${percentage}%, rgba(255, 255, 255, 0.1) ${percentage}%, rgba(255, 255, 255, 0.1) 100%)`;
         }
-
-        if (valueDisplay) {
-            const displayValue = convertToPercentage ? Math.round((value / maxValue) * 100) : value;
-            valueDisplay.textContent = `${displayValue}${valueSuffix}`;
-        }
+        const displayValue = convertToPercentage ? Math.round((value / maxValue) * 100) : value;
+        if (valueDisplay) valueDisplay.textContent = `${displayValue}${valueSuffix}`;
+        if (valueSuffix === '%') slider?.setAttribute('aria-valuetext', `${displayValue}%`);
     };
-
-    const rebuildDots = () => {
-        if (!dotsContainer) return;
-        dotsContainer.replaceChildren(...Array.from({ length: Math.floor(window.innerWidth / 30) }, () => {
-            const dot = document.createElement('div');
-            dot.className = 'dot';
-            return dot;
-        }));
-        render(parseInt(slider.value) || 0, true);
-    };
-
-    if (type === 'dots') {
-        rebuildDots();
-        window.addEventListener('resize', rebuildDots);
-    }
 
     slider?.addEventListener('input', event => {
         const value = parseInt(event.target.value);
@@ -124,11 +94,11 @@ function bindSlider({ sliderId, dotsContainerId, valueDisplayId, type = 'dots', 
         if (vibrate) vibrateDevice();
     });
 
-    render(parseInt(slider?.value) || 0, true);
+    render(parseInt(slider?.value) || 0);
     return {
         setValue(value) {
             if (slider) slider.value = value;
-            render(value, true);
+            render(value);
         }
     };
 }
@@ -376,9 +346,8 @@ document.addEventListener('DOMContentLoaded', () => {
 //* --------- Horn LED Brightness Slider ---------
 const hornLedSlider = bindSlider({
     sliderId: 'hornLedValue',
-    dotsContainerId: 'horn-dots-container',
     valueDisplayId: 'hornLedSliderValue',
-    type: 'dots',
+    valueSuffix: '%',
     maxValue: 100,
     onChange: (value) => {
         window.throttledAndDebouncedSetHornLedBrightness?.(value);
@@ -394,9 +363,8 @@ window.setHornLedBrightnessValue = setHornLedBrightnessValue;
 //* --------- Cheek Panel Brightness Slider ---------
 const cheekPanelSlider = bindSlider({
     sliderId: 'cheekPanelValue',
-    dotsContainerId: 'cheek-dots-container',
     valueDisplayId: 'cheekPanelSliderValue',
-    type: 'dots',
+    valueSuffix: '%',
     maxValue: 255,
     convertToPercentage: true,
     onChange: (value) => {
@@ -602,7 +570,6 @@ window.resetDisplayColors = resetDisplayColors;
 const displayEffectOption1Slider = dualSpiralThicknessSlider ? bindSlider({
     sliderId: 'dualSpiralThicknessSlider',
     valueDisplayId: 'spiralThicknessValue',
-    type: 'gradient',
     maxValue: 255,
     onChange: (value) => {
         window.throttledAndDebouncedSetDisplayEffectOption1?.(value);
@@ -622,7 +589,6 @@ window.setDisplayEffectOption1Value = setDisplayEffectOption1Value;
 const displayEffectOption2Slider = dualCircleThicknessSlider ? bindSlider({
     sliderId: 'dualCircleThicknessSlider',
     valueDisplayId: 'circleThicknessValue',
-    type: 'gradient',
     maxValue: 255,
     onChange: (value) => {
         window.throttledAndDebouncedSetDisplayEffectOption2?.(value);
@@ -743,7 +709,6 @@ window.setMotionEnableFlagsValue = setMotionEnableFlagsValue;
 const tapSensitivitySlider = bindSlider({
     sliderId: 'tapSensitivitySlider',
     valueDisplayId: 'tapSensitivityValue',
-    type: 'gradient',
     valueSuffix: '%',
     onChange: value => window.throttledAndDebouncedSetTapSensitivity?.(value)
 });
@@ -754,7 +719,6 @@ window.setTapSensitivityValue = setTapSensitivityValue;
 const glitchIntensitySlider = bindSlider({
     sliderId: 'glitchIntensitySlider',
     valueDisplayId: 'glitchIntensityValue',
-    type: 'gradient',
     valueSuffix: '%',
     onChange: value => window.throttledAndDebouncedSetGlitchIntensity?.(value)
 });
@@ -765,7 +729,6 @@ window.setGlitchIntensityValue = setGlitchIntensityValue;
 bindSlider({
     sliderId: 'manualGlitchIntensitySlider',
     valueDisplayId: 'manualGlitchIntensityValue',
-    type: 'gradient',
     valueSuffix: '%'
 });
 const manualGlitchIntensitySlider = document.getElementById('manualGlitchIntensitySlider');
@@ -800,6 +763,8 @@ function renderFan() {
     const fanCard = document.querySelector('.fan-control-card');
     const fanIcon = document.getElementById('fanIcon');
     const fanStateText = document.getElementById('fanStateText');
+    const fanSlider = document.getElementById('fanSpeedSlider');
+    if (fanSlider) fanSlider.style.backgroundImage = `linear-gradient(to right, white ${fanSpeed}%, rgba(255, 255, 255, 0.1) ${fanSpeed}%)`;
     if (fanCard) fanCard.style.setProperty('--fan-speed', `${fanSpeed}%`);
     if (fanStateText) fanStateText.textContent = fanSpeed > 0 ? 'Running' : 'Off';
     if (fanIcon) {

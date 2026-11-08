@@ -240,16 +240,22 @@
                   <p id="visemeRange" class="lip-sync-help">Min -- / Avg -- / Max --</p>
                 </div>
                 <div class="lip-sync-field">
-                  <label class="lip-sync-label" for="noiseRejection">Noise rejection <output id="noiseRejectionValue" for="noiseRejection">13.0</output></label>
-                  <input id="noiseRejection" class="spiral-thickness-slider" type="range" min="0" max="100" step="0.1" disabled>
+                  <div class="slider-label"><label for="noiseRejection">Noise rejection</label><output id="noiseRejectionValue" for="noiseRejection">13.0</output></div>
+                  <div class="slider-bar">
+                    <input id="noiseRejection" class="spiral-thickness-slider" type="range" min="0" max="100" step="0.1" disabled>
+                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3M8 22h8"/></svg>
+                  </div>
                 </div>
                 <p id="visemeFeedback" role="status" aria-live="polite">Connect to tune lip sync.</p>
                 <details class="lip-sync-more">
                   <summary>More settings</summary>
                   <div class="lip-sync-controls">
                     <div class="lip-sync-field">
-                      <label class="lip-sync-label" for="mouthSize">Mouth size <output id="mouthSizeValue" for="mouthSize">1.00×</output></label>
-                      <input id="mouthSize" class="spiral-thickness-slider" type="range" min="0" max="100" step="0.1" disabled>
+                      <div class="slider-label"><label for="mouthSize">Mouth size</label><output id="mouthSizeValue" for="mouthSize">1.00×</output></div>
+                      <div class="slider-bar">
+                        <input id="mouthSize" class="spiral-thickness-slider" type="range" min="0" max="100" step="0.1" disabled>
+                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c3-8 6-8 9 0s6 8 9 0M3 12h18"/></svg>
+                      </div>
                     </div>
                     <div class="display-mode-section lip-sync-response">
                       <div class="display-mode-header" id="responseLabel">Response</div>
@@ -290,67 +296,26 @@
           <!-- Settings Section: Display -->
           <div class="settings-section">
             <h3 class="section-title">Display</h3>
-            <!-- Matrix brightness - Commented out for now -->
-            <!-- <div class="matrix">
-            <div class="matrix-container">
-              <div class="blub-icon">
-                <img src="asset/svg/bulb.svg" alt="Light bulb" style="width: 30px;">
+            <div class="brightness-control">
+              <div class="slider-label">
+                <label for="hornLedValue">Horn LED</label>
+                <output id="hornLedSliderValue" for="hornLedValue">15%</output>
               </div>
-              <div class="matrix-bncontrol">
-                <div class="matrix-silder-header">
-                  <h3>Matrix brightness</h3>
-                  <div class="value-display">
-                    <span id="sliderValue">0</span>
-                    <span class="fade" style="font-size: 1.2rem;margin-left: -6px;">%</span>
-                  </div>
-                </div>
-                <div id="dots-container" class="dots-container">
-                </div>
+              <div class="slider-bar">
+                <input class="brightness-slider" type="range" min="0" max="100" value="15" id="hornLedValue" aria-label="Horn LED brightness">
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M5 19l1.5-1.5M17.5 6.5 19 5"/></svg>
               </div>
             </div>
-            <input class="bn-slider" type="range" min="0" max="100" value="0" id="dotValue">
-          </div> -->
 
-            <!-- Horn LED Brightness -->
-            <div class="matrix" style="margin-top: 20px;">
-              <div class="matrix-container">
-                <div class="blub-icon">
-                  <img src="asset/svg/bulb.svg" alt="Light bulb" style="width: 30px;">
-                </div>
-                <div class="matrix-bncontrol">
-                  <div class="matrix-silder-header">
-                    <h3>Horn LED brightness</h3>
-                    <div class="value-display">
-                      <span id="hornLedSliderValue">15</span>
-                      <span class="fade" style="font-size: 1.2rem;margin-left: -6px;">%</span>
-                    </div>
-                  </div>
-                  <div id="horn-dots-container" class="dots-container">
-                  </div>
-                </div>
+            <div class="brightness-control">
+              <div class="slider-label">
+                <label for="cheekPanelValue">Cheek panel</label>
+                <output id="cheekPanelSliderValue" for="cheekPanelValue">100%</output>
               </div>
-              <input class="bn-slider" type="range" min="0" max="100" value="15" id="hornLedValue" aria-label="Horn LED brightness">
-            </div>
-
-            <!-- Cheek Panel Brightness -->
-            <div class="matrix" style="margin-top: 20px;">
-              <div class="matrix-container">
-                <div class="blub-icon">
-                  <img src="asset/svg/bulb.svg" alt="Light bulb" style="width: 30px;">
-                </div>
-                <div class="matrix-bncontrol">
-                  <div class="matrix-silder-header">
-                    <h3>Cheek panel brightness</h3>
-                    <div class="value-display">
-                      <span id="cheekPanelSliderValue">100</span>
-                      <span class="fade" style="font-size: 1.2rem;margin-left: -6px;">%</span>
-                    </div>
-                  </div>
-                  <div id="cheek-dots-container" class="dots-container">
-                  </div>
-                </div>
+              <div class="slider-bar">
+                <input class="brightness-slider" type="range" min="0" max="255" value="255" id="cheekPanelValue" aria-label="Cheek panel brightness">
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M5 19l1.5-1.5M17.5 6.5 19 5"/></svg>
               </div>
-              <input class="bn-slider" type="range" min="0" max="255" value="255" id="cheekPanelValue" aria-label="Cheek panel brightness">
             </div>
           </div>
 
@@ -507,27 +472,29 @@
               <!-- Effect Option 1: Thickness Control (shown for modes 4 and 5) -->
               <div id="dualSpiralThicknessControl"
                 style="display: none; margin-top: 20px; padding: 15px; background-color: var(--black3-color); border-radius: 12px;">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                  <h3 id="effectOption1Label" style="margin: 0;">Thickness</h3>
-                  <div class="value-display">
-                    <span id="spiralThicknessValue">128</span>
-                  </div>
+                <div class="slider-label">
+                  <label id="effectOption1Label" for="dualSpiralThicknessSlider">Thickness</label>
+                  <output id="spiralThicknessValue" for="dualSpiralThicknessSlider">128</output>
                 </div>
-                <input class="spiral-thickness-slider" type="range" min="0" max="255" value="128"
+                <div class="slider-bar">
+                  <input class="spiral-thickness-slider" type="range" min="0" max="255" value="128"
                   id="dualSpiralThicknessSlider" aria-labelledby="effectOption1Label" style="width: 100%;">
+                  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16M4 16h16M9 3l3 3 3-3M9 21l3-3 3 3"/></svg>
+                </div>
               </div>
 
               <!-- Effect Option 2: Speed Control (shown for modes 4 and 5) -->
               <div id="dualCircleThicknessControl"
                 style="display: none; margin-top: 20px; padding: 15px; background-color: var(--black3-color); border-radius: 12px;">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                  <h3 id="effectOption2Label" style="margin: 0;">Speed</h3>
-                  <div class="value-display">
-                    <span id="circleThicknessValue">128</span>
-                  </div>
+                <div class="slider-label">
+                  <label id="effectOption2Label" for="dualCircleThicknessSlider">Speed</label>
+                  <output id="circleThicknessValue" for="dualCircleThicknessSlider">128</output>
                 </div>
-                <input class="spiral-thickness-slider" type="range" min="0" max="255" value="128"
+                <div class="slider-bar">
+                  <input class="spiral-thickness-slider" type="range" min="0" max="255" value="128"
                   id="dualCircleThicknessSlider" aria-labelledby="effectOption2Label" style="width: 100%;">
+                  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18a9 9 0 1 1 16 0M12 13l5-5M5 18h14"/><circle cx="12" cy="13" r="1"/></svg>
+                </div>
               </div>
 
               <!-- Effect Option 3: Direction/Invert Control (shown for modes 4 and 5) -->
@@ -684,37 +651,44 @@
 
               <!-- Tap Sensitivity Slider -->
               <div style="margin-top: 20px;">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                  <h3 style="margin: 0;">Tap Sensitivity</h3>
+                <div class="slider-label">
+                  <label for="tapSensitivitySlider">Tap sensitivity</label>
+                  <output id="tapSensitivityValue" for="tapSensitivitySlider">50%</output>
                 </div>
-                <input type="range" id="tapSensitivitySlider" aria-label="Tap sensitivity" class="spiral-thickness-slider" min="0" max="100"
+                <div class="slider-bar">
+                  <input type="range" id="tapSensitivitySlider" aria-label="Tap sensitivity" class="spiral-thickness-slider" min="0" max="100"
                   value="50" style="width: 100%;">
-                <div style="display: flex; justify-content: space-between; margin-top: 5px;">
-                  <span class="fade" style="font-size: 0.75rem;">Very Sensitive</span>
-                  <span id="tapSensitivityValue" class="fade" style="font-size: 0.75rem;">50%</span>
-                  <span class="fade" style="font-size: 0.75rem;">Hard Taps</span>
+                  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M6 6a8.5 8.5 0 0 0 0 12M18 6a8.5 8.5 0 0 1 0 12M3 3M21 21"/></svg>
+                </div>
+                <div class="slider-help">
+                  <span>Very sensitive</span>
+                  <span>Hard taps</span>
                 </div>
               </div>
               <!-- Glitch Intensity Slider -->
               <div style="margin-top: 20px;">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                  <h3 style="margin: 0;">Glitch Intensity</h3>
-                  <span id="glitchIntensityValue" class="fade" style="font-size: 0.9rem;">50%</span>
+                <div class="slider-label">
+                  <label for="glitchIntensitySlider">Glitch intensity</label>
+                  <output id="glitchIntensityValue" for="glitchIntensitySlider">50%</output>
                 </div>
-                <input type="range" id="glitchIntensitySlider" aria-label="Glitch intensity" class="spiral-thickness-slider" min="0" max="100"
+                <div class="slider-bar">
+                  <input type="range" id="glitchIntensitySlider" aria-label="Glitch intensity" class="spiral-thickness-slider" min="0" max="100"
                   value="50" style="width: 100%;">
-                <div style="display: flex; justify-content: space-between; margin-top: 5px;">
-                  <span class="fade" style="font-size: 0.75rem;">Subtle</span>
-                  <span class="fade" style="font-size: 0.75rem;">Dramatic</span>
+                  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m13 2-9 12h7l-1 8 10-13h-7l1-7Z"/></svg>
+                </div>
+                <div class="slider-help">
+                  <span>Subtle</span>
+                  <span>Dramatic</span>
                 </div>
               </div>
               <!-- Manual Trigger Section -->
-              <div style="margin-top: 30px;">
-                <h3 style="margin: 0 0 15px 0;">Manual Trigger</h3>
+              <details class="lip-sync-more" style="margin-top: 20px;">
+                <summary>Manual trigger</summary>
+                <div class="lip-sync-controls">
 
                 <!-- Trigger Button -->
                 <button id="triggerGlitchBtn" class="display-color-mode-btn" onclick="triggerGlitch()"
-                  style="width: 100%; margin-bottom: 15px;">
+                  style="width: 100%;">
                   <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     style="width: 18px; height: 18px; margin-right: 6px;">
@@ -725,18 +699,22 @@
 
                 <!-- Intensity Slider -->
                 <div>
-                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                    <h3 style="margin: 0;">Trigger Intensity</h3>
-                    <span id="manualGlitchIntensityValue" class="fade" style="font-size: 0.9rem;">50%</span>
+                  <div class="slider-label">
+                    <label for="manualGlitchIntensitySlider">Trigger intensity</label>
+                    <output id="manualGlitchIntensityValue" for="manualGlitchIntensitySlider">50%</output>
                   </div>
-                  <input type="range" id="manualGlitchIntensitySlider" aria-label="Trigger intensity" class="spiral-thickness-slider" min="0"
+                  <div class="slider-bar">
+                    <input type="range" id="manualGlitchIntensitySlider" aria-label="Trigger intensity" class="spiral-thickness-slider" min="0"
                     max="100" value="50" style="width: 100%;">
-                  <div style="display: flex; justify-content: space-between; margin-top: 5px;">
-                    <span class="fade" style="font-size: 0.75rem;">Subtle</span>
-                    <span class="fade" style="font-size: 0.75rem;">Dramatic</span>
+                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m13 2-9 12h7l-1 8 10-13h-7l1-7Z"/></svg>
+                  </div>
+                  <div class="slider-help">
+                    <span>Subtle</span>
+                    <span>Dramatic</span>
                   </div>
                 </div>
-              </div>
+                </div>
+              </details>
             </div>
 
             <!-- Fan Control -->
@@ -759,18 +737,19 @@
                     <h2>Cooling Fan</h2>
                     <span id="fanStateText">Off</span>
                   </div>
-                  <div class="fan-speed-badge">
-                    <span id="fanSpeedValue">0</span><span>%</span>
-                  </div>
                 </div>
 
                 <div id="fanSpeedSliderContainer" class="fan-speed-container" style="margin-top: 20px;">
-                  <div class="fan-speed-labels">
-                    <h3 style="margin: 0;">Speed</h3>
-                    <span class="fade">0 is off</span>
+                  <div class="slider-label">
+                    <label for="fanSpeedSlider">Speed</label>
+                    <output for="fanSpeedSlider"><span id="fanSpeedValue">0</span>%</output>
                   </div>
-                  <input type="range" id="fanSpeedSlider" aria-label="Fan speed" class="spiral-thickness-slider" min="0" max="100" value="0"
+                  <div class="slider-bar">
+                    <input type="range" id="fanSpeedSlider" aria-label="Fan speed" class="spiral-thickness-slider" min="0" max="100" value="0"
                     style="width: 100%;">
+                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M12 10C5 2 20 1 17 8l-3 3M14 12c10-2 5 12 0 7l-2-5M11 14C8 24-1 12 6 10l4 1"/></svg>
+                  </div>
+                  <div class="slider-help"><span>0% turns the fan off</span></div>
                 </div>
               </div>
             </div>
