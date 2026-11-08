@@ -1,7 +1,7 @@
 // KMMX Control Panel - Service Worker
-// Version 1.0.37
+// Version 1.0.38
 
-const CACHE_NAME = 'kmmx-control-v1.0.37';
+const CACHE_NAME = 'kmmx-control-v1.0.38';
 
 // Assets to cache on install
 const PRECACHE_ASSETS = [
@@ -30,6 +30,7 @@ const PRECACHE_ASSETS = [
   '/src/core/ble.js',
   '/src/core/viseme.js',
   '/src/core/viseme-ui.js',
+  '/src/core/orientation.js',
   '/src/core/navigation.js',
   '/src/utils/helpers.js'
 ];

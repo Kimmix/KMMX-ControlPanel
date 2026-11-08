@@ -579,6 +579,24 @@
             <div class="settings-section" style="margin-top: 30px;">
               <h3 class="section-title">Motion Detection</h3>
 
+              <div class="display-mode-section lip-sync-controls orientation-controls" aria-labelledby="orientationTitle">
+                <div class="display-mode-header"><h3 id="orientationTitle">Live orientation</h3></div>
+                <div class="lip-sync-field">
+                  <div class="lip-sync-label"><span id="orientation-pitch-label">Pitch</span><span id="orientation-pitch-value">—</span></div>
+                  <div id="orientation-pitch" class="orientation-meter" role="group" aria-labelledby="orientation-pitch-label"><span class="orientation-fill"></span></div>
+                </div>
+                <div class="lip-sync-field">
+                  <div class="lip-sync-label"><span id="orientation-roll-label">Roll</span><span id="orientation-roll-value">—</span></div>
+                  <div id="orientation-roll" class="orientation-meter" role="group" aria-labelledby="orientation-roll-label"><span class="orientation-fill"></span></div>
+                </div>
+                <div class="lip-sync-field">
+                  <div class="lip-sync-label"><span id="orientation-yaw-label">Yaw</span><span id="orientation-yaw-value">—</span></div>
+                  <div id="orientation-yaw" class="orientation-meter" role="group" aria-labelledby="orientation-yaw-label"><span class="orientation-fill"></span></div>
+                </div>
+                <p id="orientationStatus" class="lip-sync-help" role="status" aria-live="polite">Connect to view orientation.</p>
+                <p class="lip-sync-help">Yaw is relative and may drift.</p>
+              </div>
+
               <!-- Motion Features Grid -->
               <div class="display-mode-section">
                 <div class="display-mode-header">
@@ -1038,6 +1056,7 @@
   <script defer src="src/managers/ble-manager.js"></script>
   <script defer src="src/core/viseme.js"></script>
   <script defer src="src/core/viseme-ui.js"></script>
+  <script defer src="src/core/orientation.js"></script>
 
   <!-- Main application files -->
   <script type="module" src="src/core/app.js?v=1.0.11"></script>

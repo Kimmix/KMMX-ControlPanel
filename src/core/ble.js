@@ -27,7 +27,8 @@ const characteristicDefinitions = [
   ['fanSpeed', 'fanSpeed', false],
   ['visemeSettings', 'visemeSettings', false],
   ['visemeCalibration', 'visemeCalibration', false],
-  ['visemeStatus', 'visemeStatus', false]
+  ['visemeStatus', 'visemeStatus', false],
+  ['orientation', 'orientation', false]
 ];
 
 async function discoverCharacteristics(service) {
@@ -229,6 +230,7 @@ async function connectToDevice(device, isReconnect = false, retryCount = 0) {
 
     await discoverCharacteristics(service);
     await visemeClient.connect();
+    await orientationClient.connect();
     settingsStateLoaded = false;
 
     console.log('Reading value...');
@@ -255,6 +257,7 @@ async function connectToDevice(device, isReconnect = false, retryCount = 0) {
 
   } catch (error) {
     console.error('Error during BLE connection:', error);
+    window.orientationClient?.disconnect();
 
     // Check if it's a disconnection error and we should retry
     const isDisconnectionError = /gatt server.*disconnect|device disconnected/i.test(error.message || '');
@@ -342,6 +345,7 @@ function onDisconnected(event) {
   console.log(`Device ${device.name} is disconnected.`);
 
   window.disconnectViseme?.();
+  window.orientationClient?.disconnect();
   bleManager.clear();
   settingsStateLoaded = false;
   if (isConnecting) return;

@@ -1047,8 +1047,8 @@ button.status-item { font: inherit; text-align: left; color: var(--white-color);
 .lip-sync-label { display: flex; align-items: center; justify-content: space-between; gap: 16px; font-weight: 400; }
 .lip-sync-label output, #visemeReading { font-variant-numeric: tabular-nums; }
 .lip-sync-controls .lip-sync-help { font-size: 0.85rem; font-weight: 400; line-height: 1.5; color: var(--white2-color, #bbb); }
-#visemeMeter { height: 14px; position: relative; background: var(--black3-color, #333); border-radius: 3px; }
-#visemeMeterFill { height: 100%; width: 0; max-width: 100%; background: var(--acc2-color, #5ac); border-radius: inherit; }
+#visemeMeter, .orientation-meter { height: 14px; position: relative; background: var(--black3-color, #333); border-radius: 3px; }
+#visemeMeterFill, .orientation-fill { height: 100%; width: 0; max-width: 100%; background: var(--acc2-color, #5ac); border-radius: inherit; }
 #visemeMeterGate { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--white-color, #fff); left: 13%; transform: translateX(-1px); }
 .lip-sync-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 .lip-sync-actions button { min-height: 44px; }
@@ -1134,3 +1134,8 @@ button.status-item { font: inherit; text-align: left; color: var(--white-color);
   .header-subtitle { font-size: 1rem; }
   .status-label { font-size: 0.75rem; }
 }
+
+.orientation-controls .display-mode-header { margin-bottom: 0; }
+.orientation-controls .lip-sync-label span:last-child { font-variant-numeric: tabular-nums; }
+.orientation-fill { position: absolute; left: 50%; }
+.orientation-meter::after { content: ''; position: absolute; left: 50%; top: 0; height: 100%; width: 1px; background: var(--white2-color, #bbb); }

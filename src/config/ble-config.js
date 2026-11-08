@@ -30,7 +30,8 @@ export const bleUUID = {
     // Viseme protocol v2
     visemeSettings: "b9725d01-7546-4e0b-9b91-486e25012a02",
     visemeCalibration: "b9725d02-7546-4e0b-9b91-486e25012a02",
-    visemeStatus: "b9725d03-7546-4e0b-9b91-486e25012a02"
+    visemeStatus: "b9725d03-7546-4e0b-9b91-486e25012a02",
+    orientation: "b9725d04-7546-4e0b-9b91-486e25012a02"
   }
 };
 
