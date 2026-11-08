@@ -87,8 +87,9 @@
 <!-- Disconnect Popup -->
 <div id="disconnectPopup" class="disconnect-popup">
   <div class="disconnect-popup-content">
-    <p>Device Disconnected</p>
-    <button id="refreshPageBtn" class="btn-refresh" onclick="location.reload()">
+    <p>Device disconnected</p>
+    <button class="reconnect-btn" type="button" onclick="reconnectBLEWithProgress(event)">Reconnect</button>
+    <button aria-label="Refresh panel" id="refreshPageBtn" class="btn-refresh" onclick="location.reload()">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
         stroke-linecap="round" stroke-linejoin="round">
         <polyline points="23 4 23 10 17 10"></polyline>
@@ -104,9 +105,14 @@
   <button id="appUpdate" type="button" hidden style="position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:10000">Update ready — refresh panel</button>
   <!-- Status Header (shared across all pages) -->
   <div class="status-header">
-    <svg id="s-pill" class="status-pill inactive" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 97 31">
+    <span id="connectionStatus" role="status" aria-live="polite">Disconnected</span>
+    <button id="statusReconnect" type="button" onclick="reconnectBLEWithProgress(event)">Reconnect</button>
+    <button id="statusIndicator" type="button" popovertarget="statusDescription" aria-label="Disconnected" title="Disconnected">
+    <svg aria-hidden="true" id="s-pill" class="status-pill inactive" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 97 31">
       <rect width="97" height="31" rx="14.82" ry="14.82" />
     </svg>
+    </button>
+    <div id="statusDescription" popover>Disconnected</div>
   </div>
 
   <!-- Static Header (shared across all pages) -->
@@ -136,29 +142,29 @@
 
             <!-- Dual Status Display (also acts as mode switcher) -->
             <div class="dual-status-container">
-              <div class="status-item eye-status active" onclick="switchControlMode('eye')">
+              <button type="button" class="status-item eye-status active" aria-pressed="true" onclick="switchControlMode('eye')">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="status-icon">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                   <circle cx="12" cy="12" r="3"></circle>
                 </svg>
-                <div class="status-content">
+                <span class="status-content">
                   <span class="status-label">Eye</span>
                   <span class="status-value" id="currentEyeState">Idle</span>
-                </div>
-              </div>
-              <div class="status-item mouth-status" onclick="switchControlMode('mouth')">
+                </span>
+              </button>
+              <button type="button" class="status-item mouth-status" aria-pressed="false" onclick="switchControlMode('mouth')">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="status-icon">
                   <path d="M12 19c-4 0-7-2-7-5h14c0 3-3 5-7 5z"></path>
                   <circle cx="9" cy="10" r="1"></circle>
                   <circle cx="15" cy="10" r="1"></circle>
                 </svg>
-                <div class="status-content">
+                <span class="status-content">
                   <span class="status-label">Mouth</span>
                   <span class="status-value" id="currentMouthState">IDLE</span>
-                </div>
-              </div>
+                </span>
+              </button>
             </div>
 
             <button id="slotMachineBtn" class="status-item" type="button" aria-pressed="false"
@@ -223,24 +229,59 @@
           <div id="audioProcessingSection" class="settings-section">
             <h3 class="section-title">Lip sync</h3>
             <div id="visemeAdvancedSection" class="viseme-advanced-section">
-              <div id="visemeAdvancedContent" style="display:flex;flex-direction:column;gap:16px">
-                <label for="noiseRejection">Noise rejection <output id="noiseRejectionValue" for="noiseRejection">13.0</output></label>
-                <input id="noiseRejection" class="spiral-thickness-slider" type="range" min="0" max="100" step="0.1" disabled aria-describedby="noiseHelp">
-                <p id="noiseHelp" class="fade">Higher ignores more background sound. Fixed threshold: 1–1,000 RMS.</p>
-                <label for="mouthSize">Mouth size <output id="mouthSizeValue" for="mouthSize">1.00×</output></label>
-                <input id="mouthSize" class="spiral-thickness-slider" type="range" min="0" max="100" step="0.1" disabled>
-                <label for="visemeResponse">Response</label>
-                <select id="visemeResponse" disabled><option value="0">Snappy</option><option value="1" selected>Natural</option><option value="2">Smooth</option></select>
-                <div><button id="calibrateRoom" type="button" disabled>Calibrate Room</button> <button id="cancelCalibration" type="button" disabled>Cancel</button></div>
-                <p class="fade">Stay quiet for the countdown and measurement (about four seconds). Speaking can set the threshold too high. Calibration stays fixed until you change it.</p>
-                <div id="visemeMeter" role="meter" aria-label="Microphone RMS" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" style="height:14px;position:relative;background:var(--bg2-color,#333);border:1px solid currentColor">
-                  <div id="visemeMeterFill" style="height:100%;width:0;background:var(--acc1-color,#5ac)"></div>
-                  <span id="visemeMeterGate" aria-hidden="true" style="position:absolute;top:-3px;bottom:-3px;width:2px;background:currentColor;left:13%"></span>
+              <div id="visemeAdvancedContent" class="lip-sync-controls">
+                <div class="lip-sync-field">
+                  <div class="lip-sync-label"><span>Input level</span><span id="visemeReading">Unavailable</span></div>
+                  <div id="visemeMeter" role="meter" aria-label="Microphone RMS" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                    <div id="visemeMeterFill"></div>
+                    <span id="visemeMeterGate" aria-hidden="true"></span>
+                  </div>
+                  <p id="visemeRange" class="lip-sync-help">Min -- / Avg -- / Max --</p>
                 </div>
-                <p id="visemeReading">Input unavailable</p>
-                <p id="visemeConfirmed" class="fade"></p>
+                <div class="lip-sync-field">
+                  <label class="lip-sync-label" for="noiseRejection">Noise rejection <output id="noiseRejectionValue" for="noiseRejection">13.0</output></label>
+                  <input id="noiseRejection" class="spiral-thickness-slider" type="range" min="0" max="100" step="0.1" disabled>
+                </div>
                 <p id="visemeFeedback" role="status" aria-live="polite">Connect to tune lip sync.</p>
-                <p class="fade">Tuning and room calibration last until the controller restarts. Reboot restores 13 RMS, 1× mouth size, and Natural response.</p>
+                <details class="lip-sync-more">
+                  <summary>More settings</summary>
+                  <div class="lip-sync-controls">
+                    <div class="lip-sync-field">
+                      <label class="lip-sync-label" for="mouthSize">Mouth size <output id="mouthSizeValue" for="mouthSize">1.00×</output></label>
+                      <input id="mouthSize" class="spiral-thickness-slider" type="range" min="0" max="100" step="0.1" disabled>
+                    </div>
+                    <div class="display-mode-section lip-sync-response">
+                      <div class="display-mode-header" id="responseLabel">Response</div>
+                      <div class="display-mode-grid" role="group" aria-labelledby="responseLabel">
+                        <button id="visemeResponse0" type="button" class="display-color-mode-btn" value="0" aria-pressed="false" disabled>
+                          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 10-13h-7l1-7Z" /></svg>Snappy
+                        </button>
+                        <button id="visemeResponse1" type="button" class="display-color-mode-btn active" value="1" aria-pressed="true" disabled>
+                          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12c4-12 6 12 10 0s6 12 10 0" /></svg>Natural
+                        </button>
+                        <button id="visemeResponse2" type="button" class="display-color-mode-btn" value="2" aria-pressed="false" disabled>
+                          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 16c5 0 5-8 10-8s5 8 10 8" /></svg>Smooth
+                        </button>
+                      </div>
+                    </div>
+                    <button id="calibrateRoom" class="display-color-mode-btn calibration-trigger" type="button" disabled>
+                      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                        <path d="M4 9v6M8 5v14M12 8v8M16 3v18M20 9v6" />
+                      </svg>
+                      Calibrate
+                    </button>
+                    <dialog id="calibrationDialog" aria-labelledby="calibrationTitle" aria-describedby="calibrationHelp">
+                      <h3 id="calibrationTitle">Calibrate</h3>
+                      <p id="calibrationHelp">Stay quiet for about four seconds after starting. Speaking can set the threshold too high. Settings reset when the controller restarts.</p>
+                      <p id="calibrationFeedback" role="status" aria-live="polite"></p>
+                      <div class="lip-sync-actions">
+                        <button id="startCalibration" type="button">Start calibration</button>
+                        <button id="cancelCalibration" type="button" disabled hidden>Cancel</button>
+                        <button id="closeCalibration" type="button">Close</button>
+                      </div>
+                    </dialog>
+                  </div>
+                </details>
               </div>
             </div>
           </div>
@@ -287,7 +328,7 @@
                   </div>
                 </div>
               </div>
-              <input class="bn-slider" type="range" min="0" max="100" value="15" id="hornLedValue">
+              <input class="bn-slider" type="range" min="0" max="100" value="15" id="hornLedValue" aria-label="Horn LED brightness">
             </div>
 
             <!-- Cheek Panel Brightness -->
@@ -308,21 +349,20 @@
                   </div>
                 </div>
               </div>
-              <input class="bn-slider" type="range" min="0" max="255" value="255" id="cheekPanelValue">
+              <input class="bn-slider" type="range" min="0" max="255" value="255" id="cheekPanelValue" aria-label="Cheek panel brightness">
             </div>
           </div>
 
             <!-- Hub75 Display Colors -->
             <div class="settings-section" style="margin-top: 30px; position: relative;">
-              <h3 class="section-title">Hub75 Display Colors</h3>
-              <button id="resetDisplayColorsBtn" class="reset-colors-btn" onclick="resetDisplayColors()">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              <h3 class="section-title color-section-title">Hub75 Display Colors</h3>
+              <button id="resetDisplayColorsBtn" class="reset-colors-btn" type="button" title="Reset display colors" aria-label="Reset display colors" onclick="resetDisplayColors()">
+                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                  style="width: 14px; height: 14px; margin-right: 4px;">
+                  style="width: 18px; height: 18px;">
                   <polyline points="1 4 1 10 7 10"></polyline>
                   <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
                 </svg>
-                Reset
               </button>
 
               <!-- Color Mode Selector -->
@@ -331,7 +371,7 @@
                   <h3>Display Mode</h3>
                 </div>
                 <div class="display-mode-grid">
-                  <button id="displayColorModeGradient" class="display-color-mode-btn active">
+                  <button id="displayColorModeGradient" class="display-color-mode-btn active" aria-pressed="true">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="0" style="width: 18px; height: 18px; margin-right: 6px;">
                       <rect x="4" y="4" width="16" height="3" fill="currentColor" opacity="1"></rect>
@@ -342,7 +382,7 @@
                     </svg>
                     Gradient
                   </button>
-                  <button id="displayColorModeSpiral" class="display-color-mode-btn">
+                  <button id="displayColorModeSpiral" class="display-color-mode-btn" aria-pressed="false">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
@@ -355,7 +395,7 @@
                     </svg>
                     Spiral/Vortex
                   </button>
-                  <button id="displayColorModePlasma" class="display-color-mode-btn">
+                  <button id="displayColorModePlasma" class="display-color-mode-btn" aria-pressed="false">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
@@ -365,7 +405,7 @@
                     </svg>
                     Plasma Effect
                   </button>
-                  <button id="displayColorModeRadial" class="display-color-mode-btn">
+                  <button id="displayColorModeRadial" class="display-color-mode-btn" aria-pressed="false">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
@@ -375,7 +415,7 @@
                     </svg>
                     Radial Pulse
                   </button>
-                  <button id="displayColorModeDualSpiral" class="display-color-mode-btn">
+                  <button id="displayColorModeDualSpiral" class="display-color-mode-btn" aria-pressed="false">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
@@ -386,7 +426,7 @@
                     </svg>
                     Dual Spiral
                   </button>
-                  <button id="displayColorModeDualCircle" class="display-color-mode-btn">
+                  <button id="displayColorModeDualCircle" class="display-color-mode-btn" aria-pressed="false">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
@@ -407,7 +447,7 @@
                     <span id="gradientTopColorHex" class="fade" style="font-size: 0.9rem;">#FFA393</span>
                   </div>
                   <div style="display: flex; align-items: center; gap: 15px;">
-                    <input type="color" id="gradientTopColorPicker" value="#FFA393"
+                    <input type="color" id="gradientTopColorPicker" aria-labelledby="gradientTopColorLabel" value="#FFA393"
                       style="width: 60px; height: 40px; border: 2px solid var(--acc1-color); border-radius: 8px; cursor: pointer; background: transparent;">
                     <div style="flex: 1; display: flex; gap: 8px; flex-wrap: wrap;">
                       <button class="color-preset-btn" data-color="#FFA393" data-target="gradientTop"
@@ -433,7 +473,7 @@
                     <span id="gradientBottomColorHex" class="fade" style="font-size: 0.9rem;">#FF2B5B</span>
                   </div>
                   <div style="display: flex; align-items: center; gap: 15px;">
-                    <input type="color" id="gradientBottomColorPicker" value="#FF2B5B"
+                    <input type="color" id="gradientBottomColorPicker" aria-labelledby="gradientBottomColorLabel" value="#FF2B5B"
                       style="width: 60px; height: 40px; border: 2px solid var(--acc1-color); border-radius: 8px; cursor: pointer; background: transparent;">
                     <div style="flex: 1; display: flex; gap: 8px; flex-wrap: wrap;">
                       <button class="color-preset-btn" data-color="#FF2B5B" data-target="gradientBottom"
@@ -473,7 +513,7 @@
                   </div>
                 </div>
                 <input class="spiral-thickness-slider" type="range" min="0" max="255" value="128"
-                  id="dualSpiralThicknessSlider" style="width: 100%;">
+                  id="dualSpiralThicknessSlider" aria-labelledby="effectOption1Label" style="width: 100%;">
               </div>
 
               <!-- Effect Option 2: Speed Control (shown for modes 4 and 5) -->
@@ -486,7 +526,7 @@
                   </div>
                 </div>
                 <input class="spiral-thickness-slider" type="range" min="0" max="255" value="128"
-                  id="dualCircleThicknessSlider" style="width: 100%;">
+                  id="dualCircleThicknessSlider" aria-labelledby="effectOption2Label" style="width: 100%;">
               </div>
 
               <!-- Effect Option 3: Direction/Invert Control (shown for modes 4 and 5) -->
@@ -499,7 +539,7 @@
                       style="font-size: 0.8rem; color: var(--white2-color); margin-top: 4px; display: block;">Normal</span>
                   </div>
                   <label class="direction-toggle-switch">
-                    <input type="checkbox" id="directionInvertToggle" onchange="toggleDirectionInvert()">
+                    <input type="checkbox" id="directionInvertToggle" aria-label="Invert effect direction" onchange="toggleDirectionInvert()">
                     <span class="direction-toggle-slider"></span>
                   </label>
                 </div>
@@ -508,15 +548,14 @@
 
             <!-- Cheek Panel Colors -->
             <div class="settings-section" style="margin-top: 30px; position: relative;">
-              <h3 class="section-title">Cheek Panel Colors</h3>
-              <button id="resetColorsBtn" class="reset-colors-btn" onclick="resetCheekColors()">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              <h3 class="section-title color-section-title">Cheek Panel Colors</h3>
+              <button id="resetColorsBtn" class="reset-colors-btn" type="button" title="Reset cheek colors" aria-label="Reset cheek colors" onclick="resetCheekColors()">
+                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                  style="width: 14px; height: 14px; margin-right: 4px;">
+                  style="width: 18px; height: 18px;">
                   <polyline points="1 4 1 10 7 10"></polyline>
                   <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
                 </svg>
-                Reset
               </button>
 
               <!-- Background Color -->
@@ -526,7 +565,7 @@
                   <span id="bgColorHex" class="fade" style="font-size: 0.9rem;">#FF446C</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 15px;">
-                  <input type="color" id="bgColorPicker" value="#FF446C"
+                  <input type="color" id="bgColorPicker" aria-label="Cheek background color" value="#FF446C"
                     style="width: 60px; height: 40px; border: 2px solid var(--acc1-color); border-radius: 8px; cursor: pointer; background: transparent;">
                   <div style="flex: 1; display: flex; gap: 8px; flex-wrap: wrap;">
                     <button class="color-preset-btn" data-color="#FF446C" data-target="bg" style="background: #FF446C;"
@@ -550,7 +589,7 @@
                   <span id="fadeColorHex" class="fade" style="font-size: 0.9rem;">#F9826C</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 15px;">
-                  <input type="color" id="fadeColorPicker" value="#F9826C"
+                  <input type="color" id="fadeColorPicker" aria-label="Cheek fade color" value="#F9826C"
                     style="width: 60px; height: 40px; border: 2px solid var(--acc1-color); border-radius: 8px; cursor: pointer; background: transparent;">
                   <div style="flex: 1; display: flex; gap: 8px; flex-wrap: wrap;">
                     <button class="color-preset-btn" data-color="#F9826C" data-target="fade"
@@ -578,7 +617,7 @@
                   <h3>Enable Features</h3>
                 </div>
                 <div class="display-mode-grid">
-                  <button id="tapDetectionBtn" class="display-color-mode-btn active">
+                  <button id="tapDetectionBtn" class="display-color-mode-btn active" aria-pressed="true">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
@@ -591,7 +630,7 @@
                     </svg>
                     Tap
                   </button>
-                  <button id="pettingDetectionBtn" class="display-color-mode-btn active">
+                  <button id="pettingDetectionBtn" class="display-color-mode-btn active" aria-pressed="true">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
@@ -605,7 +644,7 @@
                     </svg>
                     Petting
                   </button>
-                  <button id="tiltDetectionBtn" class="display-color-mode-btn active">
+                  <button id="tiltDetectionBtn" class="display-color-mode-btn active" aria-pressed="true">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
@@ -620,7 +659,7 @@
                     </svg>
                     Tilt
                   </button>
-                  <button id="upsideDownDetectionBtn" class="display-color-mode-btn active">
+                  <button id="upsideDownDetectionBtn" class="display-color-mode-btn active" aria-pressed="true">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
@@ -631,7 +670,7 @@
                     </svg>
                     Upside Down
                   </button>
-                  <button id="boopToggleBtn" class="display-color-mode-btn">
+                  <button id="boopToggleBtn" class="display-color-mode-btn" aria-pressed="false">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                       style="width: 18px; height: 18px; margin-right: 6px;">
@@ -647,7 +686,7 @@
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
                   <h3 style="margin: 0;">Tap Sensitivity</h3>
                 </div>
-                <input type="range" id="tapSensitivitySlider" class="spiral-thickness-slider" min="0" max="100"
+                <input type="range" id="tapSensitivitySlider" aria-label="Tap sensitivity" class="spiral-thickness-slider" min="0" max="100"
                   value="50" style="width: 100%;">
                 <div style="display: flex; justify-content: space-between; margin-top: 5px;">
                   <span class="fade" style="font-size: 0.75rem;">Very Sensitive</span>
@@ -661,7 +700,7 @@
                   <h3 style="margin: 0;">Glitch Intensity</h3>
                   <span id="glitchIntensityValue" class="fade" style="font-size: 0.9rem;">50%</span>
                 </div>
-                <input type="range" id="glitchIntensitySlider" class="spiral-thickness-slider" min="0" max="100"
+                <input type="range" id="glitchIntensitySlider" aria-label="Glitch intensity" class="spiral-thickness-slider" min="0" max="100"
                   value="50" style="width: 100%;">
                 <div style="display: flex; justify-content: space-between; margin-top: 5px;">
                   <span class="fade" style="font-size: 0.75rem;">Subtle</span>
@@ -689,7 +728,7 @@
                     <h3 style="margin: 0;">Trigger Intensity</h3>
                     <span id="manualGlitchIntensityValue" class="fade" style="font-size: 0.9rem;">50%</span>
                   </div>
-                  <input type="range" id="manualGlitchIntensitySlider" class="spiral-thickness-slider" min="0"
+                  <input type="range" id="manualGlitchIntensitySlider" aria-label="Trigger intensity" class="spiral-thickness-slider" min="0"
                     max="100" value="50" style="width: 100%;">
                   <div style="display: flex; justify-content: space-between; margin-top: 5px;">
                     <span class="fade" style="font-size: 0.75rem;">Subtle</span>
@@ -729,7 +768,7 @@
                     <h3 style="margin: 0;">Speed</h3>
                     <span class="fade">0 is off</span>
                   </div>
-                  <input type="range" id="fanSpeedSlider" class="spiral-thickness-slider" min="0" max="100" value="0"
+                  <input type="range" id="fanSpeedSlider" aria-label="Fan speed" class="spiral-thickness-slider" min="0" max="100" value="0"
                     style="width: 100%;">
                 </div>
               </div>

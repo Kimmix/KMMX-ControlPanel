@@ -60,6 +60,7 @@ const readCharacteristic = name => bleManager.enqueue(() => bleManager.get(name)
 window.writeBLE = (name, ...values) => bleManager.write(name, values.length === 1 ? values[0] : values);
 
 function setSettingsBleLoading(isLoading) {
+  window.setConnectionLoading?.(isLoading);
   document.getElementById('s-pill')?.classList.toggle('ble-loading', isLoading);
   const settingsPage = document.getElementById('page-settings');
   settingsPage?.classList.toggle('settings-loading', isLoading);

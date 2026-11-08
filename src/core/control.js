@@ -27,7 +27,9 @@ function createButtonGrid({ containerId, items, buttonClass = 'exp-btn', countEl
         const button = document.getElementById(buttonId);
         if (!button) return;
         activeButton?.classList.remove('active');
+        activeButton?.setAttribute('aria-pressed', 'false');
         button.classList.add('active');
+        button.setAttribute('aria-pressed', 'true');
         activeButton = button;
     };
 
@@ -38,6 +40,7 @@ function createButtonGrid({ containerId, items, buttonClass = 'exp-btn', countEl
         button.className = `btn-base ${buttonClass}${item.src ? '' : ' placeholder'}`;
         button.title = item.name;
         button.type = 'button';
+        button.setAttribute('aria-pressed', 'false');
         button.addEventListener('click', () => {
             setActive(item.buttonId);
             onClick?.(item);
@@ -210,6 +213,9 @@ switchControlMode = function(mode) {
         mouthStatus.classList.add('active');
     }
 
+    eyeStatus.setAttribute('aria-pressed', mode === 'eye');
+    mouthStatus.setAttribute('aria-pressed', mode === 'mouth');
+
     // Switch control sections
     const eyeSection = document.getElementById('eyeControlSection');
     const mouthSection = document.getElementById('mouthControlSection');
@@ -336,7 +342,10 @@ function setupSettingsAccordions() {
 
         const content = document.createElement('div');
         content.className = 'settings-section-content';
-        while (title.nextSibling) content.appendChild(title.nextSibling);
+        for (const sibling of Array.from(section.childNodes)) {
+            if (sibling === title || sibling.classList?.contains('reset-colors-btn')) continue;
+            content.appendChild(sibling);
+        }
         section.appendChild(content);
 
         title.tabIndex = 0;
@@ -477,7 +486,10 @@ function updateDisplayModeUI(mode) {
     const showOptions = mode === 4 || mode === 5;
     const shape = mode === 4 ? 'Spiral' : mode === 5 ? 'Circle' : 'Gradient';
 
-    displayModeButtons.forEach((button, index) => button?.classList.toggle('active', index === mode));
+    displayModeButtons.forEach((button, index) => {
+        button?.classList.toggle('active', index === mode);
+        button?.setAttribute('aria-pressed', index === mode);
+    });
     if (customGradientColors) customGradientColors.style.display = showColors ? 'block' : 'none';
     if (gradientBottomColorContainer) gradientBottomColorContainer.style.display = showColors ? 'block' : 'none';
     if (gradientPreviewContainer) gradientPreviewContainer.style.display = mode === 0 ? 'block' : 'none';
@@ -706,6 +718,7 @@ function updateMotionFeatureUI(featureBit) {
 
     if (buttons[featureBit]) {
         const isEnabled = (motionEnableFlags & (1 << featureBit)) !== 0;
+        buttons[featureBit].setAttribute('aria-pressed', isEnabled);
         if (isEnabled) {
             buttons[featureBit].classList.add('active');
         } else {

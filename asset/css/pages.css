@@ -524,3 +524,7 @@
   max-width: 900px;
   margin: 0 auto;
 }
+
+/* Reserve the accent for selected controls rather than idle decoration. */
+.display-color-mode-btn:not(.active) { box-shadow: none; }
+.settings-section { margin-bottom: 20px; }

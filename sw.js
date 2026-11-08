@@ -1,7 +1,7 @@
 // KMMX Control Panel - Service Worker
-// Version 1.0.19
+// Version 1.0.23
 
-const CACHE_NAME = 'kmmx-control-v1.0.19';
+const CACHE_NAME = 'kmmx-control-v1.0.23';
 
 // Assets to cache on install
 const PRECACHE_ASSETS = [

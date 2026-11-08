@@ -109,7 +109,8 @@ equality, not numerical ordering. Matching accepted/applied revisions mean the
 settings reached processing. Mic faults can prevent application.
 The status version changed because saved revision, save state, and storage errors
 were removed. Update both panel and firmware for tuning; mismatched versions retain
-basic controls. Settings and calibration payloads and all three UUIDs are unchanged.
+basic controls. Status and calibration payloads and all three UUIDs are unchanged. Settings use the original 10-byte v2 payload. Panels must check both versions
+before tuning; basic lip-sync on/off remains compatible.
 
 Status is sent at 10 Hz while connected, plus gate, calibration, revision, health, and
 result transitions. READ is authoritative on reconnect; do not replay browser defaults.
@@ -120,7 +121,8 @@ level. Calibration reports a closed gate and zero opening.
 **Signal behavior:** Open at RMS >= threshold. Close after 80 ms continuously below
 80% of threshold. A threshold change re-evaluates on the next audio frame without the
 old hold timer. Sustained speech never changes the threshold. While open, target
-opening is `pow(clamp(RMS * gain / 80, 0, 1), 0.8)`; otherwise zero. Response attack/
+opening is `pow(clamp(max(RMS - threshold, 0) * gain / 80, 0, 1), 0.8)`; otherwise zero. At defaults the target starts above RMS 13 and reaches full
+opening at RMS 93. Response attack/
 release constants in milliseconds: Snappy 25/70, Natural 50/120, Smooth 90/200.
 The 8 kHz, 256-sample analysis cadence is nominally 32 ms; browser writes also incur
 BLE/queue latency. Shape switching needs a 15% margin for two consecutive frames.
@@ -146,7 +148,7 @@ characteristic because persistence never had a dedicated characteristic.
 **Panel:** Noise rejection and mouth size use logarithmic mappings
 `low * pow(high/low, t)` for slider fraction t in 0–1. Display pending edits separately
 from accepted readback; serialize settings writes and reads and keep only the latest
-queued slider update. Use the same linear meter scale for signal and threshold:
+queued slider update. Response presets adjust timing only; keep Mouth size logarithmic. Use the same linear meter scale for signal and threshold:
 `max(100, threshold * 1.25)`. Show actionable calibration/mic failures and explain that reboot resets tuning.
 
 ### LED Brightness Control
@@ -165,7 +167,7 @@ queued slider update. Use the same linear meter scale for signal and threshold:
 | Reboot | `e5f6a7b8-c9d0-4e5f-a0b1-2c3d4e5f6a7b` | WRITE | `uint8_t` (0/1) | Triggers system reboot. Write non-zero value to reboot. |
 | Slot Machine Enable | `a1a2a3a4-b1b2-4c1c-d1d2-e1e2e3e4e5f5` | READ, WRITE | `uint8_t` (0/1) | `1` starts game mode; `0` stops it and restores the normal face. |
 
-While game mode is enabled, a completed proximity boop spins the three reels. Holding the sensor does not repeat a spin; the player must release and boop again. The proximity sensor cannot start game mode by itself.
+While game mode is enabled, a completed proximity boop spins the three reels. Holding the sensor does not repeat a spin; the player must release and boop again. Wins flash the horn LED, losses dim it, and its previous brightness is restored after the result. The proximity sensor cannot start game mode by itself.
 
 ### Motion Detection & Glitch Control
 

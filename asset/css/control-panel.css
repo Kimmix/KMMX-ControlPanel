@@ -36,7 +36,7 @@
   height: 15px;
   width: auto;
   filter: drop-shadow(-2px 0 2px var(--pill-glow-color)) drop-shadow(2px 0 2px var(--pill-glow-color));
-  animation: pulsate 1.2s infinite ease-in-out alternate;
+  animation: none;
 }
 
 .status-pill > rect {
@@ -49,13 +49,10 @@
   animation: none;
 }
 
-.status-pill.ble-writing {
-  animation: blePulse 0.4s ease-in-out 2;
-}
-
+.status-pill.ble-writing,
 .status-pill.ble-loading {
-  --pill-color: var(--acc1-color);
-  --pill-glow-color: rgba(249, 130, 108, 0.75);
+  --pill-color: #60a5fa;
+  --pill-glow-color: #60a5fa8f;
   animation: blePulse 0.7s ease-in-out infinite;
 }
 
@@ -908,17 +905,35 @@ input[type="color"]::-moz-color-swatch {
 }
 
 /* Reset Colors Button */
+.color-section-title {
+  position: relative;
+  margin-top: 0;
+  min-height: 44px;
+  box-sizing: border-box;
+  padding-right: 108px;
+}
+.color-section-title::after {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+}
 .reset-colors-btn {
   position: absolute;
-  top: -10px;
-  right: 0;
-  height: 32px;
-  display: inline-flex;
+  top: 0;
+  right: 52px;
+  width: 44px;
+  margin: 0;
+  min-height: 44px;
+  display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px 14px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 10px;
+  background: transparent;
+  border: 1px solid transparent;
   border-radius: 8px;
   color: var(--white-color);
   font-size: 0.85rem;
@@ -1078,3 +1093,107 @@ input[type="color"]::-moz-color-swatch {
   opacity: 0.9;
 }
 
+
+/* Keep connection feedback readable beside the shared header. */
+.status-header {
+  top: max(12px, env(safe-area-inset-top));
+  right: 15px;
+  max-width: 145px;
+  text-align: right;
+  color: var(--white2-color);
+  font-size: 0.75rem;
+}
+.status-header .status-pill {
+  display: inline-block;
+  width: 32px;
+  height: 10px;
+  margin: 6px 0 0 6px;
+}
+#statusReconnect {
+  display: block;
+  margin-left: auto;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--acc1-color);
+  border-radius: 10px;
+  background: var(--black3-color);
+  color: var(--white-color);
+  font: inherit;
+  cursor: pointer;
+}
+#statusReconnect[hidden] { display: none; }
+button.status-item { font: inherit; text-align: left; color: var(--white-color); }
+.value-display, output { font-variant-numeric: tabular-nums; }
+.value-display { min-width: 4ch; text-align: right; }
+
+.header .dotted-array { visibility: hidden; width: 130px; margin-right: 0; flex-shrink: 0; }
+
+/* Audio tuning keeps live input beside its threshold control. */
+.lip-sync-controls { display: flex; flex-direction: column; gap: 20px; }
+.lip-sync-controls p { margin: 0; }
+.lip-sync-field { display: flex; flex-direction: column; gap: 12px; }
+.lip-sync-label { display: flex; align-items: center; justify-content: space-between; gap: 16px; font-weight: 400; }
+.lip-sync-label output, #visemeReading { font-variant-numeric: tabular-nums; }
+.lip-sync-controls .lip-sync-help { font-size: 0.85rem; font-weight: 400; line-height: 1.5; color: var(--white2-color, #bbb); }
+#visemeMeter { height: 14px; position: relative; background: var(--black3-color, #333); border-radius: 3px; }
+#visemeMeterFill { height: 100%; width: 0; max-width: 100%; background: var(--acc1-color, #5ac); border-radius: inherit; }
+#visemeMeterGate { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--white-color, #fff); left: 13%; transform: translateX(-1px); }
+.lip-sync-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.lip-sync-actions button { min-height: 44px; }
+.lip-sync-controls [hidden] { display: none; }
+#visemeFeedback { font-size: 0.9rem; font-weight: 400; }
+.lip-sync-more { border-top: 1px solid var(--black3-color, #333); padding-top: 16px; }
+.lip-sync-more summary { cursor: pointer; font-size: 0.95rem; font-weight: 400; }
+.lip-sync-more > .lip-sync-controls { padding-top: 20px; }
+.lip-sync-response { margin-bottom: 0; }
+.lip-sync-response button { display: flex; align-items: center; gap: 8px; min-height: 44px; }
+.lip-sync-response svg { width: 18px; height: 18px; flex-shrink: 0; }
+.lip-sync-response button:disabled { opacity: 0.5; cursor: default; }
+.lip-sync-response button:focus-visible { outline: 2px solid var(--acc1-color); outline-offset: 2px; }
+
+/* Keep connection updates available to screen readers without a visible label. */
+#connectionStatus {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.calibration-trigger { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 48px; }
+.calibration-trigger svg { width: 20px; height: 20px; }
+.calibration-trigger:disabled { opacity: 0.5; cursor: default; }
+.calibration-trigger:focus-visible { outline: 2px solid var(--acc1-color); outline-offset: 2px; }
+#calibrationDialog {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  max-height: calc(100dvh - 48px);
+  overflow-y: auto;
+  width: min(400px, calc(100vw - 48px));
+  box-sizing: border-box;
+  padding: 24px;
+  border: 1px solid var(--white2-color);
+  border-radius: 12px;
+  background: var(--black-color, #111);
+  color: var(--white-color, #fff);
+  font: inherit;
+}
+#calibrationDialog::backdrop { background: rgba(0, 0, 0, 0.7); }
+#calibrationDialog h3 { margin: 0 0 16px; }
+#calibrationDialog p { margin-bottom: 20px; line-height: 1.5; font-weight: 400; }
+#calibrationDialog button { font: inherit; }
+
+.reset-colors-btn:focus-visible { outline: 2px solid var(--acc1-color); outline-offset: 2px; }
+
+.status-pill.ble-error:not(.inactive) { --pill-color: #fbbf24; --pill-glow-color: #fbbf248f; animation: none; }
+.status-pill.inactive { --pill-color: var(--acc2b-color); animation: none; }
+#statusIndicator { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 0; background: transparent; border: 0; cursor: pointer; }
+#statusIndicator .status-pill { margin: 0; }
+#statusIndicator:focus-visible { outline: 2px solid var(--acc1-color); outline-offset: 2px; }
+#statusDescription { position: fixed; inset: 60px 15px auto auto; margin: 0; max-width: min(300px, calc(100vw - 48px)); padding: 12px 16px; border: 1px solid var(--white2-color); border-radius: 8px; background: var(--black-color); color: var(--white-color); font: inherit; font-size: 0.85rem; }
+@media (prefers-reduced-motion: reduce) { .status-pill.ble-writing, .status-pill.ble-loading { animation: none; } }

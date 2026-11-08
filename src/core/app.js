@@ -146,8 +146,57 @@ const timerElement = document.getElementById("timer");
 //? Connection status
 const statusElement = document.getElementById("status");
 const pill = document.getElementById("s-pill");
+let connectionActive = false;
+let connectionWriting = false;
+let visemeWriting = false;
+let connectionLoading = false;
+let connectionError = '', visemeError = '';
+let busyUntil = 0, busyVisible = false, busyTimer = null;
+function updateConnectionStatus() {
+    clearTimeout(busyTimer);
+    const working = connectionActive && (connectionWriting || visemeWriting || connectionLoading);
+    const now = performance.now();
+    if (working && !busyVisible) busyUntil = now + 200;
+    busyVisible = connectionActive && (working || now < busyUntil);
+    if (busyVisible && !working) busyTimer = setTimeout(updateConnectionStatus, busyUntil - now);
+    const error = connectionError || visemeError;
+    const message = !connectionActive ? 'Disconnected' : error ? `BLE operation failed: ${error}` : busyVisible ? 'Updating settings…' : 'Connected';
+    document.getElementById('connectionStatus').textContent = message;
+    document.getElementById('statusDescription').textContent = message;
+    document.getElementById('statusIndicator').setAttribute('aria-label', message);
+    document.getElementById('statusIndicator').title = message;
+    document.getElementById('statusReconnect').hidden = connectionActive;
+    pill?.classList.toggle('ble-writing', busyVisible);
+    pill?.classList.toggle('ble-error', connectionActive && Boolean(error));
+}
+window.setVisemeWriting = (writing, error = '') => {
+    visemeWriting = writing;
+    visemeError = error;
+    updateConnectionStatus();
+};
+window.setConnectionLoading = loading => {
+    connectionLoading = loading;
+    updateConnectionStatus();
+};
+window.addEventListener('ble-writing', event => {
+    if (event.detail && !connectionWriting) connectionError = '';
+    connectionWriting = event.detail;
+    updateConnectionStatus();
+});
+window.addEventListener('ble-error', event => {
+    connectionError = event.detail;
+    updateConnectionStatus();
+});
 function isStatusConnected(bool) {
+    connectionActive = bool;
+    if (!bool) {
+        connectionWriting = connectionLoading = visemeWriting = false;
+        connectionError = visemeError = '';
+        busyUntil = 0;
+    }
+    updateConnectionStatus();
     if (bool) {
+        document.getElementById('disconnectPopup')?.classList.remove('show');
         timerInterval = setInterval(() => {
             timerValue++;
             updateStatusAndTimer();
