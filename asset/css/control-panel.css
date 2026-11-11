@@ -1059,7 +1059,7 @@ button.status-item { font: inherit; text-align: left; color: var(--white-color);
 .viseme-scale input[type="range"] {
   min-width: 0;
   height: var(--viseme-slider-height);
-  background: linear-gradient(to right, var(--acc2-color) var(--fill), #ffffff30 var(--fill)) center / 100% 4px no-repeat;
+  background: linear-gradient(to right, var(--acc1-color) var(--fill), #ffffff30 var(--fill)) center / 100% 4px no-repeat;
 }
 .viseme-scale input[type="range"]::-webkit-slider-runnable-track { height: 16px; }
 .viseme-scale input[type="range"]::-webkit-slider-thumb { width: 8px; height: 16px; border-radius: 2px; background: white; }
