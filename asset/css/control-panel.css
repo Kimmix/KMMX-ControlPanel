@@ -1044,6 +1044,18 @@ button.status-item { font: inherit; text-align: left; color: var(--white-color);
 .lip-sync-controls p { margin: 0; }
 .lip-sync-field { display: flex; flex-direction: column; gap: 8px; }
 .lip-sync-field .slider-bar { margin-block: 0; }
+.viseme-score { display: grid; grid-template-columns: 5.5em minmax(0,1fr); align-items: center; gap: 0.75rem; font-variant-numeric: tabular-nums; }
+.score-track, #shapeHistory { position: relative; background: rgba(255,255,255,.12); }
+.score-track { height: .4rem; border-radius: .2rem; }
+.score-track i { display: block; height: 100%; background: currentColor; opacity: .3; border-radius: inherit; }
+.score-track[data-rank="1"] i { opacity: .95; }
+.score-track[data-rank="2"] i { opacity: .65; }
+.score-track b { position: absolute; top: -.2rem; height: .8rem; border-left: 2px solid currentColor; }
+.viseme-score small { border: 1px solid currentColor; padding: 0 .2em; border-radius: .3em; font-size: .65em; }
+#visemeMeterGate.open { background: white; box-shadow: 0 0 3px white; }
+#shapeHistory { height: 1rem; margin: .25rem 0 .5rem; overflow: hidden; }
+#shapeHistory span { position: absolute; height: 100%; background: rgba(255,255,255,.18); border-inline-start: 1px solid currentColor; text-align: center; font-size: .7rem; line-height: 1rem; overflow: hidden; }
+.viseme-score:has(small:not([hidden])) { color: var(--acc2-color); }
 .lip-sync-label { display: flex; align-items: center; justify-content: space-between; gap: 16px; font-weight: 400; }
 .lip-sync-label output, #visemeReading { font-variant-numeric: tabular-nums; }
 .lip-sync-controls .lip-sync-help { font-size: 0.85rem; font-weight: 400; line-height: 1.5; color: var(--white2-color, #bbb); }

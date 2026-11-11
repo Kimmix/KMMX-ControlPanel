@@ -32,10 +32,13 @@
   const fromSlider = (t, low, high) => low * Math.pow(high / low, t / 100);
   const toSlider = (v, low, high) => Math.max(0, Math.min(100, 100 * Math.log(v / low) / Math.log(high / low)));
   class Client {
-    constructor(manager, changed = () => {}) { this.manager = manager; this.changed = changed; this.epoch = 0; this.request = 0; this.disconnect(); }
+    constructor(manager, changed = () => {}, scoresChanged = () => {}) { this.scoresChanged = scoresChanged; this.manager = manager; this.changed = changed; this.epoch = 0; this.request = 0; this.disconnect(); }
     disconnect() {
       ++this.epoch; ++this.request;
       clearInterval(this.poll);
+      this.scoreCharacteristic?.removeEventListener('characteristicvaluechanged', this.scoreListener);
+      this.scoreCharacteristic = null;
+      this.scoresChanged(null);
       this.characteristic?.removeEventListener('characteristicvaluechanged', this.listener);
       this.characteristic = null; this.confirmed = null; this.status = null; this.supported = false; this.pending = false;
       this.error = 'Connect to tune lip sync.';
@@ -65,6 +68,21 @@
           }
           if (epoch !== this.epoch) return;
           this.supported = true; this.error = ''; this.changed(this);
+          const scores = this.manager.get('visemeScores');
+          if (!scores) return;
+          const receive = view => {
+            if (epoch === this.epoch) this.scoresChanged(view?.byteLength === 5
+              ? Array.from({ length: 5 }, (_, i) => view.getUint8(i)) : null);
+          };
+          this.scoreCharacteristic = scores;
+          this.scoreListener = event => receive(event.target.value);
+          scores.addEventListener('characteristicvaluechanged', this.scoreListener);
+          try {
+            await scores.startNotifications();
+            if (epoch === this.epoch) receive(await scores.readValue());
+          } catch {
+            if (epoch === this.epoch) this.scoresChanged(null);
+          }
         });
       } catch (error) { if (epoch === this.epoch) { this.error = error.message; this.changed(this); } }
     }

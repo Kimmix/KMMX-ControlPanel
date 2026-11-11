@@ -27,6 +27,7 @@ const characteristicDefinitions = [
   ['fanSpeed', 'fanSpeed', false],
   ['visemeSettings', 'visemeSettings', false],
   ['visemeCalibration', 'visemeCalibration', false],
+  ['visemeScores', 'visemeScores', false],
   ['visemeStatus', 'visemeStatus', false],
   ['orientation', 'orientation', false]
 ];

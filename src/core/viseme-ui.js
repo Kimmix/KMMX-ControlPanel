@@ -4,12 +4,16 @@ const visemeElement = id => document.getElementById(id);
 const responseButtons = [0, 1, 2].map(value => visemeElement(`visemeResponse${value}`));
 let inputDisplay = null, inputTarget = 0, inputMaximum = 100, inputFrame = null, inputTime = null;
 let inputSamples = [];
+function smoothLevel(value, target, elapsed) {
+  const duration = target > value ? 25 : 90;
+  value += (target - value) * (1 - Math.exp(-elapsed / duration));
+  if (Math.abs(target - value) < 0.05) value = target;
+  return value;
+}
 function animateVisemeInput(now) {
   const elapsed = inputTime === null ? 0 : Math.max(0, now - inputTime);
   inputTime = now;
-  const duration = inputTarget > inputDisplay ? 25 : 90;
-  inputDisplay += (inputTarget - inputDisplay) * (1 - Math.exp(-elapsed / duration));
-  if (Math.abs(inputTarget - inputDisplay) < 0.05) inputDisplay = inputTarget;
+  inputDisplay = smoothLevel(inputDisplay, inputTarget, elapsed);
   visemeElement('visemeMeterFill').style.width = `${Math.min(100, inputDisplay / inputMaximum * 100)}%`;
   visemeElement('visemeMeter').setAttribute('aria-valuenow', inputDisplay.toFixed(1));
   visemeElement('visemeReading').textContent = inputDisplay.toFixed(1);
@@ -83,7 +87,92 @@ function renderVisemeTuning(client) {
   visemeElement('visemeFeedback').textContent = panelFeedback;
   visemeElement('visemeFeedback').hidden = !panelFeedback;
 }
-const visemeClient = new VisemeV2.Client(bleManager, renderVisemeTuning);
+const scorePanel = visemeElement('visemeScores');
+const tracks = [...scorePanel.querySelectorAll('.score-track')];
+const historyStrip = visemeElement('shapeHistory');
+let weights = null, latestStatus = null, historyFrame;
+let samples = [];
+function drawHistory() {
+  const now = performance.now(), start = now - 2000;
+  samples = samples.filter(sample => sample.end > start);
+  const runs = [];
+  for (const sample of samples) {
+    const prev = runs[runs.length - 1];
+    if (sample.shape === null) continue;
+    if (prev && prev.shape === sample.shape && prev.end === sample.at) prev.end = sample.end;
+    else runs.push({ ...sample });
+  }
+  while (historyStrip.childElementCount > runs.length) historyStrip.lastElementChild.remove();
+  const stripWidth = historyStrip.clientWidth;
+  runs.forEach((run, i) => {
+    const segment = historyStrip.children[i] || historyStrip.appendChild(document.createElement('span'));
+    const left = Math.max(run.at, start);
+    const width = Math.max(0, Math.min(run.end, now) - left) / 2000;
+    segment.style.left = (left - start) / 20 + '%';
+    segment.style.width = width * 100 + '%';
+    const label = width * stripWidth >= 20 ? run.shape : '';
+    if (segment.textContent !== label) segment.textContent = label;
+  });
+  historyStrip.setAttribute('aria-label', runs.map(r => r.shape).join(', ') || 'No recent shapes');
+  historyFrame = samples.length ? requestAnimationFrame(drawHistory) : null;
+}
+function renderMix() {
+  scorePanel.hidden = !weights;
+  visemeElement('visemeMeterGate').classList.toggle('open', Boolean(weights && latestStatus?.gate));
+  if (!weights) return;
+  const sorted = [...weights].sort((a,b) => b-a);
+  tracks.forEach((track,i) => {
+    const value = weights[i];
+    track.dataset.rank = value && value === sorted[0] ? 1 : value && value === sorted[1] ? 2 : 0;
+    track.previousElementSibling.querySelector('small').hidden = !(latestStatus?.opening && latestStatus.shape === i);
+    const tick = track.lastElementChild;
+    tick.hidden = !(latestStatus?.gate && latestStatus.shape !== i && value === sorted[0] && value > sorted[1] && sorted[1]);
+    tick.style.left = sorted[1] * 115 / 255 + '%';
+  });
+}
+let displayedScores = null, scoreFrame = null, scoreTime = 0;
+function animateScores(now) {
+  scoreFrame = null;
+  let moving = false;
+  tracks.forEach((track, i) => {
+    const target = weights[i] * 100 / 255;
+    const pct = smoothLevel(displayedScores[i], target, now - scoreTime);
+    displayedScores[i] = pct;
+    if (pct !== target) moving = true;
+    track.firstElementChild.style.width = pct + '%';
+    track.setAttribute('aria-valuenow', Math.round(pct));
+  });
+  scoreTime = now;
+  if (moving) scoreFrame = requestAnimationFrame(animateScores);
+}
+function renderVisemeScores(bytes) {
+  weights = bytes;
+  if (bytes && scoreFrame === null) {
+    displayedScores ??= bytes.map(value => value * 100 / 255);
+    scoreTime = performance.now();
+    animateScores(scoreTime);
+  } else if (!bytes) {
+    cancelAnimationFrame(scoreFrame);
+    scoreFrame = null;
+    displayedScores = null;
+  }
+  if (!bytes) { cancelAnimationFrame(historyFrame); samples = []; drawHistory(); }
+  renderMix();
+}
+function renderStatus(client) {
+  const status = client.supported ? client.status : null;
+  if (status !== latestStatus && status && weights) {
+    const at = performance.now();
+    const prev = samples[samples.length - 1];
+    if (prev) prev.end = Math.min(prev.end, at);
+    samples.push({ at, end: at + 150, shape: status.opening ? ['AH','EE','OH','OO','TH'][status.shape] : null });
+    if (historyFrame == null) drawHistory();
+  }
+  latestStatus = status;
+  renderMix();
+  renderVisemeTuning(client);
+}
+const visemeClient = new VisemeV2.Client(bleManager, renderStatus, renderVisemeScores);
 window.visemeClient = visemeClient;
 function sendVisemeEdit() {
   clearTimeout(visemeEditTimer); visemeEditTimer = null;

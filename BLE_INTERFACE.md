@@ -68,6 +68,7 @@ new firmware retain basic controls, but their cached advanced sliders are unsupp
 |---|---|---|---|
 | Viseme settings | `b9725d01-7546-4e0b-9b91-486e25012a02` | READ, WRITE | 10 bytes |
 | Calibration command | `b9725d02-7546-4e0b-9b91-486e25012a02` | WRITE | 1 byte |
+| Viseme scores | `b9725d05-7546-4e0b-9b91-486e25012a02` | READ, NOTIFY | 5 bytes, AH/EE/OH/OO/TH order, each 0–255 |
 | Viseme status | `b9725d03-7546-4e0b-9b91-486e25012a02` | READ, NOTIFY | 16 bytes |
 
 All multibyte fields are little-endian. Serialize fields explicitly, without C struct
