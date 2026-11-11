@@ -27,6 +27,14 @@
       throw new Error('Invalid lip-sync status. Reconnect to retry.');
     return s;
   }
+  async function readScales(characteristic) {
+    const view = await characteristic.readValue();
+    if (view.byteLength === 5) {
+      const scales = Array.from({ length: 5 }, (_, i) => view.getUint8(i));
+      if (scales.every(value => value <= 50)) return scales;
+    }
+    throw new Error('Invalid viseme scale factors.');
+  }
   const same = (a, b) => a && b && a.threshold === b.threshold && a.gain === b.gain && a.response === b.response;
   const busy = s => s && (s.calibration === 1 || s.calibration === 2);
   const fromSlider = (t, low, high) => low * Math.pow(high / low, t / 100);
@@ -34,6 +42,7 @@
   class Client {
     constructor(manager, changed = () => {}, scoresChanged = () => {}) { this.scoresChanged = scoresChanged; this.manager = manager; this.changed = changed; this.epoch = 0; this.request = 0; this.disconnect(); }
     disconnect() {
+      this.scales = null; this.scaleRequest = 0; this.resettingScales = false; this.scaleError = '';
       ++this.epoch; ++this.request;
       clearInterval(this.poll);
       this.scoreCharacteristic?.removeEventListener('characteristicvaluechanged', this.scoreListener);
@@ -68,6 +77,18 @@
           }
           if (epoch !== this.epoch) return;
           this.supported = true; this.error = ''; this.changed(this);
+          const scaleChar = this.manager.get('visemeScales');
+          if (scaleChar) {
+            try {
+              const values = await readScales(scaleChar);
+              if (epoch !== this.epoch) return;
+              this.scales = values;
+            } catch (error) {
+              if (epoch !== this.epoch) return;
+              this.scaleError = error.message;
+            }
+            this.changed(this);
+          }
           const scores = this.manager.get('visemeScores');
           if (!scores) return;
           const receive = view => {
@@ -127,6 +148,46 @@
         if (epoch === this.epoch && request === this.request) this.error = `Could not apply settings: ${error.message}`;
       } finally {
         if (epoch === this.epoch && request === this.request) { this.pending = false; this.changed(this); }
+      }
+    }
+    async submitScales(values) {
+      if (!this.scales || this.resettingScales) return;
+      const reset = values === null;
+      if (!reset && (values.length !== 5 || !values.every(v => Number.isInteger(v) && v >= 0 && v <= 50))) return;
+      const bytes = reset ? Uint8Array.of(255) : Uint8Array.from(values);
+      const epoch = this.epoch, request = ++this.scaleRequest;
+      const current = () => epoch === this.epoch && request === this.scaleRequest;
+      if (!reset) this.scales = Array.from(bytes);
+      this.resettingScales = reset; this.scaleError = ''; this.changed(this);
+      try {
+        await this.manager.enqueue(async () => {
+          if (!current()) return;
+          const characteristic = this.manager.get('visemeScales');
+          try {
+            await characteristic.writeValue(bytes);
+            if (!current()) return;
+            const actual = await readScales(characteristic);
+            if (!current()) return;
+            this.scales = actual;
+            if (!reset && actual.some((v, i) => v !== bytes[i])) this.scaleError = 'Scale factors were not applied.';
+          } catch (error) {
+            if (!current()) return;
+            this.scaleError = `Could not apply scale factors: ${error.message}`;
+            try {
+              const actual = await readScales(characteristic);
+              if (current()) this.scales = actual;
+            } catch {
+              if (current()) {
+                this.scales = null;
+                this.scaleError += ' Reconnect to read current values.';
+              }
+            }
+          }
+        }, 'viseme-scales');
+      } catch (error) {
+        if (current()) { this.scales = null; this.scaleError = error.message; }
+      } finally {
+        if (current()) { this.resettingScales = false; this.changed(this); }
       }
     }
     async calibrate(command) {

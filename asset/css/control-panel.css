@@ -1044,13 +1044,27 @@ button.status-item { font: inherit; text-align: left; color: var(--white-color);
 .lip-sync-controls p { margin: 0; }
 .lip-sync-field { display: flex; flex-direction: column; gap: 8px; }
 .lip-sync-field .slider-bar { margin-block: 0; }
-.viseme-score { display: grid; grid-template-columns: 5.5em minmax(0,1fr); align-items: center; gap: 0.75rem; font-variant-numeric: tabular-nums; }
+.viseme-actions { float: right; display: inline-flex; gap: .25rem; }
+.viseme-actions button { position: static; }
+.viseme-actions button[aria-pressed="true"] { color: var(--acc2-color); border-color: currentColor; }
+.viseme-actions button[hidden] { display: none; }
+.viseme-score { display: grid; grid-template-columns: 5.5em minmax(0,1fr); align-items: center; font-variant-numeric: tabular-nums; padding-bottom: 8px;}
 .score-track, #shapeHistory { position: relative; background: rgba(255,255,255,.12); }
 .score-track { height: .4rem; border-radius: .2rem; }
 .score-track i { display: block; height: 100%; background: currentColor; opacity: .3; border-radius: inherit; }
 .score-track[data-rank="1"] i { opacity: .95; }
 .score-track[data-rank="2"] i { opacity: .65; }
 .score-track b { position: absolute; top: -.2rem; height: .8rem; border-left: 2px solid currentColor; }
+.viseme-scale:not([hidden]) { grid-column: 1 / -1; justify-self: end; width: 50%; display: flex; align-items: center; gap: .4rem; }
+.viseme-scale input[type="range"] {
+  min-width: 0;
+  height: var(--viseme-slider-height);
+  background: linear-gradient(to right, var(--acc2-color) var(--fill), #ffffff30 var(--fill)) center / 100% 4px no-repeat;
+}
+.viseme-scale input[type="range"]::-webkit-slider-runnable-track { height: 16px; }
+.viseme-scale input[type="range"]::-webkit-slider-thumb { width: 8px; height: 16px; border-radius: 2px; background: white; }
+.viseme-scale input[type="range"]::-moz-range-thumb { width: 8px; height: 16px; border-radius: 2px; background: white; }
+.viseme-scale output { min-width: 3em; }
 .viseme-score small { border: 1px solid currentColor; padding: 0 .2em; border-radius: .3em; font-size: .65em; }
 #visemeMeterGate.open { background: white; box-shadow: 0 0 3px white; }
 #shapeHistory { height: 1rem; margin: .25rem 0 .5rem; overflow: hidden; }
@@ -1138,7 +1152,6 @@ button.status-item { font: inherit; text-align: left; color: var(--white-color);
   .expression-container { flex: none; overflow: visible; padding-bottom: 0; }
 }
 
-.viseme-configure, .lip-sync-more summary { min-height: 44px; }
 .lip-sync-more summary { align-content: center; }
 
 @media (max-width: 480px) {

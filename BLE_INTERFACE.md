@@ -69,7 +69,10 @@ new firmware retain basic controls, but their cached advanced sliders are unsupp
 | Viseme settings | `b9725d01-7546-4e0b-9b91-486e25012a02` | READ, WRITE | 10 bytes |
 | Calibration command | `b9725d02-7546-4e0b-9b91-486e25012a02` | WRITE | 1 byte |
 | Viseme scores | `b9725d05-7546-4e0b-9b91-486e25012a02` | READ, NOTIFY | 5 bytes, AH/EE/OH/OO/TH order, each 0–255 |
+| Viseme scale factors | `b9725d06-7546-4e0b-9b91-486e25012a02` | READ, WRITE | 5 bytes, or write one byte `FF` to reset |
 | Viseme status | `b9725d03-7546-4e0b-9b91-486e25012a02` | READ, NOTIFY | 16 bytes |
+
+Scale factors are unsigned tenths (0–50 = 0.0×–5.0×) in AH, EE, OH, OO, TH order. Write all five together. Invalid lengths or values leave the active set intact. Readback always returns the five active factors. Changes affect scores and mouth selection on subsequent audio frames, survive disconnect, and reset to firmware defaults on reboot or reset command. Current defaults are 35, 13, 15, 11, 10. Panels can use score monitoring alone when this optional characteristic is absent.
 
 All multibyte fields are little-endian. Serialize fields explicitly, without C struct
 padding. Each settings write replaces the complete record atomically.

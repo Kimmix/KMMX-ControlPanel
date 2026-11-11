@@ -116,6 +116,8 @@ function drawHistory() {
   historyStrip.setAttribute('aria-label', runs.map(r => r.shape).join(', ') || 'No recent shapes');
   historyFrame = samples.length ? requestAnimationFrame(drawHistory) : null;
 }
+const scoreBarMaxPercent = 50;
+const barWidth = percent => Math.min(100, percent * 100 / scoreBarMaxPercent);
 function renderMix() {
   scorePanel.hidden = !weights;
   visemeElement('visemeMeterGate').classList.toggle('open', Boolean(weights && latestStatus?.gate));
@@ -127,7 +129,7 @@ function renderMix() {
     track.previousElementSibling.querySelector('small').hidden = !(latestStatus?.opening && latestStatus.shape === i);
     const tick = track.lastElementChild;
     tick.hidden = !(latestStatus?.gate && latestStatus.shape !== i && value === sorted[0] && value > sorted[1] && sorted[1]);
-    tick.style.left = sorted[1] * 115 / 255 + '%';
+    tick.style.left = barWidth(sorted[1] * 115 / 255) + '%';
   });
 }
 let displayedScores = null, scoreFrame = null, scoreTime = 0;
@@ -139,7 +141,7 @@ function animateScores(now) {
     const pct = smoothLevel(displayedScores[i], target, now - scoreTime);
     displayedScores[i] = pct;
     if (pct !== target) moving = true;
-    track.firstElementChild.style.width = pct + '%';
+    track.firstElementChild.style.width = barWidth(pct) + '%';
     track.setAttribute('aria-valuenow', Math.round(pct));
   });
   scoreTime = now;
@@ -159,7 +161,42 @@ function renderVisemeScores(bytes) {
   if (!bytes) { cancelAnimationFrame(historyFrame); samples = []; drawHistory(); }
   renderMix();
 }
+const scaleInputs = [...scorePanel.querySelectorAll('.viseme-scale input')];
+const editScales = visemeElement('editVisemeScales');
+let editingScales = false;
+editScales.addEventListener('click', event => {
+  event.preventDefault();
+  editingScales = !editingScales;
+  if (editingScales) scorePanel.open = true;
+  renderStatus(visemeClient);
+});
+const resetScales = visemeElement('resetVisemeScales');
+scaleInputs.forEach((input, i) => input.addEventListener('input', () => {
+  const values = [...visemeClient.scales];
+  values[i] = Math.round(input.valueAsNumber * 10);
+  visemeClient.submitScales(values);
+}));
+resetScales.addEventListener('click', event => { event.preventDefault(); visemeClient.submitScales(null); });
 function renderStatus(client) {
+  if (!client.scales) editingScales = false;
+  editScales.hidden = !client.scales;
+  editScales.setAttribute('aria-pressed', String(editingScales));
+  scaleInputs.forEach((input, i) => {
+    input.parentElement.hidden = !editingScales;
+    input.disabled = !client.scales || client.resettingScales;
+    if (client.scales) {
+      const value = (client.scales[i] / 10).toFixed(1);
+      input.value = value;
+      const percent = client.scales[i] * 2;
+      input.style.setProperty('--fill', percent + '%');
+      input.setAttribute('aria-valuetext', value + ' times');
+      input.nextElementSibling.textContent = value + '\u00d7';
+    }
+  });
+  resetScales.hidden = !client.scales;
+  resetScales.disabled = client.resettingScales;
+  visemeElement('visemeScaleError').textContent = client.scaleError;
+  visemeElement('visemeScaleError').hidden = !client.scaleError;
   const status = client.supported ? client.status : null;
   if (status !== latestStatus && status && weights) {
     const at = performance.now();

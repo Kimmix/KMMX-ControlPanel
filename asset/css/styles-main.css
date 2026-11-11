@@ -7,6 +7,7 @@
 :root {
   color-scheme: dark;
   --slider-height: 36px;
+  --viseme-slider-height: 24px;
   --header-height: clamp(80px, 10vh, 140px);
   --content-bottom-space: calc(132px + env(safe-area-inset-bottom));
   --acc1-color: #dddddd;
