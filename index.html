@@ -248,13 +248,13 @@
                     </div>
                   </div>
                 </div>
-                <details id="visemeScores" class="lip-sync-more display-mode-section" hidden>
-                  <summary>Mouth shapes<span class="viseme-actions"><button id="editVisemeScales" class="reset-colors-btn" type="button" title="Adjust mouth shape sensitivity" aria-label="Adjust mouth shape sensitivity" aria-pressed="false" hidden><svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m4 16-1 5 5-1L21 7l-4-4z M14 6l4 4"/></svg></button><button id="resetVisemeScales" class="reset-colors-btn" type="button" title="Reset mouth shape sensitivity" aria-label="Reset mouth shape sensitivity" hidden><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                <div id="visemeScores" class="settings-group" hidden>
+                  <h4 class="settings-group-title">Mouth shapes<span class="viseme-actions"><button id="editVisemeScales" class="reset-colors-btn" type="button" title="Adjust mouth shape sensitivity" aria-label="Adjust mouth shape sensitivity" aria-pressed="false" hidden><svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m4 16-1 5 5-1L21 7l-4-4z M14 6l4 4"/></svg></button><button id="resetVisemeScales" class="reset-colors-btn" type="button" title="Reset mouth shape sensitivity" aria-label="Reset mouth shape sensitivity" hidden><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                   style="width: 18px; height: 18px;">
                   <polyline points="1 4 1 10 7 10"></polyline>
                   <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
-                </svg></button></span></summary>
+                </svg></button></span></h4>
                   <div class="viseme-score"><span>AH</span><span class="score-track" role="meter" aria-label="AH sound level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i><b hidden></b></span><label class="viseme-scale" hidden><input type="range" min="0" max="5" step="0.1" aria-label="AH sensitivity"><output></output></label></div>
                   <div class="viseme-score"><span>EE</span><span class="score-track" role="meter" aria-label="EE sound level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i><b hidden></b></span><label class="viseme-scale" hidden><input type="range" min="0" max="5" step="0.1" aria-label="EE sensitivity"><output></output></label></div>
                   <div class="viseme-score"><span>OH</span><span class="score-track" role="meter" aria-label="OH sound level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i><b hidden></b></span><label class="viseme-scale" hidden><input type="range" min="0" max="5" step="0.1" aria-label="OH sensitivity"><output></output></label></div>
@@ -262,10 +262,10 @@
                   <div class="viseme-score"><span>TH</span><span class="score-track" role="meter" aria-label="TH sound level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i><b hidden></b></span><label class="viseme-scale" hidden><input type="range" min="0" max="5" step="0.1" aria-label="TH sensitivity"><output></output></label></div>
                   <p id="visemeScaleError" role="status" hidden></p>
                   <div id="shapeHistory" role="img" aria-label="No recent shapes"></div>
-                </details>
+                </div>
                 <p id="visemeFeedback" role="status" aria-live="polite">Connect to adjust lip sync.</p>
-                <details class="lip-sync-more display-mode-section">
-                  <summary>More settings</summary>
+                <div class="settings-group">
+                  <h4 class="settings-group-title">More settings</h4>
                   <div class="lip-sync-controls">
                     <div class="lip-sync-field">
                       <div class="slider-bar">
@@ -292,7 +292,7 @@
                       <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                         <path d="M4 9v6M8 5v14M12 8v8M16 3v18M20 9v6" />
                       </svg>
-                      Adjust for room noise
+                      Noise calibration
                     </button>
                     <dialog id="calibrationDialog" aria-labelledby="calibrationTitle" aria-describedby="calibrationHelp">
                       <h3 id="calibrationTitle">Adjust for room noise</h3>
@@ -305,7 +305,7 @@
                       </div>
                     </dialog>
                   </div>
-                </details>
+                </div>
               </div>
             </div>
           </div>
@@ -610,8 +610,6 @@
                   <div class="lip-sync-label"><span id="orientation-yaw-label">Turn left/right</span><span id="orientation-yaw-value">—</span></div>
                   <div id="orientation-yaw" class="orientation-meter" role="group" aria-labelledby="orientation-yaw-label"><span class="orientation-fill"></span></div>
                 </div>
-                <p id="orientationStatus" class="lip-sync-help" role="status" aria-live="polite">Connect to view head movement.</p>
-                <p class="lip-sync-help">The turn reading starts from your initial direction and can slowly shift.</p>
               </div>
 
               <!-- Motion Features Grid -->
@@ -717,8 +715,8 @@
                 </div>
               </div>
               <!-- Manual Trigger Section -->
-              <details class="lip-sync-more display-mode-section" style="margin-top: 20px;">
-                <summary>Try the glitch effect</summary>
+              <div class="settings-group">
+                <h4 class="settings-group-title">Try the glitch effect</h4>
                 <div class="lip-sync-controls">
 
                 <!-- Intensity Slider -->
@@ -747,7 +745,7 @@
                   </div>
                 </div>
                 </div>
-              </details>
+              </div>
             </div>
 
             <!-- Fan Control -->
@@ -782,7 +780,6 @@
                     style="width: 100%;">
                     <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M12 10C5 2 20 1 17 8l-3 3M14 12c10-2 5 12 0 7l-2-5M11 14C8 24-1 12 6 10l4 1"/></svg>
                   </div>
-                  <div class="slider-help"><span>0% turns the fan off</span></div>
                 </div>
               </div>
             </div>
@@ -971,7 +968,7 @@
                     <span class="ble-char-uuid">UUID: a1a2a3a4-b1b2-4c1c-d1d2-e1e2e3e4e5f4</span>
                   </div>
                 </div>
-                <button id="refreshBleBtn" class="refresh-ble-button" onclick="refreshBLECharacteristics()" disabled>
+                <button id="refreshBleBtn" class="device-action-btn refresh-ble-button" onclick="refreshBLECharacteristics()" disabled>
                   <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     style="width: 16px; height: 16px; margin-right: 6px;">
@@ -981,7 +978,7 @@
                   </svg>
                   Refresh Values
                 </button>
-                <button id="rebootDeviceBtn" class="reboot-device-button" onclick="rebootDevice()" disabled>
+                <button id="rebootDeviceBtn" class="device-action-btn reboot-device-button" onclick="rebootDevice()" disabled>
                   <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     style="width: 16px; height: 16px; margin-right: 6px;">

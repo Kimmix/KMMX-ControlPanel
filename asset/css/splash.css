@@ -196,12 +196,7 @@
   transform: translateY(-2px);
 }
 
-.progress-container.active ~ .reconnect-btn {
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* Hide skip button when progress is active */
+.progress-container.active ~ .reconnect-btn,
 .progress-container.active ~ .skip-pairing-btn {
   opacity: 0;
   pointer-events: none;

@@ -167,7 +167,6 @@ let editingScales = false;
 editScales.addEventListener('click', event => {
   event.preventDefault();
   editingScales = !editingScales;
-  if (editingScales) scorePanel.open = true;
   renderStatus(visemeClient);
 });
 const resetScales = visemeElement('resetVisemeScales');

@@ -309,7 +309,8 @@
 }
 
 /* Mouth State Buttons in Grid - Same style as expression buttons */
-.mouth-state-buttons {
+.mouth-state-buttons,
+.expression-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 15px;
@@ -344,7 +345,8 @@
     font-size: 0.8rem;
   }
 
-  .mouth-state-buttons {
+  .mouth-state-buttons,
+  .expression-grid {
     gap: 12px;
     grid-auto-rows: minmax(95px, auto);
   }
@@ -372,7 +374,8 @@
     font-size: 0.95rem;
   }
 
-  .mouth-state-buttons {
+  .mouth-state-buttons,
+  .expression-grid {
     gap: 20px;
     grid-auto-rows: minmax(130px, auto);
   }
@@ -380,18 +383,10 @@
 
 /* Expression Grid Layout - Fursuit Friendly */
 .expression-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 15px;
-  width: 100%;
-  animation: fadeIn 800ms ease-in-out;
-  grid-auto-rows: minmax(110px, auto);
 
   /* Expression buttons use shared .btn-base styles from components.css */
   >button.exp-btn {
-    /* Center images properly - override .btn-base flex settings */
-    justify-content: center;
-    align-items: center;
+    /* Image-only buttons do not need the base content gap. */
     gap: 0; /* Remove gap for image-only buttons */
 
     >img {
@@ -421,19 +416,13 @@
 @media (hover: hover) and (pointer: fine) {
   .expression-grid > .btn-base:hover:not(.active):not(:active):not(:disabled),
   .mouth-state-buttons > .btn-base:hover:not(.active):not(:active):not(:disabled) {
-    background-color: rgba(255, 255, 255, 0.05);
-    color: var(--white-color);
     transform: none;
-    box-shadow: none;
   }
 }
 
 /* Responsive adjustments */
 @media (max-width: 480px) {
   .expression-grid {
-    gap: 12px;
-    grid-auto-rows: minmax(95px, auto);
-
     >button.exp-btn {
       >img {
         max-width: 65px;
@@ -446,9 +435,6 @@
 /* Larger screens - bigger buttons */
 @media (min-width: 768px) {
   .expression-grid {
-    gap: 20px;
-    grid-auto-rows: minmax(130px, auto);
-
     >button.exp-btn {
       >img {
         max-width: 100px;
@@ -1049,7 +1035,6 @@ button.status-item { font: inherit; text-align: left; color: var(--white-color);
 .lip-sync-field { display: flex; flex-direction: column; gap: 8px; }
 .lip-sync-field .slider-bar { margin-block: 0; }
 .viseme-actions { position: absolute; right: 0; top: 50%; transform: translateY(-50%); display: inline-flex; gap: .25rem; line-height: normal; }
-.lip-sync-more:not([open]) .viseme-actions { display: none; }
 .viseme-actions button { position: static; }
 .viseme-actions button[aria-pressed="true"] { color: var(--acc2-color); border-color: currentColor; }
 .viseme-actions button[hidden] { display: none; }
@@ -1084,9 +1069,6 @@ button.status-item { font: inherit; text-align: left; color: var(--white-color);
 .lip-sync-actions button { min-height: 44px; }
 .lip-sync-controls [hidden] { display: none; }
 #visemeFeedback { font-size: 0.9rem; font-weight: 400; }
-.lip-sync-more { border-top: 1px solid var(--black3-color, #333); }
-.lip-sync-more summary { cursor: pointer; font-size: 0.95rem; font-weight: 400; }
-.lip-sync-more > .lip-sync-controls { padding-top: 8px; }
 .display-mode-section.lip-sync-response { margin-bottom: 0; padding: 0; background: transparent; }
 .lip-sync-response .display-mode-header { margin-bottom: 8px; }
 .lip-sync-response .display-mode-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
@@ -1156,8 +1138,7 @@ button.status-item { font: inherit; text-align: left; color: var(--white-color);
   .expression-container { flex: none; overflow: visible; padding-bottom: 0; }
 }
 
-.lip-sync-more summary { position: relative; min-height: 44px; line-height: 44px; }
-#visemeScores > summary { padding-right: 100px; }
+#visemeScores > .settings-group-title { padding-right: 100px; min-height: 44px; line-height: 44px; }
 
 @media (max-width: 480px) {
   .header .dotted-array { width: 100px; }

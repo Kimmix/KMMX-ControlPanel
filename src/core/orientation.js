@@ -65,8 +65,6 @@
     }
   }
   function render(client, document) {
-    const message = document.getElementById('orientationStatus');
-    if (message.textContent !== client.message) message.textContent = client.message;
     for (const [axis, limit] of [['pitch', 90], ['roll', 180], ['yaw', 180]]) {
       const meter = document.getElementById(`orientation-${axis}`);
       const fill = meter.firstElementChild;
@@ -96,6 +94,6 @@
   const api = { Client, decode, render };
   if (typeof module !== 'undefined') module.exports = api;
   root.OrientationV1 = api;
-  if (typeof document !== 'undefined' && document.getElementById('orientationStatus'))
+  if (typeof document !== 'undefined' && document.getElementById('orientation-pitch'))
     root.orientationClient = new Client(bleManager, client => render(client, document));
 })(globalThis);

@@ -58,12 +58,6 @@
   opacity: 1;
   overflow: hidden;
   white-space: nowrap;
-
-  /* Touch optimization */
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-  user-select: none;
-  -webkit-user-select: none;
 }
 
 .nav-icon svg {

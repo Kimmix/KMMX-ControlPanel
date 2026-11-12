@@ -86,7 +86,7 @@ test('stale timeout clears readings after two seconds and a valid packet recover
   f.client.disconnect(); t.mock.timers.tick(2000); assert.match(f.client.message, /Connect to view/);
 });
 test('meters keep actual numbers, clamp fill and clear unavailable readings', () => {
-  const elements = { orientationStatus: { textContent: '' } };
+  const elements = {};
   for (const axis of ['pitch', 'roll', 'yaw']) {
     elements[`orientation-${axis}-value`] = {};
     elements[`orientation-${axis}`] = { firstElementChild: { style: {} }, attrs: {},
@@ -111,7 +111,7 @@ test('browser bootstrap uses the existing lexical BLE manager and initializes cl
   const { readFileSync } = require('node:fs');
   const { resolve } = require('node:path');
   const vm = require('node:vm');
-  const elements = { orientationStatus: { textContent: '' } };
+  const elements = {};
   for (const axis of ['pitch', 'roll', 'yaw']) {
     elements[`orientation-${axis}-value`] = {};
     elements[`orientation-${axis}`] = { firstElementChild: { style: {} }, setAttribute() {}, removeAttribute() {} };
@@ -121,6 +121,5 @@ test('browser bootstrap uses the existing lexical BLE manager and initializes cl
   vm.runInContext(readFileSync(resolve(__dirname, '../src/core/orientation.js'), 'utf8'), context);
   assert.ok(context.orientationClient.manager);
   assert.equal(context.orientationClient.manager, vm.runInContext('bleManager', context));
-  assert.equal(elements.orientationStatus.textContent, 'Connect to view head movement.');
   assert.equal(elements['orientation-pitch-value'].textContent, '—');
 });

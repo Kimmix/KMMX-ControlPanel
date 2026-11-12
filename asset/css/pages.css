@@ -53,12 +53,6 @@
   transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1), border-color 250ms cubic-bezier(0.4, 0, 0.2, 1), color 250ms cubic-bezier(0.4, 0, 0.2, 1), transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
   font-family: "Montserrat", sans-serif;
   height: auto;
-
-  /* Touch optimization */
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-  user-select: none;
-  -webkit-user-select: none;
 }
 
 /* Hover state - Only on devices with hover capability */
@@ -162,13 +156,10 @@
 
 
 
-.refresh-ble-button {
+.device-action-btn {
   width: 100%;
   height: auto;
   padding: 12px 16px;
-  margin-top: 15px;
-  background: rgba(249, 130, 108, 0.1);
-  border: 1px solid rgba(249, 130, 108, 0.3);
   border-radius: 8px;
   color: var(--white-color);
   font-size: 0.9rem;
@@ -181,28 +172,40 @@
   font-family: "Montserrat", sans-serif;
 }
 
+.refresh-ble-button {
+  margin-top: 15px;
+  background: rgba(249, 130, 108, 0.1);
+  border: 1px solid rgba(249, 130, 108, 0.3);
+}
+
+.reboot-device-button {
+  margin-top: 10px;
+  background: rgba(203, 32, 64, 0.1);
+  border: 1px solid rgba(203, 32, 64, 0.3);
+}
+
 @media (hover: hover) and (pointer: fine) {
-  .refresh-ble-button:hover:not(:disabled) {
+  .device-action-btn:hover:not(:disabled) {
     background: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.2);
     color: var(--white-color);
   }
 }
 
-.refresh-ble-button:active:not(:disabled) {
+.device-action-btn:active:not(:disabled) {
   transform: translateY(0);
 }
 
-.refresh-ble-button:disabled {
+.device-action-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
 
-.refresh-ble-button svg {
+.device-action-btn svg {
   transition: transform 0.3s ease;
 }
 
-.refresh-ble-button:hover:not(:disabled) svg {
+.device-action-btn:hover:not(:disabled) svg {
   transform: rotate(180deg);
 }
 
@@ -215,51 +218,6 @@
   }
 }
 
-/* Reboot Device Button */
-.reboot-device-button {
-  width: 100%;
-  height: auto;
-  padding: 12px 16px;
-  margin-top: 10px;
-  background: rgba(203, 32, 64, 0.1);
-  border: 1px solid rgba(203, 32, 64, 0.3);
-  border-radius: 8px;
-  color: var(--white-color);
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: "Montserrat", sans-serif;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .reboot-device-button:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.2);
-    color: var(--white-color);
-  }
-}
-
-.reboot-device-button:active:not(:disabled) {
-  transform: translateY(0);
-}
-
-.reboot-device-button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.reboot-device-button svg {
-  transition: transform 0.3s ease;
-}
-
-.reboot-device-button:hover:not(:disabled) svg {
-  transform: rotate(180deg);
-}
-
 /* Settings Page - Now uses unified .page-content-container class */
 
 #page-settings.settings-loading {
@@ -268,6 +226,31 @@
 
 .settings-section {
   margin: 30px 0;
+}
+
+/* Each settings menu shares one surface; inner groups only provide layout. */
+.settings-section-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 15px;
+  background: var(--black3-color);
+  border-radius: 12px;
+}
+
+.settings-section-content .display-mode-section,
+.settings-section-content .fan-control-card {
+  margin: 0 !important;
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+.settings-group-title {
+  position: relative;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+  font-weight: 500;
 }
 
 .section-title {

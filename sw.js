@@ -1,7 +1,7 @@
 // KMMX Control Panel - Service Worker
-// Version 1.0.62
+// Version 1.0.65
 
-const CACHE_NAME = 'kmmx-control-v1.0.62';
+const CACHE_NAME = 'kmmx-control-v1.0.65';
 
 // Assets to cache on install
 const PRECACHE_ASSETS = [
@@ -12,6 +12,8 @@ const PRECACHE_ASSETS = [
   '/favicon-hidden.png',
   '/asset/maskable_icon.png',
   '/asset/css/styles-main.css',
+  '/asset/css/components.css',
+  '/asset/css/animations.css',
   '/asset/css/high-refresh-rate.css',
   '/asset/css/splash.css',
   '/asset/css/control-panel.css',
