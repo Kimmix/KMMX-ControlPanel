@@ -27,18 +27,30 @@
       throw new Error('Invalid lip-sync status. Reconnect to retry.');
     return s;
   }
-  async function readScales(characteristic) {
-    const view = await characteristic.readValue();
-    if (view.byteLength === 5) {
-      const scales = Array.from({ length: 5 }, (_, i) => view.getUint8(i));
-      if (scales.every(value => value <= 50)) return scales;
+  function encodeScales(values) {
+    if (values.length !== 5 || !values.every(v => Number.isInteger(v) && v >= 0 && v <= 500))
+      throw new Error('Invalid mouth shape sensitivity settings.');
+    const view = new DataView(new ArrayBuffer(11));
+    view.setUint8(0, 2);
+    values.forEach((v, i) => view.setUint16(1 + i * 2, v, true));
+    return new Uint8Array(view.buffer);
+  }
+  function decodeScales(view) {
+    if (view.byteLength === 5) throw new Error('Update your controller for two-decimal mouth shape sensitivity.');
+    if (view.byteLength === 11 && view.getUint8(0) === 2) {
+      const scales = Array.from({ length: 5 }, (_, i) => view.getUint16(1 + i * 2, true));
+      if (scales.every(value => value <= 500)) return scales;
     }
     throw new Error('Invalid mouth shape sensitivity settings.');
   }
+  const readScales = async characteristic => decodeScales(await characteristic.readValue());
   const same = (a, b) => a && b && a.threshold === b.threshold && a.gain === b.gain && a.response === b.response;
   const busy = s => s && (s.calibration === 1 || s.calibration === 2);
   const fromSlider = (t, low, high) => low * Math.pow(high / low, t / 100);
   const toSlider = (v, low, high) => Math.max(0, Math.min(100, 100 * Math.log(v / low) / Math.log(high / low)));
+  // Keep zero available and give lower sensitivities more slider travel; wire values are hundredths.
+  const scaleFromSlider = t => Math.round(500 * Math.pow(t / 100, 2));
+  const scaleToSlider = value => 100 * Math.sqrt(value / 500);
   class Client {
     constructor(manager, changed = () => {}, scoresChanged = () => {}) { this.scoresChanged = scoresChanged; this.manager = manager; this.changed = changed; this.epoch = 0; this.request = 0; this.disconnect(); }
     disconnect() {
@@ -153,11 +165,10 @@
     async submitScales(values) {
       if (!this.scales || this.resettingScales) return;
       const reset = values === null;
-      if (!reset && (values.length !== 5 || !values.every(v => Number.isInteger(v) && v >= 0 && v <= 50))) return;
-      const bytes = reset ? Uint8Array.of(255) : Uint8Array.from(values);
+      const bytes = reset ? Uint8Array.of(255) : encodeScales(values);
       const epoch = this.epoch, request = ++this.scaleRequest;
       const current = () => epoch === this.epoch && request === this.scaleRequest;
-      if (!reset) this.scales = Array.from(bytes);
+      if (!reset) this.scales = [...values];
       this.resettingScales = reset; this.scaleError = ''; this.changed(this);
       try {
         await this.manager.enqueue(async () => {
@@ -169,7 +180,7 @@
             const actual = await readScales(characteristic);
             if (!current()) return;
             this.scales = actual;
-            if (!reset && actual.some((v, i) => v !== bytes[i])) this.scaleError = 'Mouth shape sensitivity settings were not applied.';
+            if (!reset && actual.some((v, i) => v !== values[i])) this.scaleError = 'Mouth shape sensitivity settings were not applied.';
           } catch (error) {
             if (!current()) return;
             this.scaleError = `Could not update mouth shape sensitivity. ${error.message}`;
@@ -209,7 +220,7 @@
       finally { if (epoch === this.epoch) { this.pending = false; this.changed(this); } }
     }
   }
-  const api = { Client, encodeSettings, decodeSettings, decodeStatus, fromSlider, toSlider, busy };
+  const api = { Client, encodeSettings, decodeSettings, decodeStatus, encodeScales, decodeScales, fromSlider, toSlider, scaleFromSlider, scaleToSlider, busy };
   if (typeof module !== 'undefined') module.exports = api;
   root.VisemeV2 = api;
 })(globalThis);

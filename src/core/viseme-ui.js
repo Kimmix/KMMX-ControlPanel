@@ -172,7 +172,15 @@ editScales.addEventListener('click', event => {
 const resetScales = visemeElement('resetVisemeScales');
 scaleInputs.forEach((input, i) => input.addEventListener('input', () => {
   const values = [...visemeClient.scales];
-  values[i] = Math.round(input.valueAsNumber * 10);
+  values[i] = VisemeV2.scaleFromSlider(input.valueAsNumber);
+  visemeClient.submitScales(values);
+}));
+scaleInputs.forEach((input, i) => input.addEventListener('keydown', event => {
+  const direction = { ArrowRight: 1, ArrowUp: 1, ArrowLeft: -1, ArrowDown: -1 }[event.key];
+  if (!direction || !visemeClient.scales) return;
+  event.preventDefault();
+  const values = [...visemeClient.scales];
+  values[i] = Math.max(0, Math.min(500, values[i] + direction));
   visemeClient.submitScales(values);
 }));
 resetScales.addEventListener('click', event => { event.preventDefault(); visemeClient.submitScales(null); });
@@ -184,9 +192,9 @@ function renderStatus(client) {
     input.parentElement.hidden = !editingScales;
     input.disabled = !client.scales || client.resettingScales;
     if (client.scales) {
-      const value = (client.scales[i] / 10).toFixed(1);
-      input.value = value;
-      const percent = client.scales[i] * 2;
+      const value = (client.scales[i] / 100).toFixed(2);
+      const percent = VisemeV2.scaleToSlider(client.scales[i]);
+      input.value = percent;
       input.style.setProperty('--fill', percent + '%');
       input.setAttribute('aria-valuetext', value + ' times');
       input.nextElementSibling.textContent = value + '\u00d7';
