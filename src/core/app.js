@@ -56,6 +56,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 async function reconnectBLEWithProgress(event) {
     event?.stopPropagation();
+    if (!bleSupported) return;
     const progressContainer = document.getElementById('progressContainer');
     const loaderProgress = document.getElementById('loaderProgress');
     progressContainer?.classList.add('active');
@@ -77,6 +78,7 @@ window.reconnectBLEWithProgress = reconnectBLEWithProgress;
 
 //? Start BLE with progress feedback
 async function startBLEWithProgress() {
+    if (!bleSupported) return;
     const loaderProgress = document.getElementById('loaderProgress');
 
     try {
@@ -124,11 +126,32 @@ function updateProgress(percent, text) {
 window.updateProgress = updateProgress;
 
 //? Check BLE compatibility
-try {
-    navigator.bluetooth.getAvailability()
-} catch (error) {
-    console.error('This browser does not support BLE!');
+const bleSupported = Boolean(navigator.bluetooth);
+if (!bleSupported) {
+    document.getElementById('splash')?.classList.add('no-ble');
+    const notice = document.getElementById('bleUnsupported');
+    if (notice) notice.hidden = false;
 }
+
+//? Non-blocking message (replaces alert)
+function notify(message) {
+    const el = document.getElementById('appNotice');
+    if (!el) return;
+    el.textContent = message;
+    el.hidden = false;
+    clearTimeout(notify.timer);
+    notify.timer = setTimeout(() => { el.hidden = true; }, 6000);
+}
+window.notify = notify;
+
+//? Resolves true when the user confirms the reboot dialog
+function confirmReboot() {
+    const dialog = document.getElementById('rebootDialog');
+    dialog.returnValue = '';
+    dialog.showModal();
+    return new Promise(resolve => dialog.addEventListener('close', () => resolve(dialog.returnValue === 'ok'), { once: true }));
+}
+window.confirmReboot = confirmReboot;
 
 //? Fading FavIcon
 const favicon = document.querySelector('link[rel="icon"]')
@@ -166,6 +189,7 @@ function updateConnectionStatus() {
     document.getElementById('statusIndicator').setAttribute('aria-label', message);
     document.getElementById('statusIndicator').title = message;
     document.getElementById('statusReconnect').hidden = connectionActive;
+    document.getElementById('offlineNotice').hidden = connectionActive;
     pill?.classList.toggle('ble-writing', busyVisible);
     pill?.classList.toggle('ble-error', connectionActive && Boolean(error));
 }
@@ -196,7 +220,7 @@ function isStatusConnected(bool) {
     }
     updateConnectionStatus();
     if (bool) {
-        document.getElementById('disconnectPopup')?.classList.remove('show');
+        document.getElementById('disconnectPopup')?.close();
         timerInterval = setInterval(() => {
             timerValue++;
             updateStatusAndTimer();
@@ -365,8 +389,8 @@ window.skipPairing = skipPairing;
 //? Disconnect Popup
 function showDisconnectPopup() {
     const popup = document.getElementById('disconnectPopup');
-    if (popup) {
-        popup.classList.add('show');
+    if (popup && !popup.open) {
+        popup.showModal();
         vibrateDevice();
     }
 }

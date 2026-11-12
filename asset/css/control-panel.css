@@ -160,10 +160,11 @@
 
 .expression-title > h2 > span#expBtnCount {
   display: inline-block;
-  background-color: var(--acc2-color);
+  background-color: var(--acc2b-color);
   border-radius: 16px;
   padding: 1px 7px;
-  font-size: 0.5rem;
+  font-size: 0.75rem;
+  vertical-align: middle;
   text-align: center;
 }
 
@@ -338,7 +339,7 @@
   }
 
   .status-label {
-    font-size: 0.6rem;
+    font-size: 0.75rem;
   }
 
   .status-value {
@@ -367,7 +368,7 @@
   }
 
   .status-label {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
   }
 
   .status-value {
@@ -480,16 +481,6 @@ hr.cenhr {
     transition: opacity 400ms ease,
       filter 400ms ease,
       background 600ms ease;
-
-    .bitrate {
-      position: absolute;
-      top: 0;
-      right: 0;
-      font-size: 0.55rem;
-      padding: 7px 13px 0 0;
-      opacity: 0;
-      transition: opacity 1s ease 200ms;
-    }
 
     .viseme-title {
       display: flex;
@@ -629,10 +620,15 @@ hr.cenhr {
 .disconnect-popup {
   display: none;
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: inherit;
   background-color: rgba(11, 11, 12, 0.85);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -642,7 +638,9 @@ hr.cenhr {
   animation: fadeIn 300ms ease-in-out;
 }
 
-.disconnect-popup.show {
+.disconnect-popup::backdrop { background: transparent; }
+
+.disconnect-popup[open] {
   display: flex;
 }
 
@@ -696,70 +694,6 @@ hr.cenhr {
   width: 16px;
   height: 16px;
   stroke: currentColor;
-}
-
-/* FOOTER */
-footer {
-  position: fixed;
-  bottom: 0;
-  height: var(--footer-height);
-  width: 100%;
-  background-color: var(--black2-color);
-  z-index: 10;
-
-  >hr {
-    border: none;
-    border-top: 2px solid var(--white2-color);
-    margin: 10px 0;
-  }
-
-  .footer-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0 10px;
-
-    .connection-stat {
-      display: flex;
-
-      .timer {
-        color: var(--white2-color);
-        font-weight: 200;
-      }
-    }
-
-    .footer-info p {
-      font-size: 12px;
-      color: var(--white-color);
-    }
-
-    .footer-info p.sub {
-      font-weight: 200;
-      color: var(--black4-color);
-      opacity: 0.3;
-    }
-
-    .footer-info img {
-      width: 8px;
-    }
-
-    .footer-info {
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
-
-      .footer-info-l {
-        display: flex;
-        flex-direction: column;
-      }
-
-      .footer-info-r {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-      }
-    }
-  }
 }
 
 /* Color Picker Controls */
@@ -1116,7 +1050,7 @@ button.status-item { font: inherit; text-align: left; color: var(--white-color);
 
 .reset-colors-btn:focus-visible { outline: 2px solid var(--acc1-color); outline-offset: 2px; }
 
-.status-pill.ble-error:not(.inactive) { --pill-color: #fbbf24; --pill-glow-color: #fbbf248f; animation: none; }
+.status-pill.ble-error:not(.inactive) { --pill-color: var(--warn-color); --pill-glow-color: color-mix(in srgb, var(--warn-color) 56%, transparent); animation: none; }
 .status-pill.inactive { --pill-color: var(--acc2b-color); animation: none; }
 #statusIndicator { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 0; background: transparent; border: 0; cursor: pointer; }
 #statusIndicator .status-pill { margin: 0; }
@@ -1150,3 +1084,74 @@ button.status-item { font: inherit; text-align: left; color: var(--white-color);
 .orientation-controls .lip-sync-label span:last-child { font-variant-numeric: tabular-nums; }
 .orientation-fill { position: absolute; left: 50%; }
 .orientation-meter::after { content: ''; position: absolute; left: 50%; top: 0; height: 100%; width: 1px; background: var(--white2-color, #bbb); }
+
+/* Notices, confirm dialog, offline banner */
+.app-notice {
+  position: fixed;
+  left: 50%;
+  bottom: calc(96px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 10002;
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  padding: 12px 16px;
+  border: 1px solid var(--acc2b-color);
+  border-radius: 10px;
+  background: var(--black2-color);
+  color: var(--white-color);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+.app-notice[hidden] { display: none; }
+.offline-notice {
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  border: 1px solid var(--warn-color);
+  border-radius: 10px;
+  color: var(--white-color);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+.offline-notice[hidden] { display: none; }
+.confirm-dialog {
+  margin: auto;
+  width: min(360px, calc(100vw - 48px));
+  box-sizing: border-box;
+  padding: 24px;
+  border: 1px solid var(--white2-color);
+  border-radius: 12px;
+  background: var(--black-color);
+  color: var(--white-color);
+  font: inherit;
+}
+.confirm-dialog::backdrop { background: rgba(0, 0, 0, 0.7); }
+.confirm-dialog h3 { margin: 0 0 12px; }
+.confirm-dialog p { margin-bottom: 20px; line-height: 1.5; font-weight: 400; }
+.confirm-dialog button { font: inherit; min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid var(--white2-color); background: transparent; color: var(--white-color); cursor: pointer; }
+.confirm-dialog .danger-btn { background: var(--acc2b-color); border-color: var(--acc2b-color); }
+.app-notice, .offline-notice, .about-version, .disconnect-popup p, .splash-notice { user-select: text; -webkit-user-select: text; }
+
+/* Layout helpers that replace inline styles in index.html */
+.settings-section-spaced { margin-top: 30px; position: relative; }
+.color-picker-container + .color-picker-container { margin-top: 20px; }
+.color-picker-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.color-picker-head h3 { margin: 0; }
+.color-hex { font-size: 0.9rem; }
+.color-picker-row { display: flex; align-items: center; gap: 12px; }
+.color-picker-row input[type="color"] { width: 60px; height: 44px; border: 2px solid var(--acc1-color); border-radius: 8px; cursor: pointer; background: transparent; }
+.color-preset-row { flex: 1; display: flex; gap: 8px; flex-wrap: wrap; }
+.effect-panel { margin-top: 20px; padding: 15px; background-color: var(--black3-color); border-radius: 12px; }
+.effect-panel-row { display: flex; align-items: center; justify-content: space-between; }
+.effect-panel-row h3 { margin: 0; }
+.effect-panel-hint { font-size: 0.8rem; color: var(--white2-color); margin-top: 4px; display: block; }
+.preview-title { margin: 0 0 10px; font-size: 0.9rem; color: var(--white2-color); }
+.gradient-preview { height: 80px; border-radius: 8px; border: 2px solid rgba(255, 255, 255, 0.2); }
+.mt-20 { margin-top: 20px; }
+.icon-18 { width: 18px; height: 18px; }
+.icon-16 { width: 16px; height: 16px; }
+.btn-icon-gap { margin-right: 6px; }
+.full-width { width: 100%; }
+.mb-10 { margin: 0 0 10px; }
+.icon-40 { width: 40px; height: 40px; }
+#slotMachineBtn { width: 100%; margin-top: 8px; flex: none; font: inherit; }
+#appUpdate { position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 10000; min-height: 44px; padding: 0 16px; }

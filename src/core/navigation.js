@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const navIcons = document.querySelectorAll('.nav-icon');
     const pages = document.querySelectorAll('.page');
     const headerSubtitle = document.getElementById('header-subtitle');
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
     // Page subtitle mapping
     const pageSubtitles = {
@@ -13,7 +14,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Navigation click handler
     navIcons.forEach(icon => {
-        icon.addEventListener('click', function () {
+        icon.addEventListener('click', function (event) {
+            const fromUser = event.isTrusted;
             const targetPage = this.getAttribute('data-page');
 
             // Vibrate on navigation
@@ -44,8 +46,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 window.loadBLESettingsState?.();
             }
 
+            // Move focus to the new page so screen readers announce the switch
+            if (fromUser) document.getElementById('mainContent')?.focus({ preventScroll: true });
+
             // Update header subtitle with smooth transition
-            if (headerSubtitle && pageSubtitles[targetPage]) {
+            if (headerSubtitle && pageSubtitles[targetPage] && reducedMotion.matches) {
+                headerSubtitle.textContent = pageSubtitles[targetPage];
+            } else if (headerSubtitle && pageSubtitles[targetPage]) {
                 headerSubtitle.classList.add('fade-out');
                 setTimeout(() => {
                     headerSubtitle.textContent = pageSubtitles[targetPage];
@@ -58,5 +65,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
-});
 
+    // Deep link: ?page=settings (used by the manifest shortcut)
+    const startPage = new URLSearchParams(location.search).get('page');
+    document.querySelector(`.nav-icon[data-page="${CSS.escape(startPage || '')}"]`)?.click();
+});

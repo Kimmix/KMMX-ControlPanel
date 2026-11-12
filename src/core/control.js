@@ -464,8 +464,8 @@ function updateDisplayModeUI(mode) {
     if (dualSpiralThicknessControl) dualSpiralThicknessControl.style.display = showOptions ? 'block' : 'none';
     if (dualCircleThicknessControl) dualCircleThicknessControl.style.display = showOptions ? 'block' : 'none';
     if (directionInvertControl) directionInvertControl.style.display = showOptions ? 'block' : 'none';
-    if (gradientTopColorLabel) gradientTopColorLabel.textContent = mode === 0 ? 'Top Gradient Color' : `Primary ${shape} Color`;
-    if (gradientBottomColorLabel) gradientBottomColorLabel.textContent = mode === 0 ? 'Bottom Gradient Color' : `Secondary ${shape} Color`;
+    if (gradientTopColorLabel) gradientTopColorLabel.textContent = mode === 0 ? 'Top gradient color' : `Primary ${shape.toLowerCase()} color`;
+    if (gradientBottomColorLabel) gradientBottomColorLabel.textContent = mode === 0 ? 'Bottom gradient color' : `Secondary ${shape.toLowerCase()} color`;
 }
 
 // Event delegation for display mode buttons

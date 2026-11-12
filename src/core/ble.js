@@ -323,7 +323,7 @@ async function startBLE() {
     }
 
     console.error('Error:', error);
-    alert(error);
+    notify(`Couldn't connect: ${error.message || error}`);
   }
 }
 
@@ -424,7 +424,7 @@ function updateBLECharColorValue(elementId, r, g, b) {
 // Refresh BLE characteristics from device
 async function refreshBLECharacteristics() {
   if (!bleDevice || !bleDevice.gatt.connected) {
-    alert('Device not connected');
+    notify('Device not connected');
     return;
   }
 
@@ -456,12 +456,12 @@ async function refreshBLECharacteristics() {
           <polyline points="1 20 1 14 7 14"></polyline>
           <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
         </svg>
-        Refresh Values
+        Refresh values
       `;
     }
   } catch (error) {
     console.error('Error refreshing BLE characteristics:', error);
-    alert('Failed to refresh characteristics: ' + error);
+    notify(`Couldn't refresh values: ${error.message || error}`);
 
     const refreshBtn = document.getElementById('refreshBleBtn');
     if (refreshBtn) {
@@ -472,7 +472,7 @@ async function refreshBLECharacteristics() {
           <polyline points="1 20 1 14 7 14"></polyline>
           <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
         </svg>
-        Refresh Values
+        Refresh values
       `;
     }
   }
@@ -481,12 +481,12 @@ async function refreshBLECharacteristics() {
 // Reboot device
 async function rebootDevice() {
   if (!bleDevice || !bleDevice.gatt.connected) {
-    alert('Device not connected');
+    notify('Device not connected');
     return;
   }
 
   // Confirm before rebooting
-  if (!confirm('Are you sure you want to reboot the device? This will disconnect and restart the device.')) {
+  if (!(await confirmReboot())) {
     return;
   }
 
@@ -519,14 +519,14 @@ async function rebootDevice() {
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px;">
             <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
           </svg>
-          Reboot Device
+          Reboot device
         `;
       }
     }, 3000);
 
   } catch (error) {
     console.error('Error rebooting device:', error);
-    alert('Failed to reboot device: ' + error);
+    notify(`Couldn't reboot device: ${error.message || error}`);
 
     const rebootBtn = document.getElementById('rebootDeviceBtn');
     if (rebootBtn) {
@@ -535,7 +535,7 @@ async function rebootDevice() {
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px;">
           <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
         </svg>
-        Reboot Device
+        Reboot device
       `;
     }
   }
