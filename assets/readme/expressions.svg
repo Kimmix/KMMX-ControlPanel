@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="250" viewBox="0 0 1200 250" role="img" aria-labelledby="title desc">
+  <title id="title">Expressions</title>
+  <desc id="desc">Four of the panel's eye expressions, Idle, Googly, Heart and Smile, drawn as LED dot matrices from the app's own SVG shapes.</desc>
+  <defs>
+    <pattern id="led" width="7" height="7" patternUnits="userSpaceOnUse">
+      <circle cx="3.5" cy="3.5" r="2.6" fill="#ff446c"/>
+    </pattern>
+    <pattern id="led-off" width="7" height="7" patternUnits="userSpaceOnUse">
+      <circle cx="3.5" cy="3.5" r="1.6" fill="#1e1a22"/>
+    </pattern>
+    <clipPath id="idle"><path transform="translate(112 54) scale(0.3)" d="m506.74 150.56.26 175.07H254.63s204.03-15.27 252.12-175.07ZM507 0S204.97-1.76 0 203.21c0 0 214.36 115.76 404.26 5.69C483.28 163.11 507 0 507 0Z"/></clipPath>
+    <clipPath id="googly"><path transform="translate(422 50) scale(0.75)" d="M70.25 140.5C31.51 140.5 0 108.99 0 70.25S31.51 0 70.25 0s70.25 31.51 70.25 70.25-31.51 70.25-70.25 70.25Zm0-131.5C36.48 9 9 36.48 9 70.25s27.48 61.25 61.25 61.25 61.25-27.48 61.25-61.25S104.02 9 70.25 9Z"/><circle transform="translate(422 50) scale(0.75)" cx="83.83" cy="98.65" r="26.55"/></clipPath>
+    <clipPath id="heart"><path transform="translate(696 52) scale(0.82)" d="M66.98 11c37.16-38.2 130.06 28.64 0 114.59C-63.08 39.65 29.82-27.19 66.98 11Z"/></clipPath>
+    <clipPath id="smile"><path transform="translate(948 80) scale(1)" d="M161.84 18.23S151.52-6.92 80.71 1.86C40.17 6.89 6.85 43.87 0 51.67c23.51-3.52 39.3-23.51 83.31-35.22 34.99-9.31 77.75 24.15 78.54 1.78Z"/></clipPath>
+  </defs>
+
+  <rect width="1200" height="250" rx="28" fill="#0b0b0c"/>
+
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" fill="#ffffff" text-anchor="middle">
+    <rect x="60" y="30" width="255" height="190" rx="18" fill="#0e0b16" stroke="#16161a" stroke-width="2"/>
+    <rect x="74" y="44" width="227" height="124" fill="url(#led-off)"/>
+    <rect x="74" y="44" width="227" height="124" fill="url(#led)" clip-path="url(#idle)"/>
+    <text x="187" y="200">Idle</text>
+
+    <rect x="335" y="30" width="255" height="190" rx="18" fill="#0e0b16" stroke="#16161a" stroke-width="2"/>
+    <rect x="349" y="44" width="227" height="124" fill="url(#led-off)"/>
+    <rect x="349" y="44" width="227" height="124" fill="url(#led)" clip-path="url(#googly)"/>
+    <text x="462" y="200">Googly</text>
+
+    <rect x="610" y="30" width="255" height="190" rx="18" fill="#0e0b16" stroke="#16161a" stroke-width="2"/>
+    <rect x="624" y="44" width="227" height="124" fill="url(#led-off)"/>
+    <rect x="624" y="44" width="227" height="124" fill="url(#led)" clip-path="url(#heart)"/>
+    <text x="737" y="200">Heart</text>
+
+    <rect x="885" y="30" width="255" height="190" rx="18" fill="#0e0b16" stroke="#16161a" stroke-width="2"/>
+    <rect x="899" y="44" width="227" height="124" fill="url(#led-off)"/>
+    <rect x="899" y="44" width="227" height="124" fill="url(#led)" clip-path="url(#smile)"/>
+    <text x="1012" y="200">Smile</text>
+  </g>
+</svg>
