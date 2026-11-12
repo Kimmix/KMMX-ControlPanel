@@ -81,7 +81,7 @@
       <line x1="5" y1="12" x2="19" y2="12"></line>
       <polyline points="12 5 19 12 12 19"></polyline>
     </svg>
-    Skip Pairing
+    Continue offline
   </button>
 </div>
 
@@ -231,22 +231,24 @@
             <h3 class="section-title">Lip sync</h3>
             <div id="visemeAdvancedSection" class="viseme-advanced-section">
               <div id="visemeAdvancedContent" class="lip-sync-controls">
-                <div class="lip-sync-field">
-                  <div class="lip-sync-label"><span>Microphone level</span><span id="visemeReading">Unavailable</span></div>
-                  <div id="visemeMeter" role="meter" aria-label="Microphone RMS" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-                    <div id="visemeMeterFill"></div>
-                    <span id="visemeMeterGate" aria-hidden="true"></span>
+                <div class="display-mode-section lip-sync-controls">
+                  <div class="lip-sync-field">
+                    <div class="lip-sync-label"><span>Microphone level</span><span id="visemeReading">Unavailable</span></div>
+                    <div id="visemeMeter" role="meter" aria-label="Microphone RMS" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                      <div id="visemeMeterFill"></div>
+                      <span id="visemeMeterGate" aria-hidden="true"></span>
+                    </div>
+                    <p id="visemeRange" class="lip-sync-help">Min -- / Avg -- / Max --</p>
                   </div>
-                  <p id="visemeRange" class="lip-sync-help">Min -- / Avg -- / Max --</p>
-                </div>
-                <div class="lip-sync-field">
-                  <div class="slider-bar">
-                    <div class="slider-label"><label for="noiseRejection">Ignore background noise</label><output id="noiseRejectionValue" for="noiseRejection">13.0</output></div>
-                    <input id="noiseRejection" class="spiral-thickness-slider" type="range" min="0" max="100" step="0.1" disabled>
-                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3M8 22h8"/></svg>
+                  <div class="lip-sync-field">
+                    <div class="slider-bar">
+                      <div class="slider-label"><label for="noiseRejection">Noise gate</label><output id="noiseRejectionValue" for="noiseRejection">13.0</output></div>
+                      <input id="noiseRejection" class="spiral-thickness-slider" type="range" min="0" max="100" step="0.1" disabled>
+                      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3M8 22h8"/></svg>
+                    </div>
                   </div>
                 </div>
-                <details id="visemeScores" class="lip-sync-more" hidden>
+                <details id="visemeScores" class="lip-sync-more display-mode-section" hidden>
                   <summary>Mouth shapes<span class="viseme-actions"><button id="editVisemeScales" class="reset-colors-btn" type="button" title="Adjust mouth shape sensitivity" aria-label="Adjust mouth shape sensitivity" aria-pressed="false" hidden><svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m4 16-1 5 5-1L21 7l-4-4z M14 6l4 4"/></svg></button><button id="resetVisemeScales" class="reset-colors-btn" type="button" title="Reset mouth shape sensitivity" aria-label="Reset mouth shape sensitivity" hidden><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                   style="width: 18px; height: 18px;">
@@ -262,7 +264,7 @@
                   <div id="shapeHistory" role="img" aria-label="No recent shapes"></div>
                 </details>
                 <p id="visemeFeedback" role="status" aria-live="polite">Connect to adjust lip sync.</p>
-                <details class="lip-sync-more">
+                <details class="lip-sync-more display-mode-section">
                   <summary>More settings</summary>
                   <div class="lip-sync-controls">
                     <div class="lip-sync-field">
@@ -310,11 +312,11 @@
 
           <!-- Settings Section: Display -->
           <div class="settings-section">
-            <h3 class="section-title">Display</h3>
-            <div class="brightness-control">
+            <h3 class="section-title">Brightness Control</h3>
+            <div class="brightness-control display-mode-section">
               <div class="slider-bar">
                 <div class="slider-label">
-                  <label for="hornLedValue">Horn brightness</label>
+                  <label for="hornLedValue">Horn</label>
                   <output id="hornLedSliderValue" for="hornLedValue">15%</output>
                 </div>
                 <input class="brightness-slider" type="range" min="0" max="100" value="15" id="hornLedValue" aria-label="Horn brightness">
@@ -322,7 +324,7 @@
               </div>
             </div>
 
-            <div class="brightness-control">
+            <div class="brightness-control display-mode-section">
               <div class="slider-bar">
                 <div class="slider-label">
                   <label for="cheekPanelValue">Cheek panel</label>
@@ -683,7 +685,7 @@
               </div>
 
               <!-- Tap Sensitivity Slider -->
-              <div style="margin-top: 20px;">
+              <div class="display-mode-section" style="margin-top: 20px;">
                 <div class="slider-bar">
                   <div class="slider-label">
                     <label for="tapSensitivitySlider">Tap sensitivity</label>
@@ -699,7 +701,7 @@
                 </div>
               </div>
               <!-- Glitch Intensity Slider -->
-              <div style="margin-top: 20px;">
+              <div class="display-mode-section" style="margin-top: 20px;">
                 <div class="slider-bar">
                   <div class="slider-label">
                     <label for="glitchIntensitySlider">Glitch intensity</label>
@@ -715,7 +717,7 @@
                 </div>
               </div>
               <!-- Manual Trigger Section -->
-              <details class="lip-sync-more" style="margin-top: 20px;">
+              <details class="lip-sync-more display-mode-section" style="margin-top: 20px;">
                 <summary>Try the glitch effect</summary>
                 <div class="lip-sync-controls">
 
