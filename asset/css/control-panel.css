@@ -1155,3 +1155,28 @@ button.status-item { font: inherit; text-align: left; color: var(--white-color);
 .icon-40 { width: 40px; height: 40px; }
 #slotMachineBtn { width: 100%; margin-top: 8px; flex: none; font: inherit; }
 #appUpdate { position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 10000; min-height: 44px; padding: 0 16px; }
+
+/* Subtle FPS sparkline behind the shared header */
+.fps-graph {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.35;
+  -webkit-mask-image: linear-gradient(to bottom, #000 40%, transparent), linear-gradient(to right, transparent, #000 30%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to bottom, #000 40%, transparent), linear-gradient(to right, transparent, #000 30%);
+  mask-composite: intersect;
+}
+/* Opaque, page-coloured header so scrolled content doesn't show through. */
+.static-header { background: var(--black2-color); }
+.static-header::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 24px;
+  background: linear-gradient(var(--black2-color), transparent);
+}
+.static-header .header { position: relative; }

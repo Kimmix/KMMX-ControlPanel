@@ -33,7 +33,8 @@ export const bleUUID = {
     visemeScales: "b9725d06-7546-4e0b-9b91-486e25012a02",
     visemeScores: "b9725d05-7546-4e0b-9b91-486e25012a02",
     visemeStatus: "b9725d03-7546-4e0b-9b91-486e25012a02",
-    orientation: "b9725d04-7546-4e0b-9b91-486e25012a02"
+    orientation: "b9725d04-7546-4e0b-9b91-486e25012a02",
+    displayFps: "b9725d07-7546-4e0b-9b91-486e25012a02"
   }
 };
 

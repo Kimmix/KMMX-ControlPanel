@@ -1,7 +1,7 @@
 // KMMX Control Panel - Service Worker
-// Version 1.0.73
+// Version 1.0.82
 
-const CACHE_NAME = 'kmmx-control-v1.0.73';
+const CACHE_NAME = 'kmmx-control-v1.0.82';
 
 // Assets to cache on install
 const PRECACHE_ASSETS = [
@@ -35,6 +35,7 @@ const PRECACHE_ASSETS = [
   '/src/core/viseme-ui.js',
   '/src/core/orientation.js',
   '/src/core/navigation.js',
+  '/src/core/fps-graph.js',
   '/src/utils/helpers.js'
 ];
 
@@ -42,7 +43,8 @@ const PRECACHE_ASSETS = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(PRECACHE_ASSETS))
+      // Bypass the HTTP cache so a version bump never re-stores stale files.
+      .then((cache) => cache.addAll(PRECACHE_ASSETS.map((url) => new Request(url, { cache: 'reload' }))))
       .then(() => self.skipWaiting())
   );
 });

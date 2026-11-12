@@ -44,7 +44,7 @@
   <link defer rel="stylesheet" href="asset/css/styles-main.css?v=1.0.2" />
   <link defer rel="stylesheet" href="asset/css/high-refresh-rate.css" />
   <link defer rel="stylesheet" href="asset/css/splash.css?v=1.0.10" />
-  <link defer rel="stylesheet" href="asset/css/control-panel.css?v=1.0.14" />
+  <link defer rel="stylesheet" href="asset/css/control-panel.css?v=1.0.17" />
   <link defer rel="stylesheet" href="asset/css/navigation.css" />
   <link defer rel="stylesheet" href="asset/css/pages.css" />
   <style>#appUpdate[hidden] { display: none; }</style>
@@ -127,6 +127,7 @@
 
   <!-- Static Header (shared across all pages) -->
   <div class="static-header">
+    <canvas id="fpsGraph" class="fps-graph" aria-hidden="true"></canvas>
     <div class="header">
       <img class="glow-icon" src="asset/svg/control-icon.svg" alt="">
       <div class="header-title">
@@ -946,6 +947,34 @@
                     </div>
                     <span class="ble-char-uuid">UUID: a1a2a3a4-b1b2-4c1c-d1d2-e1e2e3e4e5f4</span>
                   </div>
+                  <div class="ble-char-item">
+                    <div class="ble-char-header">
+                      <span class="ble-char-name">Display FPS</span>
+                      <span class="ble-char-value" id="ble-displayfps">-</span>
+                    </div>
+                    <span class="ble-char-uuid">UUID: b9725d07-7546-4e0b-9b91-486e25012a02 · notify</span>
+                  </div>
+                  <div class="ble-char-item">
+                    <div class="ble-char-header">
+                      <span class="ble-char-name">Orientation</span>
+                      <span class="ble-char-value" id="ble-orientation">-</span>
+                    </div>
+                    <span class="ble-char-uuid">UUID: b9725d04-7546-4e0b-9b91-486e25012a02 · notify</span>
+                  </div>
+                  <div class="ble-char-item">
+                    <div class="ble-char-header">
+                      <span class="ble-char-name">Viseme Scores</span>
+                      <span class="ble-char-value" id="ble-visemescores">-</span>
+                    </div>
+                    <span class="ble-char-uuid">UUID: b9725d05-7546-4e0b-9b91-486e25012a02 · notify</span>
+                  </div>
+                  <div class="ble-char-item">
+                    <div class="ble-char-header">
+                      <span class="ble-char-name">Viseme Status</span>
+                      <span class="ble-char-value" id="ble-visemestatus">-</span>
+                    </div>
+                    <span class="ble-char-uuid">UUID: b9725d03-7546-4e0b-9b91-486e25012a02 · notify</span>
+                  </div>
                 </div>
                 <button id="refreshBleBtn" type="button" class="device-action-btn refresh-ble-button" onclick="refreshBLECharacteristics()" disabled>
                   <svg class="icon-16 btn-icon-gap" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -1041,7 +1070,7 @@
 
 
   <!-- BLE config is also exposed globally for the classic BLE script -->
-  <script type="module" src="src/config/ble-config.js"></script>
+  <script type="module" src="src/config/ble-config.js?v=1.0.1"></script>
 
   <!-- Shared UI helpers -->
   <script defer src="src/managers/ble-manager.js"></script>
@@ -1052,8 +1081,9 @@
   <!-- Main application files -->
   <script type="module" src="src/core/app.js?v=1.0.11"></script>
   <script type="module" src="src/core/control.js?v=1.0.12"></script>
-  <script defer src="src/core/ble.js?v=1.0.12"></script>
+  <script defer src="src/core/ble.js?v=1.0.15"></script>
   <script defer src="src/core/navigation.js"></script>
+  <script defer src="src/core/fps-graph.js"></script>
 </body>
 
 </html>

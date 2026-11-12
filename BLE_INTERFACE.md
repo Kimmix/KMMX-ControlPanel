@@ -192,6 +192,19 @@ Yaw tracking and its payload field have been removed. Update both panel and firm
 for orientation v2; v1 packets are unsupported. There is no recenter command. This stream is independent of lip sync
 and motion-feature enable flags.
 
+### Display FPS
+
+| Characteristic | UUID | Properties | Length |
+|---|---|---|---|
+| Display FPS | `b9725d07-7546-4e0b-9b91-486e25012a02` | READ, NOTIFY | 2 bytes |
+
+| Offset | Type | Meaning |
+|---|---|---|
+| 0 | uint8 | Measured HUB75 render FPS, rounded, clamped 0–255 |
+| 1 | uint8 | Target FPS (panel refresh rate), clamped 0–255 |
+
+Notifies every 250 ms while connected. Optional: panels hide the device reading when it is absent.
+
 ### LED Brightness Control
 
 | Name | UUID | Properties | Data Format | Description |
@@ -264,6 +277,7 @@ While game mode is enabled, a completed proximity boop spins the three reels. Ho
 ✅ Viseme
 ✅ Viseme Settings v2, Calibration, Status v3 (3)
 ✅ Orientation v2 (reports unsupported on V2)
+✅ Display FPS
 ✅ Horn Brightness
 ✅ Cheek Brightness
 ✅ Cheek Background Color
@@ -279,8 +293,8 @@ While game mode is enabled, a completed proximity boop spins the three reels. Ho
 🆕 Fan Speed
 
 **Total Characteristics:**
-- V2: 24 characteristics
-- V4: 25 characteristics (24 + fan control)
+- V2: 25 characteristics
+- V4: 26 characteristics (25 + fan control)
 
 ---
 

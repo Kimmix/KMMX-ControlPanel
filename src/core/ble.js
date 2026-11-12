@@ -30,8 +30,26 @@ const characteristicDefinitions = [
   ['visemeScales', 'visemeScales', false],
   ['visemeScores', 'visemeScores', false],
   ['visemeStatus', 'visemeStatus', false],
-  ['orientation', 'orientation', false]
+  ['orientation', 'orientation', false],
+  ['displayFps', 'displayFps', false, undefined,
+    event => window.setDeviceFps?.(event.target.value.getUint8(0), event.target.value.getUint8(1))]
 ];
+
+// Live values of notify characteristics, shown in Device details as #ble-<name lowercased>.
+const visemeShapes = ['AH', 'EE', 'OH', 'OO', 'TH'];
+const notifyFormatters = {
+  displayFps: v => `${v.getUint8(0)} / ${v.getUint8(1)} fps`,
+  orientation: v => v.getUint8(1) === 2
+    ? `${v.getFloat32(2, true).toFixed(1)}°, ${v.getFloat32(6, true).toFixed(1)}°`
+    : ['Unsupported', 'Unavailable'][v.getUint8(1)] ?? '-',
+  visemeScores: v => [...new Uint8Array(v.buffer, v.byteOffset, v.byteLength)].join(' '),
+  visemeStatus: v => `${visemeShapes[v.getUint8(10)] ?? '-'} · ${v.getUint8(9) ? 'open' : 'closed'}`
+};
+// One stable listener per name so reconnecting doesn't stack duplicates.
+const notifyListeners = Object.fromEntries(Object.entries(notifyFormatters).map(([name, format]) => [name, event => {
+  try { updateBLECharValue(`ble-${name.toLowerCase()}`, format(event.target.value)); } catch { /* malformed packet: keep last value */ }
+}]));
+const resetNotifyValues = () => Object.keys(notifyFormatters).forEach(name => updateBLECharValue(`ble-${name.toLowerCase()}`, '-'));
 
 async function discoverCharacteristics(service) {
   for (const [name, uuidKey, required, options, notificationHandler] of characteristicDefinitions) {
@@ -41,10 +59,12 @@ async function discoverCharacteristics(service) {
     } catch (error) {
       if (required) throw error;
       console.warn(`${name} characteristic not available:`, error);
+      if (notifyFormatters[name]) updateBLECharValue(`ble-${name.toLowerCase()}`, 'Not found');
       continue;
     }
 
     bleManager.register(name, characteristic, options);
+    if (notifyListeners[name]) characteristic.addEventListener('characteristicvaluechanged', notifyListeners[name]);
     console.log(`✓ ${name} characteristic found`);
 
     if (notificationHandler) {
@@ -260,6 +280,7 @@ async function connectToDevice(device, isReconnect = false, retryCount = 0) {
   } catch (error) {
     console.error('Error during BLE connection:', error);
     window.orientationClient?.disconnect();
+    window.setDeviceFps?.(null);
 
     // Check if it's a disconnection error and we should retry
     const isDisconnectionError = /gatt server.*disconnect|device disconnected/i.test(error.message || '');
@@ -348,12 +369,14 @@ function onDisconnected(event) {
 
   window.disconnectViseme?.();
   window.orientationClient?.disconnect();
+  window.setDeviceFps?.(null);
   bleManager.clear();
   settingsStateLoaded = false;
   if (isConnecting) return;
 
   isStatusConnected(false);
   updateBLECharacteristicsDisplay('-', '-', '-', '-', '-', '-', null, null, '-');
+  resetNotifyValues();
   showDisconnectPopup();
 }
 
