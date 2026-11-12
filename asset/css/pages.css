@@ -63,9 +63,10 @@
 
 /* Hover state - Only on devices with hover capability */
 @media (hover: hover) and (pointer: fine) {
-  .display-color-mode-btn:hover:not(.active):not(:active) {
+  .display-color-mode-btn:hover:not(.active):not(:active):not(:disabled) {
     background: rgba(255, 255, 255, 0.05) !important;
     border-color: rgba(255, 255, 255, 0.2) !important;
+    color: var(--white-color);
   }
 }
 
@@ -180,10 +181,12 @@
   font-family: "Montserrat", sans-serif;
 }
 
-.refresh-ble-button:hover:not(:disabled) {
-  background: rgba(249, 130, 108, 0.2);
-  border-color: rgba(249, 130, 108, 0.5);
-  transform: translateY(-2px);
+@media (hover: hover) and (pointer: fine) {
+  .refresh-ble-button:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--white-color);
+  }
 }
 
 .refresh-ble-button:active:not(:disabled) {
@@ -232,10 +235,12 @@
   font-family: "Montserrat", sans-serif;
 }
 
-.reboot-device-button:hover:not(:disabled) {
-  background: rgba(203, 32, 64, 0.2);
-  border-color: rgba(203, 32, 64, 0.5);
-  transform: translateY(-2px);
+@media (hover: hover) and (pointer: fine) {
+  .reboot-device-button:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--white-color);
+  }
 }
 
 .reboot-device-button:active:not(:disabled) {
@@ -304,6 +309,54 @@
 
 .settings-section.collapsed > .settings-section-content {
   display: none;
+}
+
+.settings-section:not(.collapsed) > .settings-section-content,
+details[open] > :not(summary) {
+  animation: pageFadeIn 0.3s ease-in-out;
+}
+
+@supports (transition-behavior: allow-discrete) {
+  .settings-section > .settings-section-content,
+  .collapsible-content {
+    animation: none;
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.3s ease, transform 0.3s ease, display 0.3s allow-discrete;
+  }
+
+  .settings-section.collapsed > .settings-section-content,
+  .collapsible-content[style*="display: none"] {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition-duration: 0.12s;
+  }
+
+  @starting-style {
+    .settings-section:not(.collapsed) > .settings-section-content,
+    .collapsible-content {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+  }
+}
+
+@supports selector(details::details-content) {
+  details::details-content {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.12s ease, transform 0.12s ease, content-visibility 0.12s allow-discrete;
+  }
+
+  details[open]::details-content {
+    opacity: 1;
+    transform: translateY(0);
+    transition-duration: 0.3s;
+  }
+
+  details[open] > :not(summary) {
+    animation: none;
+  }
 }
 
 /* About Page - Now uses unified .page-content-container class */
@@ -436,8 +489,11 @@
   font-family: "Montserrat", sans-serif;
 }
 
-.section-toggle-button:hover {
-  background: rgba(249, 130, 108, 0.05);
+@media (hover: hover) and (pointer: fine) {
+  .section-toggle-button:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--white-color);
+  }
 }
 
 .toggle-icon {
@@ -552,3 +608,7 @@
 }
 
 .display-color-mode-btn svg { flex-shrink: 0; }
+
+@media (hover: hover) and (pointer: fine) {
+  .section-toggle-button:hover:not(:disabled) .toggle-icon { stroke: currentColor; }
+}

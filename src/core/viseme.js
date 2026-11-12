@@ -12,13 +12,13 @@
     return view.buffer;
   }
   function decodeSettings(view) {
-    if (view.byteLength !== 10 || view.getUint8(0) !== 2) throw new Error('Update firmware to tune lip sync.');
+    if (view.byteLength !== 10 || view.getUint8(0) !== 2) throw new Error('Update your controller to adjust lip sync.');
     const s = { threshold: view.getFloat32(1, true), gain: view.getFloat32(5, true), response: view.getUint8(9) };
     if (!valid(s)) throw new Error('Invalid settings received. Reconnect to retry.');
     return s;
   }
   function decodeStatus(v) {
-    if (v.byteLength !== 16 || v.getUint8(0) !== 3) throw new Error('Update firmware to tune lip sync.');
+    if (v.byteLength !== 16 || v.getUint8(0) !== 3) throw new Error('Update your controller to adjust lip sync.');
     const s = { accepted: v.getUint16(1, true), applied: v.getUint16(3, true),
       rms: v.getFloat32(5, true), gate: v.getUint8(9), shape: v.getUint8(10), opening: v.getUint8(11),
       calibration: v.getUint8(12), progress: v.getUint8(13), mic: v.getUint8(14), result: v.getUint8(15) };
@@ -33,7 +33,7 @@
       const scales = Array.from({ length: 5 }, (_, i) => view.getUint8(i));
       if (scales.every(value => value <= 50)) return scales;
     }
-    throw new Error('Invalid viseme scale factors.');
+    throw new Error('Invalid mouth shape sensitivity settings.');
   }
   const same = (a, b) => a && b && a.threshold === b.threshold && a.gain === b.gain && a.response === b.response;
   const busy = s => s && (s.calibration === 1 || s.calibration === 2);
@@ -50,13 +50,13 @@
       this.scoresChanged(null);
       this.characteristic?.removeEventListener('characteristicvaluechanged', this.listener);
       this.characteristic = null; this.confirmed = null; this.status = null; this.supported = false; this.pending = false;
-      this.error = 'Connect to tune lip sync.';
+      this.error = 'Connect to adjust lip sync.';
       this.changed(this);
     }
     async connect() {
       this.disconnect();
       const epoch = this.epoch;
-      if (!names.every(name => this.manager.get(name))) { this.error = 'Update firmware to tune lip sync.'; this.changed(this); return; }
+      if (!names.every(name => this.manager.get(name))) { this.error = 'Update your controller to adjust lip sync.'; this.changed(this); return; }
       try {
         await this.manager.enqueue(async () => {
           const settings = decodeSettings(await this.manager.get(names[0]).readValue());
@@ -142,7 +142,7 @@
           if (epoch !== this.epoch) return;
           this.confirmed = actual; this.status = status;
           if (!same(actual, expected) || status.result === 1 || status.result === 2)
-            throw new Error('Settings were not applied. Wait for calibration to finish, then retry.');
+            throw new Error('Settings were not applied. Wait for the room noise measurement to finish, then try again.');
         }, 'viseme-settings');
       } catch (error) {
         if (epoch === this.epoch && request === this.request) this.error = `Could not apply settings: ${error.message}`;
@@ -169,10 +169,10 @@
             const actual = await readScales(characteristic);
             if (!current()) return;
             this.scales = actual;
-            if (!reset && actual.some((v, i) => v !== bytes[i])) this.scaleError = 'Scale factors were not applied.';
+            if (!reset && actual.some((v, i) => v !== bytes[i])) this.scaleError = 'Mouth shape sensitivity settings were not applied.';
           } catch (error) {
             if (!current()) return;
-            this.scaleError = `Could not apply scale factors: ${error.message}`;
+            this.scaleError = `Could not update mouth shape sensitivity. ${error.message}`;
             try {
               const actual = await readScales(characteristic);
               if (current()) this.scales = actual;

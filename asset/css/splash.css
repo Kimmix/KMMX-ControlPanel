@@ -159,12 +159,13 @@
   transition: transform 0.3s ease;
 }
 
-.skip-pairing-btn:hover {
-  background: rgba(249, 130, 108, 0.15);
-  border-color: rgba(249, 130, 108, 0.4);
-  color: var(--white-color);
-  opacity: 1;
-  transform: translateY(-2px);
+@media (hover: hover) and (pointer: fine) {
+  .skip-pairing-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--white-color);
+    opacity: 1;
+  }
 }
 
 .skip-pairing-btn:hover svg {

@@ -53,10 +53,10 @@
 
 /* Hover state - Only on devices with hover capability */
 @media (hover: hover) and (pointer: fine) {
-  .btn-base:hover:not(.active):not(:active) {
-    background-color: var(--black2-color);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  .btn-base:hover:not(.active):not(:active):not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--white-color);
+    box-shadow: none;
   }
 }
 
@@ -85,7 +85,7 @@
 .btn-base.placeholder .placeholder-text {
   font-size: 0.9rem;
   font-weight: 500;
-  color: var(--white-color);
+  color: inherit;
   text-align: center;
   line-height: 1.2;
   word-wrap: break-word;
@@ -94,9 +94,9 @@
   z-index: 1;
 }
 
-.btn-base.placeholder:hover {
+.btn-base.placeholder:hover:not(:disabled) {
   opacity: 1;
-  border-color: var(--acc2-color);
+  border-color: var(--white-color);
 }
 
 /* Active placeholder button */

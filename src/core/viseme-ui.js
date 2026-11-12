@@ -49,8 +49,8 @@ function renderVisemeTuning(client) {
   }
   let message = editing ? 'Pending changes\u2026' : 'Settings applied';
   if (s) {
-    const phases = ['Ready', `Stay quiet \u2014 ${Math.max(0, Math.ceil(2 * (1 - s.progress / 100)))}s`, `Measuring \u2014 ${s.progress}%`, 'Room calibrated', 'Calibration failed', 'Calibration cancelled'];
-    const errors = ['', 'Invalid request', 'Calibration is busy', 'Audio unavailable', 'Clipping: lower the sound level and retry', 'No microphone signal', 'Room too loud: reduce noise and retry'];
+    const phases = ['Ready', `Stay quiet \u2014 ${Math.max(0, Math.ceil(2 * (1 - s.progress / 100)))}s`, `Measuring \u2014 ${s.progress}%`, 'Room noise settings ready', 'Could not measure room noise', 'Room noise measurement cancelled'];
+    const errors = ['', 'Invalid request', 'Already measuring room noise', 'Audio unavailable', 'Sound is too loud. Lower the volume and try again.', 'No microphone signal', 'The room is too loud. Find a quieter spot and try again.'];
     message = active || s.calibration >= 3 ? phases[s.calibration] : editing ? 'Pending changes…' : s.accepted !== s.applied ? 'Waiting for audio…' : 'Ready';
     if (s.mic) message += ' \u00b7 Microphone error';
     if (s.result) message += ` \u00b7 ${errors[s.result]}`;
@@ -81,7 +81,7 @@ function renderVisemeTuning(client) {
     visemeElement('visemeMeterFill').style.width = '0%';
     visemeElement('visemeMeter').setAttribute('aria-valuenow', '0');
   }
-  const feedback = client.error || (!client.supported ? 'Connect to tune lip sync.' : message === 'Ready' ? '' : message);
+  const feedback = client.error || (!client.supported ? 'Connect to adjust lip sync.' : message === 'Ready' ? '' : message);
   visemeElement('calibrationFeedback').textContent = feedback;
   const panelFeedback = !client.error && (editing || (s && s.accepted !== s.applied) || s?.calibration > 0) ? '' : feedback;
   visemeElement('visemeFeedback').textContent = panelFeedback;
@@ -126,7 +126,7 @@ function renderMix() {
   tracks.forEach((track,i) => {
     const value = weights[i];
     track.dataset.rank = value && value === sorted[0] ? 1 : value && value === sorted[1] ? 2 : 0;
-    track.previousElementSibling.querySelector('small').hidden = !(latestStatus?.opening && latestStatus.shape === i);
+    track.parentElement.classList.toggle('active', Boolean(latestStatus?.opening && latestStatus.shape === i));
     const tick = track.lastElementChild;
     tick.hidden = !(latestStatus?.gate && latestStatus.shape !== i && value === sorted[0] && value > sorted[1] && sorted[1]);
     tick.style.left = barWidth(sorted[1] * 115 / 255) + '%';

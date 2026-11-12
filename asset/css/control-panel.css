@@ -419,11 +419,12 @@
 
 /* Keep grid hover feedback inside the scroll container's clipping bounds. */
 @media (hover: hover) and (pointer: fine) {
-  .expression-grid > .btn-base:hover:not(.active):not(:active),
-  .mouth-state-buttons > .btn-base:hover:not(.active):not(:active) {
+  .expression-grid > .btn-base:hover:not(.active):not(:active):not(:disabled),
+  .mouth-state-buttons > .btn-base:hover:not(.active):not(:active):not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--white-color);
     transform: none;
-    background-color: var(--black2-color);
-    box-shadow: inset 0 0 0 2px var(--acc2-color);
+    box-shadow: none;
   }
 }
 
@@ -693,9 +694,12 @@ hr.cenhr {
   box-shadow: 0 4px 15px rgba(255, 68, 108, 0.4);
 }
 
-.btn-refresh:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 68, 108, 0.6);
+@media (hover: hover) and (pointer: fine) {
+  .btn-refresh:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--white-color);
+    box-shadow: none;
+  }
 }
 
 .btn-refresh:active {
@@ -869,11 +873,11 @@ input[type="color"]::-moz-color-swatch {
 
 /* Hover state - Only on devices with hover capability */
 @media (hover: hover) and (pointer: fine) {
-  .reset-colors-btn:hover:not(:active) {
-    background: rgba(249, 130, 108, 0.15);
-    border-color: rgba(249, 130, 108, 0.4);
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(249, 130, 108, 0.2);
+  .reset-colors-btn:hover:not(:active):not(:disabled) {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--white-color);
+    box-shadow: none;
   }
 }
 
@@ -1044,7 +1048,8 @@ button.status-item { font: inherit; text-align: left; color: var(--white-color);
 .lip-sync-controls p { margin: 0; }
 .lip-sync-field { display: flex; flex-direction: column; gap: 8px; }
 .lip-sync-field .slider-bar { margin-block: 0; }
-.viseme-actions { float: right; display: inline-flex; gap: .25rem; }
+.viseme-actions { position: absolute; right: 0; top: 50%; transform: translateY(-50%); display: inline-flex; gap: .25rem; line-height: normal; }
+.lip-sync-more:not([open]) .viseme-actions { display: none; }
 .viseme-actions button { position: static; }
 .viseme-actions button[aria-pressed="true"] { color: var(--acc2-color); border-color: currentColor; }
 .viseme-actions button[hidden] { display: none; }
@@ -1065,11 +1070,10 @@ button.status-item { font: inherit; text-align: left; color: var(--white-color);
 .viseme-scale input[type="range"]::-webkit-slider-thumb { width: 8px; height: 16px; border-radius: 2px; background: white; }
 .viseme-scale input[type="range"]::-moz-range-thumb { width: 8px; height: 16px; border-radius: 2px; background: white; }
 .viseme-scale output { min-width: 3em; }
-.viseme-score small { border: 1px solid currentColor; padding: 0 .2em; border-radius: .3em; font-size: .65em; }
 #visemeMeterGate.open { background: white; box-shadow: 0 0 3px white; }
 #shapeHistory { height: 1rem; margin: .25rem 0 .5rem; overflow: hidden; }
 #shapeHistory span { position: absolute; height: 100%; background: rgba(255,255,255,.18); border-inline-start: 1px solid currentColor; text-align: center; font-size: .7rem; line-height: 1rem; overflow: hidden; }
-.viseme-score:has(small:not([hidden])) { color: var(--acc2-color); }
+.viseme-score.active { color: var(--acc2-color); }
 .lip-sync-label { display: flex; align-items: center; justify-content: space-between; gap: 16px; font-weight: 400; }
 .lip-sync-label output, #visemeReading { font-variant-numeric: tabular-nums; }
 .lip-sync-controls .lip-sync-help { font-size: 0.85rem; font-weight: 400; line-height: 1.5; color: var(--white2-color, #bbb); }
@@ -1152,7 +1156,8 @@ button.status-item { font: inherit; text-align: left; color: var(--white-color);
   .expression-container { flex: none; overflow: visible; padding-bottom: 0; }
 }
 
-.lip-sync-more summary { align-content: center; }
+.lip-sync-more summary { position: relative; min-height: 44px; line-height: 44px; }
+#visemeScores > summary { padding-right: 100px; }
 
 @media (max-width: 480px) {
   .header .dotted-array { width: 100px; }

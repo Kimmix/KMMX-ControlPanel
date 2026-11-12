@@ -21,26 +21,26 @@
       clearTimeout(this.staleTimer);
       this.characteristic?.removeEventListener('characteristicvaluechanged', this.listener);
       this.characteristic = null;
-      this.show('Connect to view orientation.');
+      this.show('Connect to view head movement.');
     }
     receive(view) {
       clearTimeout(this.staleTimer);
       try {
         const sample = decode(view);
-        this.show(['Orientation unsupported on this device.', 'Orientation sensor unavailable.', 'Live orientation'][sample.status],
+        this.show(['This device does not support head movement readings.', 'The movement sensor is unavailable.', 'Head movement'][sample.status],
           sample.status === 2 ? sample : null);
-        this.staleTimer = setTimeout(() => this.show('Orientation telemetry unavailable.'), 2000);
+        this.staleTimer = setTimeout(() => this.show('Head movement readings are unavailable.'), 2000);
       } catch {
-        this.show('Orientation telemetry unavailable.');
+        this.show('Head movement readings are unavailable.');
       }
     }
     async connect() {
       this.disconnect();
       const epoch = this.epoch;
       const characteristic = this.manager.get('orientation');
-      if (!characteristic) { this.show('Update firmware to view orientation.'); return; }
+      if (!characteristic) { this.show('Update your controller to view head movement.'); return; }
       this.characteristic = characteristic;
-      this.show('Orientation telemetry unavailable.');
+      this.show('Head movement readings are unavailable.');
       let enabled = false;
       this.listener = event => {
         if (epoch === this.epoch && enabled) this.receive(event.target.value);
@@ -60,7 +60,7 @@
         enabled = false;
         characteristic.removeEventListener('characteristicvaluechanged', this.listener);
         clearTimeout(this.staleTimer);
-        this.show('Orientation telemetry unavailable.');
+        this.show('Head movement readings are unavailable.');
       }
     }
   }

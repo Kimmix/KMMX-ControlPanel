@@ -38,9 +38,9 @@ test('rejects wrong lengths, version, status and non-finite ready angles', () =>
 });
 test('missing firmware, V2 and unavailable sensor have distinct states', async () => {
   const f = fixture(); f.manager.get = () => null;
-  await f.client.connect(); assert.match(f.client.message, /Update firmware/);
-  f.client.receive(packet(0)); assert.match(f.client.message, /unsupported/); assert.equal(f.client.sample, null);
-  f.client.receive(packet(1)); assert.match(f.client.message, /sensor unavailable/); assert.equal(f.client.sample, null);
+  await f.client.connect(); assert.match(f.client.message, /Update your controller/);
+  f.client.receive(packet(0)); assert.match(f.client.message, /does not support/); assert.equal(f.client.sample, null);
+  f.client.receive(packet(1)); assert.match(f.client.message, /sensor is unavailable/); assert.equal(f.client.sample, null);
   f.client.disconnect();
 });
 test('subscribes before READ, updates, clears malformed readings and reconnects without duplicate listeners', async () => {
@@ -60,7 +60,7 @@ test('subscription/read failures leave no listeners or readings', async () => {
     const f = fixture(); f.characteristic[operation] = async () => { throw new Error('failed'); };
     await f.client.connect();
     assert.equal(f.client.sample, null); assert.equal(f.listeners.size, 0);
-    assert.match(f.client.message, /telemetry unavailable/);
+    assert.match(f.client.message, /readings are unavailable/);
     f.client.disconnect();
   }
 });
@@ -81,7 +81,7 @@ test('stale timeout clears readings after two seconds and a valid packet recover
   t.mock.timers.tick(1999); assert.ok(f.client.sample);
   f.emit(packet(2, 5)); t.mock.timers.tick(1999); assert.ok(f.client.sample);
   t.mock.timers.tick(1); assert.equal(f.client.sample, null);
-  assert.match(f.client.message, /telemetry unavailable/);
+  assert.match(f.client.message, /readings are unavailable/);
   f.emit(packet()); assert.ok(f.client.sample);
   f.client.disconnect(); t.mock.timers.tick(2000); assert.match(f.client.message, /Connect to view/);
 });
@@ -93,7 +93,7 @@ test('meters keep actual numbers, clamp fill and clear unavailable readings', ()
       setAttribute(name, value) { this.attrs[name] = value; }, removeAttribute(name) { delete this.attrs[name]; } };
   }
   const document = { getElementById: id => elements[id] };
-  render({ message: 'Live orientation', sample: { pitch: -120, roll: 0, yaw: 200 } }, document);
+  render({ message: 'Head movement', sample: { pitch: -120, roll: 0, yaw: 200 } }, document);
   assert.equal(elements['orientation-pitch-value'].textContent, '-120.0°');
   assert.equal(elements['orientation-pitch'].firstElementChild.style.left, '0%');
   assert.equal(elements['orientation-pitch'].firstElementChild.style.width, '50%');
@@ -121,6 +121,6 @@ test('browser bootstrap uses the existing lexical BLE manager and initializes cl
   vm.runInContext(readFileSync(resolve(__dirname, '../src/core/orientation.js'), 'utf8'), context);
   assert.ok(context.orientationClient.manager);
   assert.equal(context.orientationClient.manager, vm.runInContext('bleManager', context));
-  assert.equal(elements.orientationStatus.textContent, 'Connect to view orientation.');
+  assert.equal(elements.orientationStatus.textContent, 'Connect to view head movement.');
   assert.equal(elements['orientation-pitch-value'].textContent, '—');
 });
