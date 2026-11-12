@@ -183,7 +183,7 @@
   bottom: 4%;
   left: 4%;
   padding: 8px 16px;
-  height: 36px;
+  min-height: 44px;
   border: 1px solid var(--white-color);
   border-radius: 8px;
   background: var(--white-color);
@@ -201,3 +201,15 @@
   opacity: 0;
   pointer-events: none;
 }
+
+.splash-notice {
+  max-width: 320px;
+  margin: 16px auto 0;
+  padding: 12px 16px;
+  border: 1px solid var(--warn-color);
+  border-radius: 10px;
+  color: var(--white-color);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+.splash-notice[hidden], .splash.no-ble .reconnect-btn { display: none; }

@@ -147,7 +147,7 @@
 }
 
 .ble-char-uuid {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   color: var(--white2-color);
   opacity: 1;
   font-family: 'Courier New', monospace;
@@ -179,9 +179,10 @@
 }
 
 .reboot-device-button {
-  margin-top: 10px;
-  background: rgba(203, 32, 64, 0.1);
-  border: 1px solid rgba(203, 32, 64, 0.3);
+  margin-top: 28px;
+  background: rgba(203, 32, 64, 0.25);
+  border: 1px solid var(--acc2b-color);
+  color: #ff8fa6;
 }
 
 @media (hover: hover) and (pointer: fine) {
