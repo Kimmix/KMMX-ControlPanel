@@ -2,10 +2,10 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const { Client, decode, render } = require('../src/core/orientation.js');
 
-function packet(status = 2, pitch = -45, roll = 90, yaw = -180) {
-  const v = new DataView(new ArrayBuffer(14));
-  v.setUint8(0, 1); v.setUint8(1, status);
-  [pitch, roll, yaw].forEach((value, i) => v.setFloat32(2 + 4 * i, value, true));
+function packet(status = 2, pitch = -45, roll = 90) {
+  const v = new DataView(new ArrayBuffer(10));
+  v.setUint8(0, 2); v.setUint8(1, status);
+  [pitch, roll].forEach((value, i) => v.setFloat32(2 + 4 * i, value, true));
   return v;
 }
 function fixture() {
@@ -22,18 +22,17 @@ function fixture() {
   return { client, characteristic, manager, listeners, emit };
 }
 test('decodes exact little-endian signed packet', () => {
-  const bytes = Uint8Array.from([1, 2, 0, 0, 0x34, 0xc2, 0, 0, 0xb4, 0x42, 0, 0, 0x34, 0xc3]);
-  assert.deepEqual(decode(new DataView(bytes.buffer)), { status: 2, pitch: -45, roll: 90, yaw: -180 });
+  const bytes = Uint8Array.from([2, 2, 0, 0, 0x34, 0xc2, 0, 0, 0xb4, 0x42]);
+  assert.deepEqual(decode(new DataView(bytes.buffer)), { status: 2, pitch: -45, roll: 90 });
 });
 test('rejects wrong lengths, version, status and non-finite ready angles', () => {
-  for (const size of [0, 13, 15]) assert.throws(() => decode(new DataView(new ArrayBuffer(size))));
-  const badVersion = packet(); badVersion.setUint8(0, 2);
+  for (const size of [0, 9, 11, 14]) assert.throws(() => decode(new DataView(new ArrayBuffer(size))));
+  const badVersion = packet(); badVersion.setUint8(0, 1);
   assert.throws(() => decode(badVersion));
   assert.throws(() => decode(packet(3)));
   for (const value of [NaN, Infinity, -Infinity]) {
     assert.throws(() => decode(packet(2, value)));
     assert.throws(() => decode(packet(2, 0, value)));
-    assert.throws(() => decode(packet(2, 0, 0, value)));
   }
 });
 test('missing firmware, V2 and unavailable sensor have distinct states', async () => {
@@ -87,19 +86,18 @@ test('stale timeout clears readings after two seconds and a valid packet recover
 });
 test('meters keep actual numbers, clamp fill and clear unavailable readings', () => {
   const elements = {};
-  for (const axis of ['pitch', 'roll', 'yaw']) {
+  for (const axis of ['pitch', 'roll']) {
     elements[`orientation-${axis}-value`] = {};
     elements[`orientation-${axis}`] = { firstElementChild: { style: {} }, attrs: {},
       setAttribute(name, value) { this.attrs[name] = value; }, removeAttribute(name) { delete this.attrs[name]; } };
   }
   const document = { getElementById: id => elements[id] };
-  render({ message: 'Head movement', sample: { pitch: -120, roll: 0, yaw: 200 } }, document);
+  render({ message: 'Head movement', sample: { pitch: -120, roll: 200 } }, document);
   assert.equal(elements['orientation-pitch-value'].textContent, '-120.0°');
   assert.equal(elements['orientation-pitch'].firstElementChild.style.left, '0%');
   assert.equal(elements['orientation-pitch'].firstElementChild.style.width, '50%');
-  assert.equal(elements['orientation-yaw'].firstElementChild.style.width, '50%');
-  assert.equal(elements['orientation-roll'].firstElementChild.style.width, '0%');
-  assert.equal(elements['orientation-yaw'].attrs['aria-valuetext'], '200.0 degrees');
+  assert.equal(elements['orientation-roll'].firstElementChild.style.width, '50%');
+  assert.equal(elements['orientation-roll'].attrs['aria-valuetext'], '200.0 degrees');
   render({ message: 'Disconnected', sample: null }, document);
   assert.equal(elements['orientation-pitch-value'].textContent, '—');
   assert.equal(elements['orientation-pitch'].firstElementChild.style.width, '0%');
@@ -112,7 +110,7 @@ test('browser bootstrap uses the existing lexical BLE manager and initializes cl
   const { resolve } = require('node:path');
   const vm = require('node:vm');
   const elements = {};
-  for (const axis of ['pitch', 'roll', 'yaw']) {
+  for (const axis of ['pitch', 'roll']) {
     elements[`orientation-${axis}-value`] = {};
     elements[`orientation-${axis}`] = { firstElementChild: { style: {} }, setAttribute() {}, removeAttribute() {} };
   }

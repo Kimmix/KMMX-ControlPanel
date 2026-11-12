@@ -1,11 +1,11 @@
 (function (root) {
   'use strict';
   function decode(view) {
-    if (view.byteLength !== 14 || view.getUint8(0) !== 1 || view.getUint8(1) > 2)
+    if (view.byteLength !== 10 || view.getUint8(0) !== 2 || view.getUint8(1) > 2)
       throw new Error('Invalid orientation packet');
     const sample = { status: view.getUint8(1), pitch: view.getFloat32(2, true),
-      roll: view.getFloat32(6, true), yaw: view.getFloat32(10, true) };
-    if (sample.status === 2 && ![sample.pitch, sample.roll, sample.yaw].every(Number.isFinite))
+      roll: view.getFloat32(6, true) };
+    if (sample.status === 2 && ![sample.pitch, sample.roll].every(Number.isFinite))
       throw new Error('Invalid orientation angles');
     return sample;
   }
@@ -65,7 +65,7 @@
     }
   }
   function render(client, document) {
-    for (const [axis, limit] of [['pitch', 90], ['roll', 180], ['yaw', 180]]) {
+    for (const [axis, limit] of [['pitch', 90], ['roll', 180]]) {
       const meter = document.getElementById(`orientation-${axis}`);
       const fill = meter.firstElementChild;
       const value = client.sample?.[axis];
@@ -93,7 +93,7 @@
   }
   const api = { Client, decode, render };
   if (typeof module !== 'undefined') module.exports = api;
-  root.OrientationV1 = api;
+  root.OrientationV2 = api;
   if (typeof document !== 'undefined' && document.getElementById('orientation-pitch'))
     root.orientationClient = new Client(bleManager, client => render(client, document));
 })(globalThis);
