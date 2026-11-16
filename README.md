@@ -40,14 +40,10 @@ Open `http://localhost:8000`, tap the splash screen, and pick the **KMMX** devic
 The audio settings page offers fixed **Noise rejection** (1–1,000 RMS), independent
 **Mouth size** (0.25–4×), and **Snappy / Natural / Smooth** response. Response presets adjust timing only.
 
-**Calibrate Room** measures a fixed threshold after a quiet countdown. Stay silent for the full four
-seconds; speaking during calibration can set the threshold too high. Cancel or failure keeps the
-previous settings. Booping and disconnecting the browser do not erase calibration.
-
 Settings apply live and last until the controller restarts. Reboot restores threshold 13, mouth
 size 1×, and Natural response. Boops and BLE reconnects preserve current RAM settings. Previously
 stored tuning is ignored; no viseme settings are saved to flash. The panel reads device settings on
-reconnect and shows microphone and calibration failures.
+reconnect and shows microphone failures.
 
 <details>
 <summary><b>Firmware compatibility</b></summary>

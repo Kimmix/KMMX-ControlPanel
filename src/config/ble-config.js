@@ -29,7 +29,6 @@ export const bleUUID = {
     fanSpeed: "f1f2f3f4-a1a2-4b1b-c1c2-d1d2d3d4d5f1",
     // Viseme protocol v2
     visemeSettings: "b9725d01-7546-4e0b-9b91-486e25012a02",
-    visemeCalibration: "b9725d02-7546-4e0b-9b91-486e25012a02",
     visemeScales: "b9725d06-7546-4e0b-9b91-486e25012a02",
     visemeScores: "b9725d05-7546-4e0b-9b91-486e25012a02",
     visemeStatus: "b9725d03-7546-4e0b-9b91-486e25012a02",

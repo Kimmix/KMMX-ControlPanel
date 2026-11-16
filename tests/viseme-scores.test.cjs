@@ -62,7 +62,7 @@ test('score read, notification, malformed frame and disconnect', async () => {
   const packet = values => new DataView(Uint8Array.from(values).buffer);
   let listener, mix;
   const chars = {
-    visemeSettings: { readValue: () => settings }, visemeCalibration: {},
+    visemeSettings: { readValue: () => settings },
     visemeStatus: { readValue: () => status, startNotifications() {}, addEventListener() {}, removeEventListener() {} },
     visemeScores: {
       readValue: () => packet([137, 0, 118, 0, 0]), startNotifications() {},
@@ -100,7 +100,6 @@ test('live scales merge drags, verify readback, reset and discard disconnected e
   status.setUint8(0, 3);
   const characteristics = {
     visemeSettings: { readValue: () => new DataView(encodeSettings({ threshold: 700, gain: 1, response: 1 })) },
-    visemeCalibration: {},
     visemeStatus: { readValue: () => status, startNotifications() {}, addEventListener() {}, removeEventListener() {} },
     visemeScales: {
       readValue: () => new DataView(encodeScales(device).buffer),

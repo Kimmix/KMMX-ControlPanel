@@ -20,24 +20,19 @@ function animateVisemeInput(now) {
   inputFrame = inputDisplay === inputTarget ? null : requestAnimationFrame(animateVisemeInput);
 }
 function renderVisemeTuning(client) {
-  const s = client.status, active = VisemeV2.busy(s);
+  const s = client.status;
   const editing = Boolean(visemeEditTimer) || client.pending;
   window.setVisemeWriting?.(client.supported && (editing || Boolean(s && s.accepted !== s.applied)), client.error);
   const shown = editing && visemeDraft ? visemeDraft : client.confirmed;
   if (!editing) visemeDraft = client.confirmed && { ...client.confirmed };
-  for (const id of ['noiseRejection', 'mouthSize']) visemeElement(id).disabled = !client.supported || active;
-  visemeElement('calibrateRoom').disabled = !client.supported || active || editing || s?.mic !== 0;
-  visemeElement('cancelCalibration').disabled = !client.supported || !active || client.pending;
-  visemeElement('cancelCalibration').hidden = !active;
-  visemeElement('startCalibration').disabled = !client.supported || active || editing || s?.mic !== 0;
-  visemeElement('closeCalibration').disabled = active;
+  for (const id of ['noiseRejection', 'mouthSize']) visemeElement(id).disabled = !client.supported;
   responseButtons.forEach((button, value) => {
-    button.disabled = !client.supported || active;
+    button.disabled = !client.supported;
     button.classList.toggle('active', shown?.response === value);
     button.setAttribute('aria-pressed', String(shown?.response === value));
   });
   if (shown) {
-    visemeElement('noiseRejection').value = VisemeV2.toSlider(shown.threshold, 500, 10000);
+    visemeElement('noiseRejection').value = VisemeV2.toSlider(shown.threshold, 300, 10000);
     visemeElement('mouthSize').value = VisemeV2.toSlider(shown.gain, 0.25, 4);
     visemeElement('noiseRejectionValue').textContent = shown.threshold.toFixed(1);
     visemeElement('mouthSizeValue').textContent = `${shown.gain.toFixed(2)}\u00d7`;
@@ -49,11 +44,10 @@ function renderVisemeTuning(client) {
   }
   let message = editing ? 'Pending changes\u2026' : 'Settings applied';
   if (s) {
-    const phases = ['Ready', `Stay quiet \u2014 ${Math.max(0, Math.ceil(2 * (1 - s.progress / 100)))}s`, `Measuring \u2014 ${s.progress}%`, 'Room noise settings ready', 'Could not measure room noise', 'Room noise measurement cancelled'];
-    const errors = ['', 'Invalid request', 'Already measuring room noise', 'Audio unavailable', 'Sound is too loud. Lower the volume and try again.', 'No microphone signal', 'The room is too loud. Find a quieter spot and try again.'];
-    message = active || s.calibration >= 3 ? phases[s.calibration] : editing ? 'Pending changes…' : s.accepted !== s.applied ? 'Waiting for audio…' : 'Ready';
+    const errors = { 1: 'Invalid request', 3: 'Audio unavailable' };
+    message = editing ? 'Pending changes\u2026' : s.accepted !== s.applied ? 'Waiting for audio\u2026' : 'Ready';
     if (s.mic) message += ' \u00b7 Microphone error';
-    if (s.result) message += ` \u00b7 ${errors[s.result]}`;
+    if (s.result) message += ` \u00b7 ${errors[s.result] || 'Controller error'}`;
     const threshold = shown?.threshold ?? 13;
     const maximum = Math.max(100, threshold * 1.25);
     const now = performance.now();
@@ -82,8 +76,7 @@ function renderVisemeTuning(client) {
     visemeElement('visemeMeter').setAttribute('aria-valuenow', '0');
   }
   const feedback = client.error || (!client.supported ? 'Connect to adjust lip sync.' : message === 'Ready' ? '' : message);
-  visemeElement('calibrationFeedback').textContent = feedback;
-  const panelFeedback = !client.error && (editing || (s && s.accepted !== s.applied) || s?.calibration > 0) ? '' : feedback;
+  const panelFeedback = !client.error && (editing || (s && s.accepted !== s.applied)) ? '' : feedback;
   visemeElement('visemeFeedback').textContent = panelFeedback;
   visemeElement('visemeFeedback').hidden = !panelFeedback;
 }
@@ -223,9 +216,9 @@ function sendVisemeEdit() {
   if (visemeDraft && visemeClient.supported) visemeClient.submit({ ...visemeDraft });
 }
 function editViseme(event) {
-  if (!visemeClient.supported || VisemeV2.busy(visemeClient.status)) return;
+  if (!visemeClient.supported) return;
   visemeDraft = { ...(visemeDraft || visemeClient.confirmed) };
-  if (event.target.id === 'noiseRejection') visemeDraft.threshold = VisemeV2.fromSlider(Number(event.target.value), 500, 10000);
+  if (event.target.id === 'noiseRejection') visemeDraft.threshold = VisemeV2.fromSlider(Number(event.target.value), 300, 10000);
   if (event.target.id === 'mouthSize') visemeDraft.gain = VisemeV2.fromSlider(Number(event.target.value), 0.25, 4);
   if (event.target.id === 'visemeResponse') {
     visemeDraft.response = Number(event.target.value);
@@ -241,16 +234,6 @@ responseButtons.forEach(button => button.addEventListener('click', () => {
   editViseme({ target: { id: 'visemeResponse', value: button.value } });
   sendVisemeEdit();
 }));
-visemeElement('calibrateRoom').addEventListener('click', () => {
-  visemeElement('calibrationFeedback').textContent = '';
-  visemeElement('calibrationDialog').showModal();
-});
-visemeElement('startCalibration').addEventListener('click', () => visemeClient.calibrate(1));
-visemeElement('closeCalibration').addEventListener('click', () => visemeElement('calibrationDialog').close());
-visemeElement('calibrationDialog').addEventListener('cancel', event => {
-  if (VisemeV2.busy(visemeClient.status)) event.preventDefault();
-});
-visemeElement('cancelCalibration').addEventListener('click', () => visemeClient.calibrate(2));
 window.disconnectViseme = () => {
   clearTimeout(visemeEditTimer); visemeEditTimer = null; visemeDraft = null;
   visemeClient.disconnect();

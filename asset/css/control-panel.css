@@ -1024,30 +1024,6 @@ button.status-item { font: inherit; text-align: left; color: var(--white-color);
   border: 0;
 }
 
-.calibration-trigger { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 48px; }
-.calibration-trigger svg { width: 20px; height: 20px; }
-.calibration-trigger:disabled { opacity: 0.5; cursor: default; }
-.calibration-trigger:focus-visible { outline: 2px solid var(--acc1-color); outline-offset: 2px; }
-#calibrationDialog {
-  position: fixed;
-  inset: 0;
-  margin: auto;
-  max-height: calc(100dvh - 48px);
-  overflow-y: auto;
-  width: min(400px, calc(100vw - 48px));
-  box-sizing: border-box;
-  padding: 24px;
-  border: 1px solid var(--white2-color);
-  border-radius: 12px;
-  background: var(--black-color, #111);
-  color: var(--white-color, #fff);
-  font: inherit;
-}
-#calibrationDialog::backdrop { background: rgba(0, 0, 0, 0.7); }
-#calibrationDialog h3 { margin: 0 0 16px; }
-#calibrationDialog p { margin-bottom: 20px; line-height: 1.5; font-weight: 400; }
-#calibrationDialog button { font: inherit; }
-
 .reset-colors-btn:focus-visible { outline: 2px solid var(--acc1-color); outline-offset: 2px; }
 
 .status-pill.ble-error:not(.inactive) { --pill-color: var(--warn-color); --pill-glow-color: color-mix(in srgb, var(--warn-color) 56%, transparent); animation: none; }
@@ -1063,7 +1039,6 @@ button.status-item { font: inherit; text-align: left; color: var(--white-color);
   outline: 3px solid var(--acc1-color);
   outline-offset: 3px;
 }
-#calibrationDialog { overscroll-behavior: contain; }
 .status-content { overflow-wrap: anywhere; }
 .expression-container { scroll-padding-bottom: var(--content-bottom-space); }
 @media (max-height: 520px) {

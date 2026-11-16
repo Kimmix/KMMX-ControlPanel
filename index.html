@@ -44,7 +44,7 @@
   <link defer rel="stylesheet" href="asset/css/styles-main.css?v=1.0.2" />
   <link defer rel="stylesheet" href="asset/css/high-refresh-rate.css" />
   <link defer rel="stylesheet" href="asset/css/splash.css?v=1.0.10" />
-  <link defer rel="stylesheet" href="asset/css/control-panel.css?v=1.0.17" />
+  <link defer rel="stylesheet" href="asset/css/control-panel.css?v=1.0.18" />
   <link defer rel="stylesheet" href="asset/css/navigation.css" />
   <link defer rel="stylesheet" href="asset/css/pages.css" />
   <style>#appUpdate[hidden] { display: none; }</style>
@@ -298,22 +298,6 @@
                         </button>
                       </div>
                     </div>
-                    <button id="calibrateRoom" class="display-color-mode-btn calibration-trigger" type="button" disabled>
-                      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                        <path d="M4 9v6M8 5v14M12 8v8M16 3v18M20 9v6" />
-                      </svg>
-                      Noise calibration
-                    </button>
-                    <dialog id="calibrationDialog" aria-labelledby="calibrationTitle" aria-describedby="calibrationHelp">
-                      <h3 id="calibrationTitle">Adjust for room noise</h3>
-                      <p id="calibrationHelp">Stay quiet for about four seconds while your controller measures the room. If you speak, it may miss quieter sounds afterward. These settings reset when the controller restarts.</p>
-                      <p id="calibrationFeedback" role="status" aria-live="polite"></p>
-                      <div class="lip-sync-actions">
-                        <button id="startCalibration" type="button">Measure room noise</button>
-                        <button id="cancelCalibration" type="button" disabled hidden>Cancel</button>
-                        <button id="closeCalibration" type="button">Close</button>
-                      </div>
-                    </dialog>
                   </div>
                 </div>
               </div>
@@ -1070,7 +1054,7 @@
 
 
   <!-- BLE config is also exposed globally for the classic BLE script -->
-  <script type="module" src="src/config/ble-config.js?v=1.0.1"></script>
+  <script type="module" src="src/config/ble-config.js?v=1.0.2"></script>
 
   <!-- Shared UI helpers -->
   <script defer src="src/managers/ble-manager.js"></script>
@@ -1081,7 +1065,7 @@
   <!-- Main application files -->
   <script type="module" src="src/core/app.js?v=1.0.11"></script>
   <script type="module" src="src/core/control.js?v=1.0.12"></script>
-  <script defer src="src/core/ble.js?v=1.0.15"></script>
+  <script defer src="src/core/ble.js?v=1.0.16"></script>
   <script defer src="src/core/navigation.js"></script>
   <script defer src="src/core/fps-graph.js"></script>
 </body>

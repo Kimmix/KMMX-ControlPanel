@@ -26,7 +26,6 @@ const characteristicDefinitions = [
   ['glitchIntensity', 'glitchIntensity', false],
   ['fanSpeed', 'fanSpeed', false],
   ['visemeSettings', 'visemeSettings', false],
-  ['visemeCalibration', 'visemeCalibration', false],
   ['visemeScales', 'visemeScales', false],
   ['visemeScores', 'visemeScores', false],
   ['visemeStatus', 'visemeStatus', false],
