@@ -82,7 +82,7 @@ padding. Each settings write replaces the complete record atomically.
 | Settings offset | Type | Meaning / validation |
 |---|---|---|
 | 0 | uint8 | Version, exactly 2 |
-| 1 | float32 | Fixed RMS opening threshold, 1–1,000; default 13 |
+| 1 | float32 | Fixed RMS opening threshold, 500–10,000; default 700 |
 | 5 | float32 | Mouth gain, 0.25–4; default 1 |
 | 9 | uint8 | Response: 0 Snappy, 1 Natural (default), 2 Smooth |
 

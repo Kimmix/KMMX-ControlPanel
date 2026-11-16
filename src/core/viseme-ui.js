@@ -37,7 +37,7 @@ function renderVisemeTuning(client) {
     button.setAttribute('aria-pressed', String(shown?.response === value));
   });
   if (shown) {
-    visemeElement('noiseRejection').value = VisemeV2.toSlider(shown.threshold, 50, 1000);
+    visemeElement('noiseRejection').value = VisemeV2.toSlider(shown.threshold, 500, 10000);
     visemeElement('mouthSize').value = VisemeV2.toSlider(shown.gain, 0.25, 4);
     visemeElement('noiseRejectionValue').textContent = shown.threshold.toFixed(1);
     visemeElement('mouthSizeValue').textContent = `${shown.gain.toFixed(2)}\u00d7`;
@@ -225,7 +225,7 @@ function sendVisemeEdit() {
 function editViseme(event) {
   if (!visemeClient.supported || VisemeV2.busy(visemeClient.status)) return;
   visemeDraft = { ...(visemeDraft || visemeClient.confirmed) };
-  if (event.target.id === 'noiseRejection') visemeDraft.threshold = VisemeV2.fromSlider(Number(event.target.value), 50, 1000);
+  if (event.target.id === 'noiseRejection') visemeDraft.threshold = VisemeV2.fromSlider(Number(event.target.value), 500, 10000);
   if (event.target.id === 'mouthSize') visemeDraft.gain = VisemeV2.fromSlider(Number(event.target.value), 0.25, 4);
   if (event.target.id === 'visemeResponse') {
     visemeDraft.response = Number(event.target.value);

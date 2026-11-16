@@ -58,7 +58,7 @@ test('mouth sliders submit curved pointer values and single-hundredth arrow step
 test('score read, notification, malformed frame and disconnect', async () => {
   const status = new DataView(new ArrayBuffer(16));
   status.setUint8(0, 3);
-  const settings = new DataView(encodeSettings({ threshold: 13, gain: 1, response: 1 }));
+  const settings = new DataView(encodeSettings({ threshold: 700, gain: 1, response: 1 }));
   const packet = values => new DataView(Uint8Array.from(values).buffer);
   let listener, mix;
   const chars = {
@@ -99,7 +99,7 @@ test('live scales merge drags, verify readback, reset and discard disconnected e
   const status = new DataView(new ArrayBuffer(16));
   status.setUint8(0, 3);
   const characteristics = {
-    visemeSettings: { readValue: () => new DataView(encodeSettings({ threshold: 13, gain: 1, response: 1 })) },
+    visemeSettings: { readValue: () => new DataView(encodeSettings({ threshold: 700, gain: 1, response: 1 })) },
     visemeCalibration: {},
     visemeStatus: { readValue: () => status, startNotifications() {}, addEventListener() {}, removeEventListener() {} },
     visemeScales: {

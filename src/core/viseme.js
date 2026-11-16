@@ -2,7 +2,7 @@
   'use strict';
   const names = ['visemeSettings', 'visemeCalibration', 'visemeStatus'];
   function valid(s) {
-    return Number.isFinite(s.threshold) && s.threshold >= 1 && s.threshold <= 1000 &&
+    return Number.isFinite(s.threshold) && s.threshold >= 500 && s.threshold <= 10000 &&
       Number.isFinite(s.gain) && s.gain >= 0.25 && s.gain <= 4 && Number.isInteger(s.response) && s.response >= 0 && s.response <= 2;
   }
   function encodeSettings(s) {
